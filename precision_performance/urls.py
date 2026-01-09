@@ -16,7 +16,36 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+
+    # Home page
+    path(
+        "",
+        TemplateView.as_view(template_name="index.html"),
+        name="home",
+    ),
+
+    # Owner dashboard
+    path(
+        "owner/dashboard/",
+        TemplateView.as_view(template_name="owner/dashboard.html"),
+        name="owner-dashboard",
+    ),
+
+    # Trainer dashboard
+    path(
+        "trainer/dashboard/",
+        TemplateView.as_view(template_name="trainer/dashboard.html"),
+        name="trainer-dashboard",
+    ),
+
+    # Client dashboard
+    path(
+        "client/dashboard/",
+        TemplateView.as_view(template_name="client/dashboard.html"),
+        name="client-dashboard",
+    ),
 ]
