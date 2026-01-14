@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Precision Performance PT{% endblock %}</title>
+
+    {# Meta description placeholder #}
+    <meta name="description" content="Precision Performance PT - personal training management platform for owners, trainers and clients.">
+
+    {# Google Fonts Links #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    {# Main stylesheet #}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="site-wrapper">
+        <header class="site-header">
+            {% include "includes/nav.html" %}
+        </header>
+
+        <main id="main-content" class="site-main" tabindex="-1">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="site-footer">
+            {% include "includes/footer.html" %}
+        </footer>
+    </div>
+
+    {# Main JavaScript file #}
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
