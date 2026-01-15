@@ -85,6 +85,39 @@ h3
     text-decoration: underline;
 }
 
+/* Hero section */
+.home-hero {
+    padding: 4rem 1.5rem;
+    background-color: var(--color-header-bg);
+    color: #ffffff;
+    /* hero image is to be added */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.home-hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.home-hero-text h1 {
+    font-size: 2.4rem;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+}
+
+.hero-subtitle {
+    max-width: 38rem;
+    margin: 0 auto 1.8rem;
+    opacity: 0.95;
+}
+
 /* Footer area */
 .site-footer {
     background-color: var(--color-header-bg);
