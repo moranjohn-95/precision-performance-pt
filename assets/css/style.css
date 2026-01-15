@@ -207,3 +207,73 @@ h3
     outline: 2px solid #ffffff;
     outline-offset: 2px;
 }
+
+/* Coaching section */
+.home-programs {
+    background-color: var(--color-bg-page);
+    padding: 4rem 1.5rem 4.5rem;
+    color: var(--color-text-body);
+}
+
+.home-programs-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.home-programs-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.home-programs-header h2 {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    font-size: 2.1rem;
+    color: var(--color-text-heading);
+    margin: 0 0 0.75rem;
+}
+
+.home-programs-header p {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+/* Programs grid */
+.home-programs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.75rem;
+}
+
+/* Program cards */
+.program-card {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 2rem 1.75rem;
+    border-top: 4px solid var(--color-accent);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.program-card h3 {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    color: var(--color-text-heading);
+    font-size: 1.15rem;
+    margin: 0 0 0.75rem;
+}
+
+.program-card p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Card hover state */
+.program-card:hover,
+.program-card:focus-within {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
