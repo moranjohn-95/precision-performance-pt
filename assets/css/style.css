@@ -260,17 +260,6 @@ h3
     align-items: stretch;
 }
 
-/* Gradient overlay similar to hero image */
-.program-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(11, 31, 59, 0.55),
-        rgba(11, 31, 59, 0.15)
-    );
-}
 
 /* Inner content to rest above  overlay */
 .program-card-inner {
@@ -288,6 +277,7 @@ h3
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0 0 0.75rem;
+    color: #ffffff
 }
 
 .program-card p {
@@ -305,17 +295,25 @@ h3
 
 /* Background images for each coaching option */
 .program-card--personal {
-    background-image: url("../images/personal-training.jpg");
+    background-image:
+        linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
+        url("../images/personal-training.jpg");
 }
 
 .program-card--small-group {
-    background-image: url("../images/small-group-training.jpg");
+    background-image:
+        linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
+        url("../images/small-group-training.jpg");
 }
 
 .program-card--large-group {
-    background-image: url("../images/group-training.jpg");
+    background-image:
+        linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
+        url("../images/group-training.jpg");
 }
 
 .program-card--online {
-    background-image: url("../images/online-coaching.jpg");
+    background-image:
+        linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
+        url("../images/online-coaching.jpg");
 }
