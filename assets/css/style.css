@@ -92,7 +92,7 @@ h3
 
     /* Dark overlay with hero image */
     background:
-        linear-gradient(rgba(11, 31, 59, 0.8), rgba(11, 31, 59, 0.8)),
+        linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/hero-image-man-ropes.jpg");
     background-position: center;
     background-size: cover;
