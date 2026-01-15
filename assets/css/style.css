@@ -88,9 +88,12 @@ h3
 /* Hero section */
 .home-hero {
     padding: 4rem 1.5rem;
-    background-color: var(--color-header-bg);
     color: #ffffff;
-    /* hero image is to be added */
+
+    /* Dark overlay with hero image */
+    background:
+        linear-gradient(rgba(11, 31, 59, 0.8), rgba(11, 31, 59, 0.8)),
+        url("../images/hero-image-man-ropes.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
