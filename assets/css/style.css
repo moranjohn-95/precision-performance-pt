@@ -306,24 +306,24 @@ h3
 /* Background images for each coaching option */
 .program-card--personal {
     background-image:
-        linear-gradient(135deg, rgba(11, 31, 59, 0.9), rgba(11, 31, 59, 0.75)),
+        linear-gradient(135deg, rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/personal-training.jpg");
 }
 
 .program-card--small-group {
     background-image:
-        linear-gradient(135deg, rgba(11, 31, 59, 0.9), rgba(11, 31, 59, 0.75)),
+        linear-gradient(135deg, rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/small-group-training.jpg");
 }
 
 .program-card--large-group {
     background-image:
-        linear-gradient(135deg, rgba(11, 31, 59, 0.9), rgba(11, 31, 59, 0.75)),
+        linear-gradient(135deg, rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/group-training.jpg");
 }
 
 .program-card--online {
     background-image:
-        linear-gradient(135deg, rgba(11, 31, 59, 0.9), rgba(11, 31, 59, 0.75)),
+        linear-gradient(135deg, rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/online-coaching.jpg");
 }
