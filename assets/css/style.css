@@ -261,13 +261,31 @@ h3
 }
 
 
-/* Inner content to rest above  overlay */
+/* Inner content to rest above overlay */
 .program-card-inner {
     position: relative;
     padding: 2.25rem 2rem;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
+    flex-direction: column;        
+    justify-content: space-between;  
+    min-height: 320px;              
+}
+
+/* Create space above button for top content area */
+.program-card-content {
+    margin-bottom: 1.5rem;       
+}
+
+/* Bottom button area */
+.program-card-buttons {
+    display: flex;
+    justify-content: center;     
+}
+
+/* Make buttons  for cards slighlty smaller */
+.btn-primary--sm {
+    padding: 0.6rem 1.6rem;
+    font-size: 0.9rem;
 }
 
 /* Card typography */
