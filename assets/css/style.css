@@ -216,7 +216,7 @@ h3
 }
 
 .home-programs-inner {
-    max-width: 1200px;
+    max-width: 1320px;
     margin: 0 auto;
 }
 
@@ -241,7 +241,7 @@ h3
 /* Programs grid */
 .home-programs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 1.75rem;
 }
 
@@ -250,7 +250,7 @@ h3
     position: relative;
     border-radius: 0.75rem;
     overflow: hidden;
-    min-height: 260px;
+    min-height: 320px;
     color: #ffffff;
     background-size: cover;
     background-position: center;
@@ -264,7 +264,7 @@ h3
 /* Inner content to rest above overlay */
 .program-card-inner {
     position: relative;
-    padding: 2.25rem 2rem;
+    padding: 2.25rem 2rem 3rem;
     display: flex;
     flex-direction: column;        
     justify-content: space-between;  
@@ -282,7 +282,7 @@ h3
     justify-content: center;     
 }
 
-/* Make buttons  for cards slighlty smaller */
+/* Make buttons for cards slighlty smaller */
 .btn-primary--sm {
     padding: 0.6rem 1.6rem;
     font-size: 0.9rem;
