@@ -108,6 +108,58 @@
 
     </div>
 </section>
+
+{# Program details modal #}
+<div class="modal-overlay" data-program-modal-overlay></div>
+
+<div
+    class="program-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="program-modal-title"
+    data-program-modal
+>
+    <div class="program-modal-inner">
+        <!-- Left visual panel (image + gradient) -->
+        <div class="program-modal-visual" data-program-modal-visual>
+            {# Will add a program-card using JS later #}
+        </div>
+
+        <!-- Right content panel -->
+        <div class="program-modal-content">
+            <button
+                type="button"
+                class="program-modal-close"
+                aria-label="Close dialog"
+                data-program-modal-close
+            >
+                &times;
+            </button>
+
+            <h3 id="program-modal-title" class="program-modal-title">
+                Coaching option title
+            </h3>
+
+            <p class="program-modal-intro">
+                Intro for this specific card.
+            </p>
+
+            <ul class="program-modal-list">
+                <li>Bullet point benefit one.</li>
+                <li>Bullet point benefit two.</li>
+                <li>Bullet point benefit three.</li>
+            </ul>
+
+            <div class="program-modal-buttons">
+                <a href="#contact" class="btn-primary">
+                    Book a consultation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
 
 
