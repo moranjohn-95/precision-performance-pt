@@ -335,3 +335,119 @@ h3
         linear-gradient(rgba(11, 31, 59, 0.65), rgba(11, 31, 59, 0.65)),
         url("../images/online-coaching.jpg");
 }
+
+/* Program details modal pattern */
+
+/* Full-screen with dark overlay */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 31, 59, 0.7);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 40;
+}
+
+/* Modal panel */
+.program-modal {
+    position: fixed;
+    inset: 3rem 1.25rem auto;
+    max-width: 960px;
+    margin: 0 auto;
+    background-color: var(--color-bg-page);
+    border-radius: 1rem;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.55);
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 50;
+}
+
+/* Layout inside modal */
+.program-modal-inner {
+    display: flex;
+    min-height: 320px;
+}
+
+/* Left visual panel – will add program-card classes using JS later */
+.program-modal-visual {
+    flex: 0 0 40%;
+    background-color: var(--color-header-bg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+/* Reusing same gradient as the cards */
+.program-modal-visual::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        140deg,
+        rgba(11, 31, 59, 0.9),
+        rgba(11, 31, 59, 0.45)
+    );
+}
+
+/* Right content panel */
+.program-modal-content {
+    position: relative;
+    flex: 1;
+    padding: 2.25rem 2.25rem 2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Close button */
+.program-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1.25rem;
+    border: none;
+    background: transparent;
+    color: var(--color-text-heading);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+/* Title & copy */
+.program-modal-title {
+    font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    font-size: 1.6rem;
+    margin: 0 0 0.75rem;
+    color: var(--color-text-heading);
+}
+
+.program-modal-intro {
+    margin: 0 0 1rem;
+}
+
+.program-modal-list {
+    margin: 0 0 1.75rem;
+    padding-left: 1.2rem;
+}
+
+/* Buttons row */
+.program-modal-buttons {
+    margin-top: auto;
+}
+
+/* Visible state – will use JS to toggle the class */
+.modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.program-modal.is-open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+
