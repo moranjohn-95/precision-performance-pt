@@ -1,3 +1,7 @@
 from django.shortcuts import render
 
-# Create your views here.
+
+# Create views here.
+def consultation_request(request):
+
+    return render(request, "training/consultation.html")
