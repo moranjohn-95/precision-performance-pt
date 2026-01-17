@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
+from training import views as training_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -47,5 +48,12 @@ urlpatterns = [
         "client/dashboard/",
         TemplateView.as_view(template_name="client/dashboard.html"),
         name="client-dashboard",
+    ),
+
+    # Booking / consultation
+    path(
+        "consultation/",
+        training_views.consultation_request,
+        name="consultation_request",
     ),
 ]
