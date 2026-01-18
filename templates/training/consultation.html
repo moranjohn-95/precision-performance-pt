@@ -14,10 +14,162 @@
             </p>
         </header>
 
-        <p>
-            <!-- Placeholder text for now. -->
-            Consultation form to be added.
-        </p>
+        <form class="consultation-form" method="post">
+            {% csrf_token %}
+
+            <!-- Contact details -->
+            <section class="consultation-section">
+                <h2 class="consultation-section-title">Contact details</h2>
+
+                <div class="consultation-grid">
+                    <div class="form-field">
+                        <label for="first_name">First name <span aria-hidden="true">*</span></label>
+                        <input id="first_name" name="first_name" type="text" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="last_name">Last name <span aria-hidden="true">*</span></label>
+                        <input id="last_name" name="last_name" type="text" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="email">Email <span aria-hidden="true">*</span></label>
+                        <input id="email" name="email" type="email" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="phone">Phone <span class="field-optional">(optional)</span></label>
+                        <input id="phone" name="phone" type="tel">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Training preferences -->
+            <section class="consultation-section">
+                <div class="consultation-grid">
+                    <div class="consultation-column">
+                        <h2 class="consultation-section-title">Training preferences</h2>
+
+                        <div class="form-field">
+                            <label for="training_goal">Training goal</label>
+                            <select id="training_goal" name="training_goal">
+                                <option value="">Select a goal</option>
+                                <option value="fat_loss">Fat loss / body composition</option>
+                                <option value="strength">Strength &amp; performance</option>
+                                <option value="health">General health &amp; fitness</option>
+                                <option value="sport">Sport-specific training</option>
+                                <option value="other">Other / not sure yet</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="consultation-column">
+                        <h2 class="consultation-section-title">Coaching option</h2>
+
+                        <fieldset class="form-field">
+                            <legend class="sr-only">Preferred coaching option</legend>
+
+                            <label class="choice-pill">
+                                <input type="radio" name="coaching_option" value="1to1" checked>
+                                <span>1:1 Personal Training</span>
+                            </label>
+
+                            <label class="choice-pill">
+                                <input type="radio" name="coaching_option" value="small_group">
+                                <span>Small Group Coaching</span>
+                            </label>
+
+                            <label class="choice-pill">
+                                <input type="radio" name="coaching_option" value="large_group">
+                                <span>Larger Group Classes</span>
+                            </label>
+
+                            <label class="choice-pill">
+                                <input type="radio" name="coaching_option" value="online">
+                                <span>Online Coaching</span>
+                            </label>
+                        </fieldset>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Availability (for initial consultation) -->
+            <section class="consultation-section">
+                <div class="consultation-grid">
+                    <div class="consultation-column">
+                        <h2 class="consultation-section-title">Availability for initial consultation</h2>
+
+                        <div class="form-field">
+                            <label for="preferred_date">
+                                Preferred date for initial consultation
+                            </label>
+                            <input
+                                id="preferred_date"
+                                name="preferred_date"
+                                type="date"
+                            >
+                        </div>
+
+                        <div class="form-field">
+                            <label for="preferred_time_window">
+                                Preferred time window for initial consultation
+                            </label>
+                            <select id="preferred_time_window" name="preferred_time_window">
+                                <option value="">Select a time window</option>
+                                <option value="early_morning">Early morning (06:00–09:00)</option>
+                                <option value="late_morning">Late morning (09:00–12:00)</option>
+                                <option value="early_afternoon">Early afternoon (12:00–15:00)</option>
+                                <option value="late_afternoon">Late afternoon (15:00–18:00)</option>
+                                <option value="evening">Evening (18:00–20:30)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="availability_notes">
+                                Scheduling notes <span class="field-optional">(optional)</span>
+                            </label>
+                            <textarea
+                                id="availability_notes"
+                                name="availability_notes"
+                                rows="3"
+                                placeholder="Let us know about any days/times that never work for you."
+                            ></textarea>
+                        </div>
+                    </div>
+
+                    <div class="consultation-column">
+                        <h2 class="consultation-section-title">Additional information</h2>
+
+                        <div class="form-field">
+                            <label for="training_background">
+                                Training background &amp; preferences
+                            </label>
+                            <textarea
+                                id="training_background"
+                                name="training_background"
+                                rows="5"
+                                placeholder="Tell us a bit about your training history, injuries, preferences, etc."
+                            ></textarea>
+                        </div>
+
+                        <div class="form-field form-field--checkbox">
+                            <label>
+                                <input type="checkbox" name="contact_consent">
+                                <span>I agree to be contacted about my consultation request.</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submit -->
+            <div class="consultation-actions">
+                <button type="submit" class="btn-primary">
+                    Submit
+                </button>
+            </div>
+        </form>
+
     </div>
 </section>
 {% endblock %}
