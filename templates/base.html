@@ -35,6 +35,17 @@
         </header>
 
         <main id="main-content" class="site-main" tabindex="-1">
+
+            {% if messages %}
+              <div class="site-messages">
+                {% for message in messages %}
+                  <div class="site-message site-message--{{ message.tags }}">
+                   {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+           {% endif %}
+
             {% block content %}{% endblock %}
         </main>
 
