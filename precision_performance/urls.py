@@ -53,7 +53,7 @@ urlpatterns = [
     # Booking / consultation
     path(
         "consultation/",
-        training_views.consultation_request,
+        training_views.consultation,
         name="consultation_request",
     ),
 ]
