@@ -519,7 +519,7 @@ h3
     min-width: 4.2rem;
     padding: 0.18rem 0.85rem 0.12rem;
     border-radius: 999px;
-    background-color: rgba(182, 244, 0, 0.9);  /* darker, stronger green */
+    background-color: rgba(182, 244, 0, 0.9);
     color: #0b1f3b;
     font-size: 0.8rem;
     line-height: 1;
@@ -550,7 +550,6 @@ h3
 .consultation-grid {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
     gap: 2rem;
     margin-top: 0.5rem;
 }
