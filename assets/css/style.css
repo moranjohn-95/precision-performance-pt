@@ -571,6 +571,10 @@ h3
     color: var(--color-text-heading);
 }
 
+.form-field label span[aria-hidden="true"] {
+    color: #e02d2d; /* red asterisk for required fields */
+}
+
 .field-optional {
     font-weight: 400;
     font-size: 0.8rem;
