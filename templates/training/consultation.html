@@ -66,29 +66,16 @@
                     <div class="consultation-column">
                         <h2 class="consultation-section-title">Coaching option</h2>
 
-                        <fieldset class="form-field">
-                            <legend class="sr-only">Preferred coaching option</legend>
-
-                            <label class="choice-pill">
-                                <input type="radio" name="coaching_option" value="1to1" checked>
-                                <span>1:1 Personal Training</span>
-                            </label>
-
-                            <label class="choice-pill">
-                                <input type="radio" name="coaching_option" value="small_group">
-                                <span>Small Group Coaching</span>
-                            </label>
-
-                            <label class="choice-pill">
-                                <input type="radio" name="coaching_option" value="large_group">
-                                <span>Larger Group Classes</span>
-                            </label>
-
-                            <label class="choice-pill">
-                                <input type="radio" name="coaching_option" value="online">
-                                <span>Online Coaching</span>
-                            </label>
-                        </fieldset>
+                        <div class="form-field">
+                            <label for="coaching_option">Coaching option</label>
+                            <select id="coaching_option" name="coaching_option" required>
+                                <option value="">Select a coaching option</option>
+                                <option value="1to1">1:1 Personal Training</option>
+                                <option value="small_group">Small Group Coaching</option>
+                                <option value="large_group">Larger Group Classes</option>
+                                <option value="online">Online Coaching</option>
+                           </select>
+                       </div>
                     </div>
                 </div>
             </section>
