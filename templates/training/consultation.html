@@ -17,6 +17,20 @@
         <form class="consultation-form" method="post">
             {% csrf_token %}
 
+            {% if form.errors %}
+                <div class="form-error-summary">
+                    <p><strong>There were some problems with your submission.</strong></p>
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+
             <!-- Contact details -->
             <section class="consultation-section">
                 <h2 class="consultation-section-title">
