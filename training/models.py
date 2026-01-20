@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 # Create your models here.
@@ -27,6 +28,19 @@ class ConsultationRequest(models.Model):
         ("evening", "Evening (18:00–20:30)"),
     ]
 
+    # NEW: status constants for workflow
+    STATUS_NEW = "new"
+    STATUS_ASSIGNED = "assigned"
+    STATUS_CONTACTED = "contacted"
+    STATUS_CLOSED = "closed"
+
+    STATUS_CHOICES = [
+        (STATUS_NEW, "New"),
+        (STATUS_ASSIGNED, "Assigned"),
+        (STATUS_CONTACTED, "Contacted"),
+        (STATUS_CLOSED, "Closed"),
+    ]
+
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -53,13 +67,30 @@ class ConsultationRequest(models.Model):
     )
 
     availability_notes = models.TextField(blank=True)
-
     training_background = models.TextField(blank=True)
-
     contact_consent = models.BooleanField(default=False)
+
+    # NEW FIELDS ↓↓↓
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
+    )
+
+    assigned_trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        related_name="assigned_consultations",
+        on_delete=models.SET_NULL,
+    )
+    # NEW FIELDS ↑↑↑
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name} – {self.email}"
