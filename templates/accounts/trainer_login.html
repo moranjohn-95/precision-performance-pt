@@ -4,11 +4,38 @@
 
 {% block content %}
 <section class="page-section">
-    <div class="page-section-inner">
-        <header class="page-section-header">
-            <h1>Trainer login</h1>
-            <p>This is a the initial trainer login page. Later this will be the trainer dashboard.</p>
-        </header>
-    </div>
+  <div class="page-section-inner">
+    <header class="page-section-header">
+      <h1>Trainer login</h1>
+      <p>Please log in to access your trainer dashboard.</p>
+    </header>
+
+    {% if form.non_field_errors %}
+      <div class="form-error-summary">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="post" class="consultation-form">
+      {% csrf_token %}
+
+      <div class="form-field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div class="form-field">
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+      </div>
+
+      <div class="consultation-actions">
+        <button type="submit" class="btn-primary">
+          Log in
+        </button>
+      </div>
+    </form>
+  </div>
 </section>
 {% endblock %}
+
