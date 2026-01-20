@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Client dashboard | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="page-section-inner">
+    <h1>Client dashboard</h1>
+    <p>Welcome, {{ request.user.first_name|default:request.user.username }}.</p>
+
+    <p>
+      This area will show upcoming sessions, progress metrics,
+      and resources etc.
+    </p>
+  </div>
+</section>
+{% endblock %}
