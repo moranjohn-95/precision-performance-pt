@@ -32,7 +32,7 @@ def client_dashboard(request):
     """
     Simple client dashboard. We'll flesh this out later.
     """
-    return render(request, "accounts/client_dashboard.html")
+    return render(request, "client/dashboard.html")
 
 
 def is_trainer(user):
@@ -50,4 +50,4 @@ def trainer_dashboard(request):
     """
     Trainer / owner dashboard – will later show consultation requests etc.
     """
-    return render(request, "accounts/trainer_dashboard.html")
+    return render(request, "trainer/dashboard.html")
