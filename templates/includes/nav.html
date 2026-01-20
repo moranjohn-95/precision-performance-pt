@@ -4,10 +4,39 @@
     </div>
 
     <ul class="nav-links">
-        <li><a href="{% url 'consultation_request' %}">Book a consultation</a></li>
+        <li>
+            <a href="{% url 'consultation_request' %}">
+                Book a consultation
+            </a>
+        </li>
+
         <li><a href="#">Coaching</a></li>
         <li><a href="#">About us</a></li>
         <li><a href="#">Contact us</a></li>
-        <li><a href="#">Login</a></li>
+
+        <!-- Login dropdown -->
+        <li class="nav-item nav-item-has-submenu">
+            <button
+                type="button"
+                class="nav-link nav-link-toggle"
+                aria-expanded="false"
+            >
+                Login
+                <span class="nav-link-caret">▼</span>
+            </button>
+
+            <ul class="nav-submenu">
+                <li>
+                    <a href="{% url 'trainer_login' %}">
+                        Trainer login
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'client_login' %}">
+                        Client login
+                    </a>
+                </li>
+            </ul>
+        </li>
     </ul>
 </nav>
