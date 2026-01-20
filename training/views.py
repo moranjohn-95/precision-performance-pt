@@ -21,12 +21,12 @@ def consultation(request):
 
             messages.success(
                 request,
-                "Thank you — your consultation request has been received. "
+                "Thank you - your consultation request has been received. "
                 "A coach will get back to you shortly.",
             )
 
             # PRG pattern to avoid form re-submissions.
-            return redirect("consultation")
+            return redirect("consultation_request")
 
         else:
             messages.error(
