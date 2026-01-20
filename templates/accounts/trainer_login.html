@@ -18,7 +18,7 @@
 
     <form method="post" class="consultation-form">
       {% csrf_token %}
-
+ 
       <div class="form-field">
         <label for="{{ form.username.id_for_label }}">Username</label>
         {{ form.username }}
