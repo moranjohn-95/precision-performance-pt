@@ -144,3 +144,33 @@
     }
   });
 })();
+
+
+// Nav: Login dropdown toggle
+document.addEventListener("DOMContentLoaded", () => {
+  const loginMenu = document.querySelector(".nav-item-has-submenu");
+  if (!loginMenu) return;
+
+  const toggleBtn = loginMenu.querySelector(".nav-link-toggle");
+
+  function closeMenuOnOutsideClick(event) {
+    if (!loginMenu.contains(event.target)) {
+      loginMenu.classList.remove("is-open");
+      toggleBtn.setAttribute("aria-expanded", "false");
+      document.removeEventListener("click", closeMenuOnOutsideClick);
+    }
+  }
+
+  toggleBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    const isOpen = loginMenu.classList.toggle("is-open");
+    toggleBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+
+    // Reset outside-click handler
+    document.removeEventListener("click", closeMenuOnOutsideClick);
+    if (isOpen) {
+      document.addEventListener("click", closeMenuOnOutsideClick);
+    }
+  });
+});
