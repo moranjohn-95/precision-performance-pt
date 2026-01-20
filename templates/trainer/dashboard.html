@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Trainer dashboard | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="page-section">
+  <div class="page-section-inner">
+    <h1>Trainer dashboard</h1>
+    <p>Welcome, {{ request.user.first_name|default:request.user.username }}.</p>
+
+    <p>
+      This area will show new consultation requests and other functionality once developed.
+    </p>
+  </div>
+</section>
+{% endblock %}
