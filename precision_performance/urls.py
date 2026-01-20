@@ -58,5 +58,5 @@ urlpatterns = [
     ),
 
     # Accounts (login routes)
-    path("", include("accounts.urls")),
+    path("accounts/", include("accounts.urls")),
 ]
