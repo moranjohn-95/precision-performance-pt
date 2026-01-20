@@ -88,6 +88,82 @@ h3
     text-decoration: underline;
 }
 
+/* --- Nav: login dropdown --- */
+
+.nav-item-has-submenu {
+    position: relative;
+}
+
+/* Turn the Login text into a button */
+.nav-link-toggle {
+    background: none;
+    border: none;
+    color: var(--color-header-text);
+    font: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0;
+}
+
+/* little arrow next to "Login" */
+.nav-link-caret {
+    display: none; /* hide caret */
+}
+
+/* Hidden by default */
+.nav-submenu {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 0;
+    padding-top: 0.35rem;
+    list-style: none;
+    padding: 0.35rem 0;
+    min-width: 180px;
+    background-color: #0b1f3b;
+    border-radius: 0.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 20;
+}
+
+/* Visible when parent has .is-open (toggled by JS) */
+.nav-item-has-submenu.is-open .nav-submenu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Also show on hover or keyboard focus */
+.nav-item-has-submenu:hover .nav-submenu,
+.nav-item-has-submenu:focus-within .nav-submenu,
+.nav-submenu:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+/* Links inside the dropdown */
+.nav-submenu a {
+    display: block;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+    color: #ffffff;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.nav-submenu a:hover,
+.nav-submenu a:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+
 /* Hero section */
 .home-hero {
     padding: 4rem 1.5rem;
