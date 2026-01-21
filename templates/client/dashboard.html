@@ -1,17 +1,72 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
-{% block title %}Client dashboard | Precision Performance PT{% endblock %}
+{% block sidebar_title %}
+Client Menu
+{% endblock %}
 
-{% block content %}
-<section class="page-section">
-  <div class="page-section-inner">
-    <h1>Client dashboard</h1>
-    <p>Welcome, {{ request.user.first_name|default:request.user.username }}.</p>
+{% block sidebar_menu %}
+<li><a href="#" class="is-active">Overview</a></li>
+<li><a href="#">Todays plan</a></li>
+<li><a href="#">Programme library</a></li>
+<li><a href="#">Workout log</a></li>
+<li><a href="#">Body metrics</a></li>
+<li><a href="#">Check-ins</a></li>
+<li><a href="#">Documents</a></li>
+<li><a href="#">Support</a></li>
+{% endblock %}
 
+{% block page_eyebrow %}Client dashboard{% endblock %}
+
+{% block page_title %}
+Hello, {{ request.user.first_name|default:"Client" }}
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Today’s workout</h2>
+    <p>Upper Body — Week 3 / Day 2</p>
     <p>
-      This area will show upcoming sessions, progress metrics,
-      and resources etc.
+        <a href="#" class="btn-primary-small">Start session</a>
     </p>
-  </div>
-</section>
+</div>
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">This week</h2>
+    <p style="margin: 0; font-size: 0.9rem; color: #475569;">
+        Quick summary cards will go here later (sessions, sleep, weight, etc.).
+        For now this is static content to match the mockups.
+    </p>
+</div>
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Recent activity</h2>
+    <table class="dashboard-table">
+        <thead>
+            <tr>
+                <th>Activity</th>
+                <th>When</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Logged: Upper Body</td>
+                <td>Mon</td>
+                <td>Done</td>
+            </tr>
+            <tr>
+                <td>Metric: Bodyweight</td>
+                <td>Mon</td>
+                <td>Saved</td>
+            </tr>
+            <tr>
+                <td>Message to trainer</td>
+                <td>Tue</td>
+                <td>Sent</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}
