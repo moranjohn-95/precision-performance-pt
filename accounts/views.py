@@ -49,7 +49,10 @@ def is_trainer(user):
 
 
 def staff_required(view_func):
-    return user_passes_test(lambda u: u.is_staff, login_url="accounts:trainer_login")(view_func)
+    return user_passes_test(
+        lambda u: u.is_staff,
+        login_url="accounts:trainer_login",
+    )(view_func)
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -76,7 +79,10 @@ def trainer_dashboard(request):
     # Map codes like "1to1" -> "1:1 Personal Training"
     choice_labels = dict(ConsultationRequest.COACHING_OPTION_CHOICES)
     for row in coaching_breakdown:
-        row["label"] = choice_labels.get(row["coaching_option"], "Not specified")
+        row["label"] = choice_labels.get(
+            row["coaching_option"],
+            "Not specified",
+        )
 
     context = {
         "latest_requests": latest_requests,
@@ -86,7 +92,7 @@ def trainer_dashboard(request):
     return render(request, "trainer/dashboard.html", context)
 
 
-# NEW: trainer side-menu stubs
+# Trainer side-menu stubs
 @login_required(login_url="accounts:trainer_login")
 @staff_required
 def trainer_clients(request):
