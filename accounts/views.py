@@ -69,6 +69,11 @@ def trainer_dashboard(request):
         .order_by("coaching_option")
     )
 
+    # Map codes like "1to1" -> "1:1 Personal Training"
+    choice_labels = dict(ConsultationRequest.COACHING_OPTION_CHOICES)
+    for row in coaching_breakdown:
+        row["label"] = choice_labels.get(row["coaching_option"], "Not specified")
+
     context = {
         "latest_requests": latest_requests,
         "total_requests": total_requests,
