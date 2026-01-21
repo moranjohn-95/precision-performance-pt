@@ -1,0 +1,46 @@
+{# templates/trainer/metrics.html #}
+{% extends "base.html" %}
+
+{% block title %}Trainer – Metrics | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="dashboard-page trainer-dashboard">
+    <div class="dashboard-inner">
+
+        <aside class="dashboard-sidebar">
+            <h2 class="dashboard-sidebar-title">Trainer Menu</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+                    <li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
+                    <li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
+                    <li class="is-active">
+                        <a href="{% url 'accounts:trainer_metrics' %}">Metrics</a>
+                    </li>
+                    <li><a href="#">Check-ins</a></li>
+                    <li><a href="#">Messaging</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Account</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <h1>Metrics</h1>
+                <p>High-level view of client progress and tracked metrics.</p>
+            </header>
+
+            <section class="card">
+                <h2>Metrics overview (placeholder)</h2>
+                <p>
+                    This section will summarise client progress,
+                    such as adherence trends, bodyweight changes,
+                    or links to detailed charts and reports.
+                </p>
+            </section>
+        </main>
+
+    </div>
+</section>
+{% endblock %}
