@@ -14,29 +14,55 @@
         <li><a href="#">About us</a></li>
         <li><a href="#">Contact us</a></li>
 
-        <!-- Login dropdown -->
-        <li class="nav-item nav-item-has-submenu">
-            <button
-                type="button"
-                class="nav-link nav-link-toggle"
-                aria-expanded="false"
-            >
-                Login
-                <span class="nav-link-caret">▼</span>
-            </button>
+        {% if user.is_authenticated %}
+            {% if user.is_staff %}
+                <li>
+                    <a href="{% url 'accounts:trainer_dashboard' %}">
+                        Dashboard
+                    </a>
+                </li>
+            {% else %}
+                <li>
+                    <a href="{% url 'accounts:client_dashboard' %}">
+                        Dashboard
+                    </a>
+                </li>
+            {% endif %}
 
-            <ul class="nav-submenu">
-                <li>
-                    <a href="{% url 'accounts:trainer_login' %}">
-                        Trainer login
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'accounts:client_login' %}">
-                        Client login
-                    </a>
-                </li>
-            </ul>
-        </li>
+               <li>
+                   <form method="post" action="{% url 'accounts:logout' %}">
+                       {% csrf_token %}
+                       <button type="submit" class="nav-link-button">
+                           Logout
+                       </button>
+                   </form>
+               </li>
+
+        {% else %}
+            <!-- Login dropdown (only for logged-out users) -->
+            <li class="nav-item nav-item-has-submenu">
+                <button
+                    type="button"
+                    class="nav-link nav-link-toggle"
+                    aria-expanded="false"
+                >
+                    Login
+                    <span class="nav-link-caret">▼</span>
+                </button>
+
+                <ul class="nav-submenu">
+                    <li>
+                        <a href="{% url 'accounts:trainer_login' %}">
+                            Trainer login
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:client_login' %}">
+                            Client login
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        {% endif %}
     </ul>
 </nav>
