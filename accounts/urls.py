@@ -6,6 +6,9 @@ from .views import (
     TrainerLoginView,
     ClientLoginView,
     trainer_dashboard,
+    trainer_clients,
+    trainer_programmes,
+    trainer_metrics,
     client_dashboard,
 )
 
@@ -18,6 +21,9 @@ urlpatterns = [
 
     # Dashboards
     path("trainer/dashboard/", trainer_dashboard, name="trainer_dashboard"),
+    path("trainer/clients/", trainer_clients, name="trainer_clients"),
+    path("trainer/programmes/", trainer_programmes, name="trainer_programmes"),
+    path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
 
     # Logout (back to home page)
