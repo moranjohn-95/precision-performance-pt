@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.urls import reverse_lazy
 from django.shortcuts import render
 
+from training.models import ConsultationRequest
+
 
 class TrainerLoginView(LoginView):
     """
@@ -27,7 +29,7 @@ class ClientLoginView(LoginView):
         return reverse_lazy("accounts:client_dashboard")
 
 
-@login_required
+@login_required(login_url="accounts:client_login")
 def client_dashboard(request):
     """
     Simple client dashboard. We'll flesh this out later.
@@ -45,9 +47,16 @@ def is_trainer(user):
     return user.is_staff
 
 
-@user_passes_test(is_trainer)
+@user_passes_test(is_trainer, login_url="accounts:trainer_login")
 def trainer_dashboard(request):
     """
-    Trainer / owner dashboard – will later show consultation requests etc.
+    Trainer / owner dashboard showing recent consultation requests.
     """
-    return render(request, "trainer/dashboard.html")
+    new_requests = ConsultationRequest.objects.order_by("-created_at")[:5]
+    total_requests = ConsultationRequest.objects.count()
+
+    context = {
+        "new_requests": new_requests,
+        "total_requests": total_requests,
+    }
+    return render(request, "trainer/dashboard.html", context)
