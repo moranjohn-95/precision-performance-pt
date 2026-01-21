@@ -29,14 +29,14 @@
                 </li>
             {% endif %}
 
-               <li>
-                   <form method="post" action="{% url 'accounts:logout' %}">
-                       {% csrf_token %}
-                       <button type="submit" class="nav-link-button">
-                           Logout
-                       </button>
-                   </form>
-               </li>
+            <li>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link site-nav-link--button">
+                        Logout
+                    </button>
+                </form>
+            </li>
 
         {% else %}
             <!-- Login dropdown (only for logged-out users) -->
