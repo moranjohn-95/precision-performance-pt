@@ -751,3 +751,134 @@ textarea {
     font-size: 0.9rem;
 }
 
+/* ---- Shared dashboard layout ---- */
+
+.dashboard-layout {
+    background-color: #f7fafc;
+    padding: 2.5rem 1.5rem 3.5rem;
+}
+
+.dashboard-shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 2rem;
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    padding: 1.75rem 1.5rem;
+}
+
+.dashboard-sidebar__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0b1f3b;
+    margin: 0 0 1.5rem;
+}
+
+.dashboard-sidebar__nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-sidebar__nav li + li {
+    margin-top: 0.4rem;
+}
+
+.dashboard-sidebar__nav a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.6rem;
+    font-size: 0.95rem;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.dashboard-sidebar__nav a:hover {
+    background-color: #edf2ff;
+}
+
+.dashboard-sidebar__nav a.is-active {
+    background-color: #0b1f3b;
+    color: #ffffff;
+}
+
+/* Main area */
+.dashboard-main {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+    padding: 2rem 2rem 2.5rem;
+}
+
+.dashboard-main__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.dashboard-main__eyebrow {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin: 0 0 0.25rem;
+}
+
+.dashboard-main__title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: #0b1f3b;
+    margin: 0;
+}
+
+.dashboard-main__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Initial card and table styling reused across dashboards */
+.dashboard-card {
+    border-radius: 1rem;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    background-color: #f8fafc;
+}
+
+.dashboard-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0b1f3b;
+    margin: 0 0 0.5rem;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.dashboard-table th {
+    text-align: left;
+    font-weight: 600;
+    color: #475569;
+}
+
+.dashboard-table tbody tr:hover {
+    background-color: #f8fafc;
+}
