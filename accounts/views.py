@@ -48,8 +48,12 @@ def is_trainer(user):
     return user.is_staff
 
 
-@login_required
-@user_passes_test(lambda u: u.is_staff)
+def staff_required(view_func):
+    return user_passes_test(lambda u: u.is_staff, login_url="accounts:trainer_login")(view_func)
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
 def trainer_dashboard(request):
     """
     Trainer dashboard:
@@ -80,3 +84,32 @@ def trainer_dashboard(request):
         "coaching_breakdown": coaching_breakdown,
     }
     return render(request, "trainer/dashboard.html", context)
+
+
+# NEW: trainer side-menu stubs
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_clients(request):
+    """
+    Simple stub page for now. Later this can show a list of active clients,
+    maybe derived from consultation requests or a dedicated Client model.
+    """
+    return render(request, "trainer/clients.html")
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_programmes(request):
+    """
+    Placeholder for trainer programme management.
+    """
+    return render(request, "trainer/programmes.html")
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_metrics(request):
+    """
+    Placeholder for trainer overview of client metrics.
+    """
+    return render(request, "trainer/metrics.html")
