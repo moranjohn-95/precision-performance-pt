@@ -1,0 +1,46 @@
+{# templates/trainer/clients.html #}
+{% extends "base.html" %}
+
+{% block title %}Trainer – My clients | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="dashboard-page trainer-dashboard">
+    <div class="dashboard-inner">
+
+        <aside class="dashboard-sidebar">
+            <h2 class="dashboard-sidebar-title">Trainer Menu</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+                    <li class="is-active">
+                        <a href="{% url 'accounts:trainer_clients' %}">My clients</a>
+                    </li>
+                    <li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
+                    <li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
+                    <li><a href="#">Check-ins</a></li>
+                    <li><a href="#">Messaging</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Account</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <h1>My clients</h1>
+                <p>Overview of clients currently being coached.</p>
+            </header>
+
+            <section class="card">
+                <h2>Coming soon</h2>
+                <p>
+                    This page will list active clients, provide links to profiles,
+                    and include actions such as viewing check-ins, updating programmes,
+                    and sending messages.
+                </p>
+            </section>
+        </main>
+
+    </div>
+</section>
+{% endblock %}
