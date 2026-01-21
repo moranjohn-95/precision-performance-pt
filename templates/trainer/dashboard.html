@@ -61,12 +61,35 @@ Trainer Menu
     </p>
 </div>
 
-<div class="dashboard-card">
-    <h2 class="dashboard-card__title">Workload snapshot</h2>
-    <p style="font-size: 0.9rem; color: #475569; margin: 0;">
-        can plug in real counts for active clients, check-ins due, and flagged
-        clients. For now this block will be a visual placeholder matching the trainer design.
-    </p>
-</div>
+<section class="trainer-section">
+    <header class="trainer-section-header">
+        <h2 class="trainer-section-title">Workload snapshot</h2>
+        <p class="trainer-section-intro">
+            Quick overview of consultation requests by coaching option.
+        </p>
+    </header>
+
+    <div class="trainer-stats-grid">
+        <div class="trainer-stat-card">
+            <p class="stat-label">Total consultation requests</p>
+            <p class="stat-value">{{ total_requests }}</p>
+        </div>
+
+        {% for row in coaching_breakdown %}
+            <div class="trainer-stat-card">
+                <p class="stat-label">
+                    {{ row.label }}
+                </p>
+                <p class="stat-value">
+                    {{ row.count }}
+                </p>
+            </div>
+        {% empty %}
+            <p class="muted">
+                No consultation requests yet.
+            </p>
+        {% endfor %}
+    </div>
+</section>
 
 {% endblock %}
