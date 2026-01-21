@@ -1,6 +1,7 @@
 # accounts/views.py
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.db.models import Count
 from django.urls import reverse_lazy
 from django.shortcuts import render
 
@@ -47,16 +48,30 @@ def is_trainer(user):
     return user.is_staff
 
 
-@user_passes_test(is_trainer, login_url="accounts:trainer_login")
+@login_required
+@user_passes_test(lambda u: u.is_staff)
 def trainer_dashboard(request):
     """
-    Trainer / owner dashboard showing recent consultation requests.
+    Trainer dashboard:
+    - Shows latest consultation requests
+    - Includes a small stats summary pulled from the database
     """
-    new_requests = ConsultationRequest.objects.order_by("-created_at")[:5]
+    # Latest 4 consultation requests
+    latest_requests = ConsultationRequest.objects.order_by("-created_at")[:4]
+
+    # Total number of requests
     total_requests = ConsultationRequest.objects.count()
 
+    # Breakdown by coaching option (e.g. 1:1 PT, Small Group, etc.)
+    coaching_breakdown = (
+        ConsultationRequest.objects.values("coaching_option")
+        .annotate(count=Count("id"))
+        .order_by("coaching_option")
+    )
+
     context = {
-        "new_requests": new_requests,
+        "latest_requests": latest_requests,
         "total_requests": total_requests,
+        "coaching_breakdown": coaching_breakdown,
     }
     return render(request, "trainer/dashboard.html", context)

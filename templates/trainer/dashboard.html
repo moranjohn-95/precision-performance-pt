@@ -24,12 +24,12 @@ Trainer Menu
     <h2 class="dashboard-card__title">Consultation requests</h2>
 
     <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
-        Total requests: {{ total_requests }}{% if new_requests %}
-        &nbsp;·&nbsp; Showing latest {{ new_requests|length }} below.
+        Total requests: {{ total_requests }}{% if latest_requests %}
+        &nbsp;–&nbsp; Showing latest {{ latest_requests|length }} below.
         {% endif %}
     </p>
 
-    {% if new_requests %}
+    {% if latest_requests %}
         <table class="dashboard-table">
             <thead>
                 <tr>
@@ -41,7 +41,7 @@ Trainer Menu
                 </tr>
             </thead>
             <tbody>
-                {% for req in new_requests %}
+                {% for req in latest_requests %}
                 <tr>
                     <td>{{ req.created_at|date:"d M Y" }}</td>
                     <td>{{ req.first_name }} {{ req.last_name }}</td>
