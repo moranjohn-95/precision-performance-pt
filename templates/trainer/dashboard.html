@@ -1,16 +1,72 @@
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
-{% block title %}Trainer dashboard | Precision Performance PT{% endblock %}
+{% block sidebar_title %}
+Trainer Menu
+{% endblock %}
 
-{% block content %}
-<section class="page-section">
-  <div class="page-section-inner">
-    <h1>Trainer dashboard</h1>
-    <p>Welcome, {{ request.user.first_name|default:request.user.username }}.</p>
+{% block sidebar_menu %}
+<li><a href="#" class="is-active">Overview</a></li>
+<li><a href="#">My clients</a></li>
+<li><a href="#">Programmes</a></li>
+<li><a href="#">Check-ins</a></li>
+<li><a href="#">Metrics</a></li>
+<li><a href="#">Messaging</a></li>
+<li><a href="#">Resources</a></li>
+<li><a href="#">Account</a></li>
+{% endblock %}
 
-    <p>
-      This area will show new consultation requests and other functionality once developed.
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}Trainer overview{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Consultation requests</h2>
+
+    <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
+        Total requests: {{ total_requests }}{% if new_requests %}
+        &nbsp;·&nbsp; Showing latest {{ new_requests|length }} below.
+        {% endif %}
     </p>
-  </div>
-</section>
+
+    {% if new_requests %}
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Submitted</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Goal</th>
+                    <th>Coaching option</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in new_requests %}
+                <tr>
+                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td>{{ req.email }}</td>
+                    <td>{{ req.get_training_goal_display|default:"—" }}</td>
+                    <td>{{ req.get_coaching_option_display|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No consultation requests yet.</p>
+    {% endif %}
+
+    <p style="margin-top: 0.75rem; font-size: 0.85rem;">
+        Remember Django admin can also be used to review requests.
+    </p>
+</div>
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Workload snapshot</h2>
+    <p style="font-size: 0.9rem; color: #475569; margin: 0;">
+        can plug in real counts for active clients, check-ins due, and flagged
+        clients. For now this block will be a visual placeholder matching the trainer design.
+    </p>
+</div>
+
 {% endblock %}
