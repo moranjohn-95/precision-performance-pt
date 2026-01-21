@@ -1,0 +1,46 @@
+{# templates/trainer/programmes.html #}
+{% extends "base.html" %}
+
+{% block title %}Trainer – Programmes | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="dashboard-page trainer-dashboard">
+    <div class="dashboard-inner">
+
+        <aside class="dashboard-sidebar">
+            <h2 class="dashboard-sidebar-title">Trainer Menu</h2>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+                    <li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
+                    <li class="is-active">
+                        <a href="{% url 'accounts:trainer_programmes' %}">Programmes</a>
+                    </li>
+                    <li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
+                    <li><a href="#">Check-ins</a></li>
+                    <li><a href="#">Messaging</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Account</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <h1>Programmes</h1>
+                <p>Create, duplicate, and assign training programmes.</p>
+            </header>
+
+            <section class="card">
+                <h2>Programme library (placeholder)</h2>
+                <p>
+                    This section will later display programme templates,
+                    with actions such as creating new blocks, duplicating programmes,
+                    or assigning them to clients.
+                </p>
+            </section>
+        </main>
+
+    </div>
+</section>
+{% endblock %}
