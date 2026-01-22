@@ -5,11 +5,11 @@ Trainer Menu
 {% endblock %}
 
 {% block sidebar_menu %}
-<li><a href="#" class="is-active">Overview</a></li>
-<li><a href="#">My clients</a></li>
-<li><a href="#">Programmes</a></li>
+<li><a href="{% url 'accounts:trainer_dashboard' %}" class="is-active">Overview</a></li>
+<li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
+<li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
 <li><a href="#">Check-ins</a></li>
-<li><a href="#">Metrics</a></li>
+<li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
 <li><a href="#">Messaging</a></li>
 <li><a href="#">Resources</a></li>
 <li><a href="#">Account</a></li>
