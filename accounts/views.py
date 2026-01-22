@@ -1,4 +1,6 @@
 # accounts/views.py
+from collections import OrderedDict
+
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
@@ -97,10 +99,27 @@ def trainer_dashboard(request):
 @staff_required
 def trainer_clients(request):
     """
-    Simple stub page for now. Later this can show a list of active clients,
-    maybe derived from consultation requests or a dedicated Client model.
+    Simple view of potential clients derived from consultation requests.
+    Groups requests by email so each client appears once.
     """
-    return render(request, "trainer/clients.html")
+    qs = ConsultationRequest.objects.order_by(
+        "last_name",
+        "first_name",
+        "-created_at",
+    )
+
+    unique_by_email = OrderedDict()
+    for req in qs:
+        if req.email not in unique_by_email:
+            unique_by_email[req.email] = req
+
+    clients = list(unique_by_email.values())
+
+    context = {
+        "clients": clients,
+        "section": "clients",
+    }
+    return render(request, "trainer/clients.html", context)
 
 
 @login_required(login_url="accounts:trainer_login")
