@@ -1,46 +1,135 @@
-{# templates/trainer/metrics.html #}
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
-{% block title %}Trainer – Metrics | Precision Performance PT{% endblock %}
+{% block sidebar_title %}
+Trainer Menu
+{% endblock %}
 
-{% block content %}
-<section class="dashboard-page trainer-dashboard">
-    <div class="dashboard-inner">
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
+<li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
+<li><a href="#">Check-ins</a></li>
+<li><a href="{% url 'accounts:trainer_metrics' %}" class="is-active">Metrics</a></li>
+<li><a href="#">Messaging</a></li>
+<li><a href="#">Resources</a></li>
+<li><a href="#">Account</a></li>
+{% endblock %}
 
-        <aside class="dashboard-sidebar">
-            <h2 class="dashboard-sidebar-title">Trainer Menu</h2>
-            <nav>
-                <ul>
-                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
-                    <li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
-                    <li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
-                    <li class="is-active">
-                        <a href="{% url 'accounts:trainer_metrics' %}">Metrics</a>
-                    </li>
-                    <li><a href="#">Check-ins</a></li>
-                    <li><a href="#">Messaging</a></li>
-                    <li><a href="#">Resources</a></li>
-                    <li><a href="#">Account</a></li>
-                </ul>
-            </nav>
-        </aside>
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}Metrics{% endblock %}
 
-        <main class="dashboard-main">
-            <header class="dashboard-header">
-                <h1>Metrics</h1>
-                <p>High-level view of client progress and tracked metrics.</p>
-            </header>
+{% block dashboard_content %}
 
-            <section class="card">
-                <h2>Metrics overview (placeholder)</h2>
-                <p>
-                    This section will summarise client progress,
-                    such as adherence trends, bodyweight changes,
-                    or links to detailed charts and reports.
-                </p>
-            </section>
-        </main>
+<section class="dashboard-cards-grid">
+    <article class="dashboard-card">
+        <h2 class="dashboard-card__title">Total consultation requests</h2>
+        <p class="dashboard-card__metric">
+            {{ total_requests|default:"0" }}
+        </p>
+        <p class="dashboard-card__subtitle">
+            All requests captured through the booking form.
+        </p>
+    </article>
 
+    <article class="dashboard-card">
+        <h2 class="dashboard-card__title">Most common goal</h2>
+        {% with goal_stats|first as top_goal %}
+            <p class="dashboard-card__metric">
+                {{ top_goal.label|default:"Not available" }}
+            </p>
+            <p class="dashboard-card__subtitle">
+                Based on the current set of consultation requests.
+            </p>
+        {% endwith %}
+    </article>
+
+    <article class="dashboard-card">
+        <h2 class="dashboard-card__title">Most selected coaching option</h2>
+        {% with option_stats|first as top_option %}
+            <p class="dashboard-card__metric">
+                {{ top_option.label|default:"Not available" }}
+            </p>
+            <p class="dashboard-card__subtitle">
+                Calculated from incoming consultation requests.
+            </p>
+        {% endwith %}
+    </article>
+</section>
+
+<section class="dashboard-charts-row">
+    <div class="dashboard-card dashboard-card--chart">
+        <h2 class="dashboard-section-title">Requests by training goal</h2>
+        <p class="dashboard-section-subtitle">
+            This area can later hold a chart component.
+        </p>
+    </div>
+
+    <div class="dashboard-card dashboard-card--chart">
+        <h2 class="dashboard-section-title">Requests by coaching option</h2>
+        <p class="dashboard-section-subtitle">
+            Another placeholder for a visual chart in a later iteration.
+        </p>
     </div>
 </section>
+
+<section class="dashboard-grid-two">
+    <div class="dashboard-card">
+        <h2 class="dashboard-section-title">Breakdown by training goal</h2>
+
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Goal</th>
+                        <th>Requests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in goal_stats %}
+                        <tr>
+                            <td>{{ row.label }}</td>
+                            <td>{{ row.total }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2">
+                                No consultation requests have been recorded yet.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <h2 class="dashboard-section-title">Breakdown by coaching option</h2>
+
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Coaching option</th>
+                        <th>Requests</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in option_stats %}
+                        <tr>
+                            <td>{{ row.label }}</td>
+                            <td>{{ row.total }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2">
+                                No consultation requests have been recorded yet.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
