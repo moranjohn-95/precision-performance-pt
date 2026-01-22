@@ -6,9 +6,10 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from django.urls import reverse_lazy
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from training.models import ConsultationRequest
+from .models import ClientProfile
 
 
 class TrainerLoginView(LoginView):
@@ -33,12 +34,29 @@ class ClientLoginView(LoginView):
         return reverse_lazy("accounts:client_dashboard")
 
 
-@login_required(login_url="accounts:client_login")
+@login_required
 def client_dashboard(request):
     """
-    Simple client dashboard. We'll flesh this out later.
+    Dashboard for coaching clients.
+
+    Shows basic information from the linked ClientProfile and will later
+    surface programme, log, and metrics data.
     """
-    return render(request, "client/dashboard.html")
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+
+    profile = None
+    try:
+        profile = request.user.client_profile
+    except ClientProfile.DoesNotExist:
+        pass
+
+    context = {
+        "profile": profile,
+        "latest_sessions": [],
+        "latest_metrics": [],
+    }
+    return render(request, "client/dashboard.html", context)
 
 
 def is_trainer(user):
