@@ -1,6 +1,7 @@
 # accounts/views.py
 from collections import OrderedDict
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
@@ -138,3 +139,47 @@ def trainer_metrics(request):
     Placeholder for trainer overview of client metrics.
     """
     return render(request, "trainer/metrics.html")
+
+
+@login_required
+@staff_member_required
+def trainer_programmes(request):
+    """
+    Trainer view: high-level overview of programme blocks and templates.
+    Data is static sample content for now.
+    """
+    programme_blocks = [
+        {
+            "name": "Hypertrophy block (6 weeks)",
+            "phase": "Weeks 1–6",
+            "clients": 5,
+            "status": "Active",
+            "next_action": "Review week-3 check-ins",
+        },
+        {
+            "name": "Strength foundation (4 weeks)",
+            "phase": "Weeks 1–4",
+            "clients": 3,
+            "status": "Planning",
+            "next_action": "Assign to new consultation requests",
+        },
+    ]
+
+    programme_templates = [
+        {
+            "name": "General strength – 3 days",
+            "focus": "Full-body strength",
+            "length": "8 weeks",
+        },
+        {
+            "name": "Fat-loss circuit – 2 days",
+            "focus": "Conditioning / cardio",
+            "length": "6 weeks",
+        },
+    ]
+
+    context = {
+        "programme_blocks": programme_blocks,
+        "programme_templates": programme_templates,
+    }
+    return render(request, "trainer/programmes.html", context)
