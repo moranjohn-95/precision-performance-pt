@@ -1,46 +1,69 @@
-{# templates/trainer/clients.html #}
-{% extends "base.html" %}
+{% extends "dashboard_base.html" %}
 
-{% block title %}Trainer – My clients | Precision Performance PT{% endblock %}
+{% block sidebar_title %}
+Trainer Menu
+{% endblock %}
 
-{% block content %}
-<section class="dashboard-page trainer-dashboard">
-    <div class="dashboard-inner">
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:trainer_clients' %}" class="is-active">My clients</a></li>
+<li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
+<li><a href="#">Check-ins</a></li>
+<li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
+<li><a href="#">Messaging</a></li>
+<li><a href="#">Resources</a></li>
+<li><a href="#">Account</a></li>
+{% endblock %}
 
-        <aside class="dashboard-sidebar">
-            <h2 class="dashboard-sidebar-title">Trainer Menu</h2>
-            <nav>
-                <ul>
-                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
-                    <li class="is-active">
-                        <a href="{% url 'accounts:trainer_clients' %}">My clients</a>
-                    </li>
-                    <li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
-                    <li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
-                    <li><a href="#">Check-ins</a></li>
-                    <li><a href="#">Messaging</a></li>
-                    <li><a href="#">Resources</a></li>
-                    <li><a href="#">Account</a></li>
-                </ul>
-            </nav>
-        </aside>
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}My clients{% endblock %}
 
-        <main class="dashboard-main">
-            <header class="dashboard-header">
-                <h1>My clients</h1>
-                <p>Overview of clients currently being coached.</p>
-            </header>
+{% block dashboard_content %}
 
-            <section class="card">
-                <h2>Coming soon</h2>
-                <p>
-                    This page will list active clients, provide links to profiles,
-                    and include actions such as viewing check-ins, updating programmes,
-                    and sending messages.
-                </p>
-            </section>
-        </main>
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Clients from consultation requests</h2>
+    <p class="dashboard-card__subtitle">
+        One row per email address, based on the latest request for that client.
+    </p>
 
-    </div>
-</section>
+    {% if clients %}
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Goal</th>
+                        <th scope="col">Coaching option</th>
+                        <th scope="col">Last request</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in clients %}
+                        <tr>
+                            <td>{{ c.first_name }} {{ c.last_name }}</td>
+                            <td>{{ c.email }}</td>
+                            <td>{{ c.get_training_goal_display|default:"—" }}</td>
+                            <td>{{ c.get_coaching_option_display|default:"—" }}</td>
+                            <td>{{ c.created_at|date:"d M Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="muted-text">
+            No consultation requests are stored yet, so no clients are listed here.
+        </p>
+    {% endif %}
+</div>
+
+<div class="dashboard-card dashboard-card--secondary">
+    <h2 class="dashboard-card__title">Next steps (concept)</h2>
+    <p>
+        This area can later include quick links to client profiles, recent check-ins,
+        and programme updates.
+    </p>
+</div>
+
 {% endblock %}
