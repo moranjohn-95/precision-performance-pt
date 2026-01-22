@@ -136,9 +136,49 @@ def trainer_programmes(request):
 @staff_required
 def trainer_metrics(request):
     """
-    Placeholder for trainer overview of client metrics.
+    Trainer view: basic statistics on consultation requests.
+    Uses ConsultationRequest to build simple counts.
     """
-    return render(request, "trainer/metrics.html")
+    # Counts by training goal
+    goal_counts_qs = (
+        ConsultationRequest.objects.values("training_goal")
+        .annotate(total=Count("id"))
+        .order_by("training_goal")
+    )
+    goal_labels = dict(ConsultationRequest.TRAINING_GOAL_CHOICES)
+    goal_stats = [
+        {
+            "code": row["training_goal"],
+            "label": goal_labels.get(row["training_goal"] or "", "Not specified"),
+            "total": row["total"],
+        }
+        for row in goal_counts_qs
+    ]
+
+    # Counts by coaching option
+    option_counts_qs = (
+        ConsultationRequest.objects.values("coaching_option")
+        .annotate(total=Count("id"))
+        .order_by("coaching_option")
+    )
+    option_labels = dict(ConsultationRequest.COACHING_OPTION_CHOICES)
+    option_stats = [
+        {
+            "code": row["coaching_option"],
+            "label": option_labels.get(row["coaching_option"] or "", "Not specified"),
+            "total": row["total"],
+        }
+        for row in option_counts_qs
+    ]
+
+    total_requests = sum(item["total"] for item in goal_stats)
+
+    context = {
+        "total_requests": total_requests,
+        "goal_stats": goal_stats,
+        "option_stats": option_stats,
+    }
+    return render(request, "trainer/metrics.html", context)
 
 
 @login_required
