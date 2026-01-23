@@ -60,6 +60,12 @@ def client_dashboard(request):
 
 
 @login_required
+def client_today(request):
+    """Display the current day's training plan for the logged-in client."""
+    return render(request, "client/today.html")
+
+
+@login_required
 def client_programme_library(request):
     """
     Client view: show current training block and sessions.
