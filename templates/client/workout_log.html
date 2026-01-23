@@ -1,0 +1,69 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}
+Client Menu
+{% endblock %}
+
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
+<li><a href="{% url 'accounts:client_programmes' %}">Programme library</a></li>
+<li><a href="{% url 'accounts:client_workout_log' %}" class="is-active">Workout log</a></li>
+<li><a href="#">Body metrics</a></li>
+<li><a href="#">Check-ins</a></li>
+<li><a href="#">Documents</a></li>
+<li><a href="#">Support</a></li>
+{% endblock %}
+
+{% block page_eyebrow %}Client dashboard{% endblock %}
+{% block page_title %}Workout log{% endblock %}
+
+{% block dashboard_content %}
+
+<section class="dashboard-card">
+    <h2 class="dashboard-card__title">Sessions</h2>
+    <p class="dashboard-card__subtitle">
+        Quick view of recent or upcoming sessions. This can later connect to detailed logging.
+    </p>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th scope="col">Session</th>
+                    <th scope="col">Day</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Notes</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td>{{ session.name }}</td>
+                    <td>{{ session.date }}</td>
+                    <td>{{ session.status }}</td>
+                    <td>{{ session.notes }}</td>
+                    <td>
+                        <a href="#" class="table-link">Open</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No sessions available yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="dashboard-card dashboard-card--secondary">
+    <h2 class="dashboard-card__title">Notes</h2>
+    <p>
+        This area can later include links into a detailed logging form (sets, reps, RPE)
+        and show previous logs for the current block.
+    </p>
+</section>
+
+{% endblock %}
