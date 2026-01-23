@@ -697,6 +697,11 @@ textarea {
     min-height: 2.5rem;
 }
 
+/* Smooth scrolling for anchor links on the page */
+html {
+    scroll-behavior: smooth;
+}
+
 /* Checkbox fields */
 .form-field--checkbox label {
     display: flex;
