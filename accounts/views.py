@@ -59,6 +59,39 @@ def client_dashboard(request):
     return render(request, "client/dashboard.html", context)
 
 
+@login_required
+def client_programme_library(request):
+    """
+    Client view: show current training block and sessions.
+    Uses static demo data for now.
+    """
+    programme = {
+        "name": "Hypertrophy Block (6 weeks)",
+        "current_week": 3,
+        "weeks": [1, 2, 3, 4, 5, 6],
+        "sessions": [
+            {
+                "day": "Day 1 — Upper",
+                "summary": "Bench, Row, Accessories",
+                "cta": "Open",
+            },
+            {
+                "day": "Day 2 — Lower",
+                "summary": "Squat, RDL, Core",
+                "cta": "Open",
+            },
+            {
+                "day": "Day 3 — Full",
+                "summary": "Press, Pull, Conditioning",
+                "cta": "View",
+            },
+        ],
+    }
+
+    context = {"programme": programme}
+    return render(request, "client/programme_library.html", context)
+
+
 def is_trainer(user):
     """
     For now we'll treat Django's is_staff flag as 'trainer / owner'.
