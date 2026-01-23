@@ -13,6 +13,8 @@ from .views import (
     client_programme_library,
     client_today,
     client_workout_log,
+    client_documents,
+    client_support,
 )
 
 app_name = "accounts"
@@ -31,6 +33,8 @@ urlpatterns = [
     path("client/today/", client_today, name="client_today"),
     path("client/programmes/", client_programme_library, name="client_programmes"),
     path("client/workout-log/", client_workout_log, name="client_workout_log"),
+    path("client/documents/", client_documents, name="client_documents"),
+    path("client/support/", client_support, name="client_support"),
 
     # Logout (back to home page)
     path("logout/", LogoutView.as_view(next_page="/"), name="logout"),
