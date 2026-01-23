@@ -11,8 +11,8 @@ Client Menu
 <li><a href="{% url 'accounts:client_workout_log' %}" class="is-active">Workout log</a></li>
 <li><a href="#">Body metrics</a></li>
 <li><a href="#">Check-ins</a></li>
-<li><a href="#">Documents</a></li>
-<li><a href="#">Support</a></li>
+<li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
+<li><a href="{% url 'accounts:client_support' %}">Support</a></li>
 {% endblock %}
 
 {% block page_eyebrow %}Client dashboard{% endblock %}
