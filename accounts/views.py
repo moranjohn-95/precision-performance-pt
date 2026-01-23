@@ -98,6 +98,36 @@ def client_programme_library(request):
     return render(request, "client/programme_library.html", context)
 
 
+@login_required
+def client_workout_log(request):
+    """
+    Display the workout log page for a client.
+    """
+    sample_sessions = [
+        {
+            "name": "Day 1 — Upper",
+            "date": "Mon",
+            "status": "Logged",
+            "notes": "Bench, row, accessories.",
+        },
+        {
+            "name": "Day 2 — Lower",
+            "date": "Wed",
+            "status": "Planned",
+            "notes": "Squat, RDL, core.",
+        },
+        {
+            "name": "Day 3 — Full",
+            "date": "Fri",
+            "status": "Saved draft",
+            "notes": "Press, pull, conditioning.",
+        },
+    ]
+
+    context = {"sessions": sample_sessions}
+    return render(request, "client/workout_log.html", context)
+
+
 def is_trainer(user):
     """
     For now we'll treat Django's is_staff flag as 'trainer / owner'.
