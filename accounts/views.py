@@ -1,6 +1,7 @@
 # accounts/views.py
 from collections import OrderedDict
 
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -126,6 +127,35 @@ def client_workout_log(request):
 
     context = {"sessions": sample_sessions}
     return render(request, "client/workout_log.html", context)
+
+
+@login_required
+def client_documents(request):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+
+    return render(request, "client/documents.html")
+
+
+@login_required
+def client_support(request):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+
+    if request.method == "POST":
+        subject = request.POST.get("subject", "").strip()
+        message = request.POST.get("message", "").strip()
+
+        if subject and message:
+            messages.success(
+                request,
+                "Support message sent. A coach will respond soon.",
+            )
+            return redirect("accounts:client_support")
+
+        messages.error(request, "Both subject and message are required.")
+
+    return render(request, "client/support.html")
 
 
 def is_trainer(user):
