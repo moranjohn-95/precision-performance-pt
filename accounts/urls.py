@@ -10,6 +10,7 @@ from .views import (
     trainer_programmes,
     trainer_metrics,
     client_dashboard,
+    client_programme_library,
 )
 
 app_name = "accounts"
@@ -25,6 +26,7 @@ urlpatterns = [
     path("trainer/programmes/", trainer_programmes, name="trainer_programmes"),
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
+    path("client/programmes/", client_programme_library, name="client_programmes"),
 
     # Logout (back to home page)
     path("logout/", LogoutView.as_view(next_page="/"), name="logout"),
