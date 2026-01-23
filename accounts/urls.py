@@ -11,6 +11,7 @@ from .views import (
     trainer_metrics,
     client_dashboard,
     client_programme_library,
+    client_today,
 )
 
 app_name = "accounts"
@@ -26,6 +27,7 @@ urlpatterns = [
     path("trainer/programmes/", trainer_programmes, name="trainer_programmes"),
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
+    path("client/today/", client_today, name="client_today"),
     path("client/programmes/", client_programme_library, name="client_programmes"),
 
     # Logout (back to home page)
