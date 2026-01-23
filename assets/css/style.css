@@ -579,7 +579,7 @@ h3
 .consultation-form {
     background-color: #ffffff;
     border-radius: 1rem;
-    padding: 2.5rem 2.25rem 2.75rem;
+    padding: 2.5rem 2.25rem 1.2rem;
     box-shadow: 0 18px 40px rgba(15, 23, 42, 0.15);
 }
 
@@ -717,8 +717,15 @@ html {
 
 /* Submit button row */
 .consultation-actions {
-    margin-top: 2.5rem;
-    text-align: right;
+    margin-top: 0;
+}
+
+.consultation-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 /* Screen-reader-only text (used for legends etc.) */
