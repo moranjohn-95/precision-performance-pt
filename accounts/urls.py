@@ -41,6 +41,11 @@ urlpatterns = [
         name="client_programme_library",
     ),
     path("client/workout-log/", client_workout_log, name="client_workout_log"),
+    path(
+        "client/workout-log/edit/",
+        client_workout_edit,
+        name="client_workout_edit",
+    ),
     path("client/metrics/", client_metrics, name="client_metrics"),
     path("client/check-ins/", client_check_ins, name="client_check_ins"),
     path("client/documents/", client_documents, name="client_documents"),
