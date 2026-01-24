@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
 from django.urls import reverse_lazy
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 
 from training.forms import WorkoutSessionForm
 from training.models import ConsultationRequest, WorkoutSession
@@ -124,6 +124,39 @@ def client_workout_log(request):
         "session_form": form,
     }
     return render(request, "client/workout_log.html", context)
+
+
+@login_required
+def client_workout_edit(request):
+    """
+    Handle edits to an existing workout session from the client modal.
+    Only updates sessions belonging to the logged-in user.
+    """
+    if request.method != "POST":
+        return redirect("accounts:client_workout_log")
+
+    session_id = request.POST.get("session_id")
+    if not session_id:
+        messages.error(request, "Missing workout session id.")
+        return redirect("accounts:client_workout_log")
+
+    session = get_object_or_404(WorkoutSession, pk=session_id, client=request.user)
+
+    name = (request.POST.get("name") or "").strip()
+    if name:
+        session.name = name
+
+    if hasattr(session, "status"):
+        status_val = (request.POST.get("status") or "").strip()
+        if status_val:
+            session.status = status_val
+
+    if "notes" in request.POST:
+        session.notes = request.POST.get("notes", "")
+
+    session.save()
+    messages.success(request, "Workout session updated.")
+    return redirect("accounts:client_workout_log")
 
 
 @login_required

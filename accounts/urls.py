@@ -13,6 +13,7 @@ from .views import (
     client_programme_library,
     client_today,
     client_workout_log,
+    client_workout_edit,
     client_metrics,
     client_check_ins,
     client_documents,
