@@ -27,37 +27,31 @@ Client Menu
     </p>
 
     <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
+        <table class="dashboard-table recent-sessions-table">
             <thead>
                 <tr>
                     <th>Session</th>
                     <th>Date</th>
                     <th>Status</th>
                     <th>Notes</th>
-                    <th>Action</th>
+                    <th class="action-cell">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for s in sessions %}
                 <tr
-                    class="workout-row"
                     data-session-id="{{ s.id }}"
                     data-session-name="{{ s.name|escape }}"
-                    data-session-date="{{ s.date|date:"Y-m-d" }}"
-                    data-session-status="{{ s.status|escape }}"
-                    data-session-notes="{{ s.notes|escape }}"
+                    data-session-date="{{ s.date|date:'Y-m-d' }}"
+                    data-session-status="{{ s.status|default:'logged'|escape }}"
+                    data-session-notes="{{ s.notes|default:''|escape }}"
                 >
-                    <td>{{ s.name }}</td>
-                    <td>{{ s.date|date:"M d, Y" }}</td>
-                    <td>{{ s.status|capfirst }}</td>
-                    <td>{{ s.notes }}</td>
-                    <td>
-                        <button
-                            type="button"
-                            class="link-button js-open-session"
-                        >
-                            Open
-                        </button>
+                    <td class="session-cell">{{ s.name }}</td>
+                    <td class="date-cell nowrap">{{ s.date|date:"d/m/Y" }}</td>
+                    <td class="nowrap">{{ s.status|default:"Logged"|capfirst }}</td>
+                    <td class="notes-cell">{{ s.notes|default_if_none:""|truncatechars:60 }}</td>
+                    <td class="action-cell nowrap">
+                        <a href="#" class="text-link js-open-session">Open</a>
                     </td>
                 </tr>
                 {% empty %}
@@ -193,8 +187,6 @@ Client Menu
     </footer>
 </section>
 
-{% endblock %}
-
 {# Workout session modal #}
 <div id="session-modal-backdrop" class="session-modal-backdrop is-hidden">
     <div class="session-modal">
@@ -294,7 +286,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Open handlers
     document.querySelectorAll(".js-open-session").forEach(function (btn) {
-        btn.addEventListener("click", function () {
+        btn.addEventListener("click", function (event) {
+            event.preventDefault();
             const row = btn.closest("tr");
             if (row) {
                 openModalFromRow(row);
@@ -320,3 +313,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 </script>
+
+{% endblock %}
