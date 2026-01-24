@@ -13,6 +13,8 @@ from .views import (
     client_programme_library,
     client_today,
     client_workout_log,
+    client_metrics,
+    client_check_ins,
     client_documents,
     client_support,
 )
@@ -31,8 +33,14 @@ urlpatterns = [
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
-    path("client/programmes/", client_programme_library, name="client_programmes"),
+    path(
+        "client/programme-library/",
+        client_programme_library,
+        name="client_programme_library",
+    ),
     path("client/workout-log/", client_workout_log, name="client_workout_log"),
+    path("client/metrics/", client_metrics, name="client_metrics"),
+    path("client/check-ins/", client_check_ins, name="client_check_ins"),
     path("client/documents/", client_documents, name="client_documents"),
     path("client/support/", client_support, name="client_support"),
 
