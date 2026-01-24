@@ -21,6 +21,44 @@ Client Menu
 {% block dashboard_content %}
 
 <section class="dashboard-card dashboard-card--wide">
+    <h2 class="dashboard-card__title">Recent sessions</h2>
+    <p class="dashboard-card__subtitle">
+        Latest workouts logged to your account.
+    </p>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td>{{ session.name }}</td>
+                    <td>{{ session.date }}</td>
+                    <td>Logged</td>
+                    <td>{{ session.notes|default:"" }}</td>
+                    <td><a href="#" class="table-link">Open</a></td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">
+                        No workouts logged yet. Once sessions are added, they will appear here.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="dashboard-card dashboard-card--wide">
     <h2 class="dashboard-card__title">Session details</h2>
     <p class="dashboard-card__subtitle">Please enter your session details below.</p>
 
