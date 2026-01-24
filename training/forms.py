@@ -1,6 +1,6 @@
 # training/forms.py
 from django import forms
-from .models import ConsultationRequest
+from .models import ConsultationRequest, WorkoutSession
 
 
 class ConsultationRequestForm(forms.ModelForm):
@@ -65,3 +65,23 @@ class ConsultationRequestForm(forms.ModelForm):
                 "consultation request."
             )
         return consent
+
+
+class WorkoutSessionForm(forms.ModelForm):
+    class Meta:
+        model = WorkoutSession
+        fields = ["date", "name", "notes"]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "name": forms.TextInput(
+                attrs={
+                    "placeholder": "Session name, e.g. Upper Body — Week 3 / Day 2"
+                }
+            ),
+            "notes": forms.Textarea(
+                attrs={
+                    "rows": 3,
+                    "placeholder": "General notes: how it felt, any pains, etc.",
+                }
+            ),
+        }
