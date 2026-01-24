@@ -9,7 +9,7 @@ from django.db.models import Count
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 
-from training.models import ConsultationRequest
+from training.models import ConsultationRequest, WorkoutSession
 from .models import ClientProfile
 
 
@@ -102,30 +102,17 @@ def client_programme_library(request):
 @login_required
 def client_workout_log(request):
     """
-    Display the workout log page for a client.
+    Show recent workout sessions for the logged-in client.
     """
-    sample_sessions = [
-        {
-            "name": "Day 1 — Upper",
-            "date": "Mon",
-            "status": "Logged",
-            "notes": "Bench, row, accessories.",
-        },
-        {
-            "name": "Day 2 — Lower",
-            "date": "Wed",
-            "status": "Planned",
-            "notes": "Squat, RDL, core.",
-        },
-        {
-            "name": "Day 3 — Full",
-            "date": "Fri",
-            "status": "Saved draft",
-            "notes": "Press, pull, conditioning.",
-        },
-    ]
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
 
-    context = {"sessions": sample_sessions}
+    sessions = (
+        WorkoutSession.objects.filter(client=request.user)
+        .order_by("-date", "-created_at")[:20]
+    )
+
+    context = {"sessions": sessions}
     return render(request, "client/workout_log.html", context)
 
 
@@ -354,3 +341,4 @@ def trainer_programmes(request):
         "programme_templates": programme_templates,
     }
     return render(request, "trainer/programmes.html", context)
+
