@@ -1,0 +1,65 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}
+Client Menu
+{% endblock %}
+
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
+<li><a href="{% url 'accounts:client_programmes' %}">Programme library</a></li>
+<li><span class="dashboard-menu-link is-disabled">Workout log</span></li>
+<li><span class="dashboard-menu-link is-disabled">Body metrics</span></li>
+<li><span class="dashboard-menu-link is-disabled">Check-ins</span></li>
+<li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
+<li><a href="{% url 'accounts:client_support' %}" class="is-active">Support</a></li>
+{% endblock %}
+
+{% block page_eyebrow %}Client dashboard{% endblock %}
+{% block page_title %}Support{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card">
+    <div class="dashboard-card__header">
+        <h2 class="dashboard-card__title">Support</h2>
+        <p class="dashboard-card__subtitle">
+            Send a message to the coaching team about training, access, or technical issues.
+        </p>
+    </div>
+
+    <form method="post" class="form">
+        {% csrf_token %}
+
+        <div class="form-field">
+            <label for="support_subject">Subject</label>
+            <input
+                id="support_subject"
+                name="subject"
+                type="text"
+                required
+            >
+        </div>
+
+        <div class="form-field">
+            <label for="support_message">Message</label>
+            <textarea
+                id="support_message"
+                name="message"
+                rows="5"
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">
+                Send to coach
+            </button>
+        </div>
+    </form>
+
+    <div class="dashboard-card__footer">
+        In a full system this form could send email, create a help ticket, or log
+        a support request for the trainer dashboard.
+    </div>
+</section>
+{% endblock %}
