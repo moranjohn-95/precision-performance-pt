@@ -9,6 +9,7 @@ from django.db.models import Count
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 
+from training.forms import WorkoutSessionForm
 from training.models import ConsultationRequest, WorkoutSession
 from .models import ClientProfile
 
@@ -102,17 +103,32 @@ def client_programme_library(request):
 @login_required
 def client_workout_log(request):
     """
-    Show recent workout sessions for the logged-in client.
+    Show recent workout sessions and a simple form
+    to log a new workout for the logged-in client.
     """
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
+
+    if request.method == "POST":
+        form = WorkoutSessionForm(request.POST)
+        if form.is_valid():
+            session = form.save(commit=False)
+            session.client = request.user
+            session.save()
+            messages.success(request, "Workout session saved.")
+            return redirect("accounts:client_workout_log")
+    else:
+        form = WorkoutSessionForm()
 
     sessions = (
         WorkoutSession.objects.filter(client=request.user)
         .order_by("-date", "-created_at")[:20]
     )
 
-    context = {"sessions": sessions}
+    context = {
+        "sessions": sessions,
+        "session_form": form,
+    }
     return render(request, "client/workout_log.html", context)
 
 
