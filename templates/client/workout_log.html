@@ -7,10 +7,10 @@ Client Menu
 {% block sidebar_menu %}
 <li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
 <li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
-<li><a href="{% url 'accounts:client_programmes' %}">Programme library</a></li>
+<li><a href="{% url 'accounts:client_programme_library' %}">Programme library</a></li>
 <li><a href="{% url 'accounts:client_workout_log' %}" class="is-active">Workout log</a></li>
-<li><a href="#">Body metrics</a></li>
-<li><a href="#">Check-ins</a></li>
+<li><a href="{% url 'accounts:client_metrics' %}">Body metrics</a></li>
+<li><a href="{% url 'accounts:client_check_ins' %}">Check-ins</a></li>
 <li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
 <li><a href="{% url 'accounts:client_support' %}">Support</a></li>
 {% endblock %}
@@ -20,50 +20,68 @@ Client Menu
 
 {% block dashboard_content %}
 
-<section class="dashboard-card">
-    <h2 class="dashboard-card__title">Sessions</h2>
-    <p class="dashboard-card__subtitle">
-        Quick view of recent or upcoming sessions. This can later connect to detailed logging.
-    </p>
+<section class="dashboard-card dashboard-card--wide">
+    <h2 class="dashboard-card__title">Session details</h2>
+    <p class="dashboard-card__subtitle">Please enter your session details below.</p>
 
-    <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
-            <thead>
-                <tr>
-                    <th scope="col">Session</th>
-                    <th scope="col">Day</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Notes</th>
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for session in sessions %}
-                <tr>
-                    <td>{{ session.name }}</td>
-                    <td>{{ session.date }}</td>
-                    <td>{{ session.status }}</td>
-                    <td>{{ session.notes }}</td>
-                    <td>
-                        <a href="#" class="table-link">Open</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5">No sessions available yet.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</section>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Exercise</th>
+                        <th>Target</th>
+                        <th>Set 1</th>
+                        <th>Set 2</th>
+                        <th>Set 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Bench Press</td>
+                        <td>3 × 8</td>
+                        <td><input type="text" name="bench_set1" placeholder="60kg x 8"></td>
+                        <td><input type="text" name="bench_set2" placeholder="60kg x 8"></td>
+                        <td><input type="text" name="bench_set3" placeholder="60kg x 7"></td>
+                    </tr>
+                    <tr>
+                        <td>Seated Row</td>
+                        <td>3 × 10</td>
+                        <td><input type="text" name="row_set1" placeholder="45kg x 10"></td>
+                        <td><input type="text" name="row_set2" placeholder="45kg x 10"></td>
+                        <td><input type="text" name="row_set3" placeholder="45kg x 9"></td>
+                    </tr>
+                    <tr>
+                        <td>DB Incline</td>
+                        <td>3 × 12</td>
+                        <td><input type="text" name="incline_set1" placeholder="18kg x 12"></td>
+                        <td><input type="text" name="incline_set2" placeholder="18kg x 12"></td>
+                        <td><input type="text" name="incline_set3" placeholder="18kg x 11"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-<section class="dashboard-card dashboard-card--secondary">
-    <h2 class="dashboard-card__title">Notes</h2>
-    <p>
-        This area can later include links into a detailed logging form (sets, reps, RPE)
-        and show previous logs for the current block.
-    </p>
+        <div class="form-field">
+            <label for="session_notes">Session notes</label>
+            <textarea
+                id="session_notes"
+                name="session_notes"
+                rows="3"
+                placeholder="General notes about the session."
+            ></textarea>
+        </div>
+
+        <div class="form-actions form-actions--horizontal">
+            <button type="submit" class="btn-primary">
+                Save + submit
+            </button>
+            <button type="button" class="btn-secondary">
+                Save draft
+            </button>
+        </div>
+    </form>
 </section>
 
 {% endblock %}

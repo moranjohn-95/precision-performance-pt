@@ -33,6 +33,8 @@ urlpatterns = [
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
+    # Keep legacy name/path for programme library
+    path("client/programmes/", client_programme_library, name="client_programmes"),
     path(
         "client/programme-library/",
         client_programme_library,
