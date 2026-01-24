@@ -7,10 +7,10 @@ Client Menu
 {% block sidebar_menu %}
 <li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
 <li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
-<li><a href="{% url 'accounts:client_programmes' %}">Programme library</a></li>
-<li><a href="#" class="is-disabled">Workout log</a></li>
-<li><a href="#" class="is-disabled">Body metrics</a></li>
-<li><a href="#" class="is-disabled">Check-ins</a></li>
+<li><a href="{% url 'accounts:client_programme_library' %}">Programme library</a></li>
+<li><a href="{% url 'accounts:client_workout_log' %}">Workout log</a></li>
+<li><a href="{% url 'accounts:client_metrics' %}">Body metrics</a></li>
+<li><a href="{% url 'accounts:client_check_ins' %}">Check-ins</a></li>
 <li><a href="{% url 'accounts:client_documents' %}" class="is-active">Documents</a></li>
 <li><a href="{% url 'accounts:client_support' %}">Support</a></li>
 {% endblock %}
