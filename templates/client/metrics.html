@@ -1,0 +1,86 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}
+Client Menu
+{% endblock %}
+
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
+<li><a href="{% url 'accounts:client_programme_library' %}">Programme library</a></li>
+<li><a href="{% url 'accounts:client_workout_log' %}">Workout log</a></li>
+<li><a href="{% url 'accounts:client_metrics' %}" class="is-active">Body metrics</a></li>
+<li><a href="{% url 'accounts:client_check_ins' %}">Check-ins</a></li>
+<li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
+<li><a href="{% url 'accounts:client_support' %}">Support</a></li>
+{% endblock %}
+
+{% block page_eyebrow %}Client dashboard{% endblock %}
+{% block page_title %}Body metrics{% endblock %}
+
+{% block dashboard_content %}
+
+<section class="dashboard-card dashboard-card--split">
+    <div class="dashboard-card__panel">
+        <h2 class="dashboard-card__title">Bodyweight trend</h2>
+        <p class="dashboard-card__subtitle">Weekly average, example data.</p>
+        <p class="text-muted">Chart placeholder</p>
+    </div>
+
+    <div class="dashboard-card__panel">
+        <h2 class="dashboard-card__title">Strength trend</h2>
+        <p class="dashboard-card__subtitle">Top sets (for example, Bench).</p>
+        <p class="text-muted">Chart placeholder</p>
+    </div>
+    </section>
+
+<section class="dashboard-card dashboard-card--table">
+    <div class="dashboard-card__header">
+        <h2 class="dashboard-card__title">Key metrics</h2>
+    </div>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Latest</th>
+                    <th>Change (4 weeks)</th>
+                    <th>Target</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Bodyweight</td>
+                    <td>78.4 kg</td>
+                    <td>-0.6 kg</td>
+                    <td>77.5 kg</td>
+                </tr>
+                <tr>
+                    <td>Waist</td>
+                    <td>84 cm</td>
+                    <td>-2 cm</td>
+                    <td>82 cm</td>
+                </tr>
+                <tr>
+                    <td>Bench top set</td>
+                    <td>60 kg × 8</td>
+                    <td>+2.5 kg</td>
+                    <td>62.5 kg × 8</td>
+                </tr>
+                <tr>
+                    <td>Sleep average</td>
+                    <td>7.1 h</td>
+                    <td>+0.3 h</td>
+                    <td>7.5 h</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="dashboard-card__footer">
+        Real tracking can later store entries per date and calculate these values automatically.
+    </div>
+</section>
+
+{% endblock %}
