@@ -260,3 +260,63 @@ Client Menu
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const backdrop = document.getElementById("session-modal-backdrop");
+    const titleEl = document.getElementById("session-modal-title");
+    const idField = document.getElementById("session-id-field");
+    const nameField = document.getElementById("session-name-field");
+    const statusField = document.getElementById("session-status-field");
+    const notesField = document.getElementById("session-notes-field");
+
+    function openModalFromRow(row) {
+        const sessionId = row.dataset.sessionId;
+        const sessionName = row.dataset.sessionName || "";
+        const sessionStatus = row.dataset.sessionStatus || "logged";
+        const sessionNotes = row.dataset.sessionNotes || "";
+
+        idField.value = sessionId;
+        nameField.value = sessionName;
+        statusField.value = sessionStatus;
+        notesField.value = sessionNotes;
+
+        titleEl.textContent = sessionName || "Workout session";
+
+        backdrop.classList.remove("is-hidden");
+        document.body.classList.add("no-scroll");
+    }
+
+    function closeModal() {
+        backdrop.classList.add("is-hidden");
+        document.body.classList.remove("no-scroll");
+    }
+
+    // Open handlers
+    document.querySelectorAll(".js-open-session").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const row = btn.closest("tr");
+            if (row) {
+                openModalFromRow(row);
+            }
+        });
+    });
+
+    // Close handlers
+    document.querySelectorAll(".js-close-session").forEach(function (btn) {
+        btn.addEventListener("click", closeModal);
+    });
+
+    backdrop.addEventListener("click", function (event) {
+        if (event.target === backdrop) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && !backdrop.classList.contains("is-hidden")) {
+            closeModal();
+        }
+    });
+});
+</script>
