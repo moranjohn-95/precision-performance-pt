@@ -905,3 +905,41 @@ html {
 .dashboard-table tbody tr:hover {
     background-color: #f8fafc;
 }
+
+/* Workout log table layout */
+.workout-table {
+    display: grid;
+    row-gap: 0.5rem;
+}
+
+.workout-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1.1fr 1.1fr 1.1fr;
+    align-items: center;
+    column-gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-top: 1px solid rgba(15, 23, 42, 0.06);
+}
+
+.workout-row--header {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: rgba(15, 23, 42, 0.7);
+}
+
+.workout-cell--exercise {
+    font-size: 0.9rem;
+}
+
+.workout-cell--target {
+    font-size: 0.9rem;
+    color: rgba(15, 23, 42, 0.75);
+}
+
+.workout-row input[type="text"],
+.workout-row input[type="number"] {
+    width: 100%;
+}
+

@@ -58,68 +58,125 @@ Client Menu
     </div>
 </section>
 
-<section class="dashboard-card dashboard-card--wide">
-    <h2 class="dashboard-card__title">Session details</h2>
-    <p class="dashboard-card__subtitle">Please enter your session details below.</p>
+<section class="card">
+    <header class="card-header">
+        <h2 class="card-title">Session details</h2>
+        <p class="card-subtitle">
+            Enter the details for a completed workout and submit it to the coach.
+        </p>
+    </header>
 
-    <form method="post" class="form">
-        {% csrf_token %}
-        <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Exercise</th>
-                        <th>Target</th>
-                        <th>Set 1</th>
-                        <th>Set 2</th>
-                        <th>Set 3</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Bench Press</td>
-                        <td>3 Į- 8</td>
-                        <td><input type="text" name="bench_set1" placeholder="60kg x 8"></td>
-                        <td><input type="text" name="bench_set2" placeholder="60kg x 8"></td>
-                        <td><input type="text" name="bench_set3" placeholder="60kg x 7"></td>
-                    </tr>
-                    <tr>
-                        <td>Seated Row</td>
-                        <td>3 Į- 10</td>
-                        <td><input type="text" name="row_set1" placeholder="45kg x 10"></td>
-                        <td><input type="text" name="row_set2" placeholder="45kg x 10"></td>
-                        <td><input type="text" name="row_set3" placeholder="45kg x 9"></td>
-                    </tr>
-                    <tr>
-                        <td>DB Incline</td>
-                        <td>3 Į- 12</td>
-                        <td><input type="text" name="incline_set1" placeholder="18kg x 12"></td>
-                        <td><input type="text" name="incline_set2" placeholder="18kg x 12"></td>
-                        <td><input type="text" name="incline_set3" placeholder="18kg x 11"></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="card-body">
+        <form method="post" class="workout-log-form">
+            {% csrf_token %}
 
-        <div class="form-field">
-            <label for="session_notes">Session notes</label>
-            <textarea
-                id="session_notes"
-                name="session_notes"
-                rows="3"
-                placeholder="General notes about the session."
-            ></textarea>
-        </div>
+            <!-- Summary line: date + session name -->
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="{{ session_form.date.id_for_label }}">Date</label>
+                    {{ session_form.date }}
+                </div>
 
-        <div class="form-actions form-actions--horizontal">
-            <button type="submit" class="btn-primary">
-                Save + submit
-            </button>
-            <button type="button" class="btn-secondary">
-                Save draft
-            </button>
-        </div>
-    </form>
+                <div class="form-field">
+                    <label for="{{ session_form.name.id_for_label }}">Session name</label>
+                    {{ session_form.name }}
+                </div>
+            </div>
+
+            <!-- Table-style layout for exercises / sets -->
+            <div class="workout-table">
+                <div class="workout-row workout-row--header">
+                    <div class="workout-cell workout-cell--exercise">Exercise</div>
+                    <div class="workout-cell workout-cell--target">Target</div>
+                    <div class="workout-cell">Set 1</div>
+                    <div class="workout-cell">Set 2</div>
+                    <div class="workout-cell">Set 3</div>
+                </div>
+
+                <!-- Bench Press row -->
+                <div class="workout-row">
+                    <div class="workout-cell workout-cell--exercise">
+                        <strong>Bench Press</strong><br>
+                        <span class="text-muted">Main press</span>
+                    </div>
+                    <div class="workout-cell workout-cell--target">
+                        3 × 8
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.bench_set1 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.bench_set2 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.bench_set3 }}
+                    </div>
+                </div>
+
+                <!-- Seated Row row -->
+                <div class="workout-row">
+                    <div class="workout-cell workout-cell--exercise">
+                        <strong>Seated Row</strong><br>
+                        <span class="text-muted">Upper back</span>
+                    </div>
+                    <div class="workout-cell workout-cell--target">
+                        3 × 10
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.row_set1 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.row_set2 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.row_set3 }}
+                    </div>
+                </div>
+
+                <!-- DB Incline row -->
+                <div class="workout-row">
+                    <div class="workout-cell workout-cell--exercise">
+                        <strong>DB Incline</strong><br>
+                        <span class="text-muted">Chest / shoulders</span>
+                    </div>
+                    <div class="workout-cell workout-cell--target">
+                        3 × 12
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.incline_set1 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.incline_set2 }}
+                    </div>
+                    <div class="workout-cell">
+                        {{ session_form.incline_set3 }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="form-field">
+                <label for="{{ session_form.notes.id_for_label }}">
+                    Session notes <span class="field-optional">(optional)</span>
+                </label>
+                {{ session_form.notes }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    Save + submit
+                </button>
+                <button type="button" class="btn-secondary" disabled>
+                    Save draft
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <footer class="card-footer text-muted">
+        Set details are stored inside the session notes so that the coaching team can
+        review the work completed.
+    </footer>
 </section>
 
 {% endblock %}
