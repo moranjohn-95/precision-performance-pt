@@ -38,13 +38,27 @@ Client Menu
                 </tr>
             </thead>
             <tbody>
-                {% for session in sessions %}
-                <tr>
-                    <td>{{ session.name }}</td>
-                    <td>{{ session.date }}</td>
-                    <td>Logged</td>
-                    <td>{{ session.notes|default:"" }}</td>
-                    <td><a href="#" class="table-link">Open</a></td>
+                {% for s in sessions %}
+                <tr
+                    class="workout-row"
+                    data-session-id="{{ s.id }}"
+                    data-session-name="{{ s.name|escape }}"
+                    data-session-date="{{ s.date|date:"Y-m-d" }}"
+                    data-session-status="{{ s.status|escape }}"
+                    data-session-notes="{{ s.notes|escape }}"
+                >
+                    <td>{{ s.name }}</td>
+                    <td>{{ s.date|date:"M d, Y" }}</td>
+                    <td>{{ s.status|capfirst }}</td>
+                    <td>{{ s.notes }}</td>
+                    <td>
+                        <button
+                            type="button"
+                            class="link-button js-open-session"
+                        >
+                            Open
+                        </button>
+                    </td>
                 </tr>
                 {% empty %}
                 <tr>
@@ -180,3 +194,69 @@ Client Menu
 </section>
 
 {% endblock %}
+
+{# Workout session modal #}
+<div id="session-modal-backdrop" class="session-modal-backdrop is-hidden">
+    <div class="session-modal">
+        <header class="session-modal-header">
+            <h2 id="session-modal-title">Workout session</h2>
+            <button type="button" class="session-modal-close js-close-session" aria-label="Close">
+                ×
+            </button>
+        </header>
+
+        <form
+            method="post"
+            action="{% url 'accounts:client_workout_edit' %}"
+            class="session-modal-form"
+        >
+            {% csrf_token %}
+            <input type="hidden" name="session_id" id="session-id-field">
+
+            <div class="session-modal-body">
+                <div class="form-field">
+                    <label for="session-name-field">Session name</label>
+                    <input
+                        type="text"
+                        id="session-name-field"
+                        name="name"
+                        maxlength="100"
+                    >
+                </div>
+
+                <div class="form-field">
+                    <label for="session-status-field">Status</label>
+                    <select id="session-status-field" name="status">
+                        <option value="logged">Logged</option>
+                        <option value="planned">Planned</option>
+                        <option value="skipped">Skipped</option>
+                    </select>
+                </div>
+
+                <div class="form-field">
+                    <label for="session-notes-field">Notes / details</label>
+                    <textarea
+                        id="session-notes-field"
+                        name="notes"
+                        rows="5"
+                    ></textarea>
+                    <p class="help-text">
+                        This can include a summary of sets, reps, and how the session felt.
+                    </p>
+                </div>
+            </div>
+
+            <footer class="session-modal-footer">
+                <button
+                    type="button"
+                    class="btn-secondary js-close-session"
+                >
+                    Cancel
+                </button>
+                <button type="submit" class="btn-primary">
+                    Save changes
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>
