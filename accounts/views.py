@@ -130,6 +130,20 @@ def client_workout_log(request):
 
 
 @login_required
+def client_metrics(request):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+    return render(request, "client/metrics.html")
+
+
+@login_required
+def client_check_ins(request):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+    return render(request, "client/check_ins.html")
+
+
+@login_required
 def client_documents(request):
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
