@@ -27,11 +27,10 @@
                 Weekly bodyweight pattern based on check-ins.
             </p>
             <div class="card-body">
-                {% if has_bodyweight_data %}
-                    <div class="metrics-chart">
-                        <canvas id="bodyweightChart" aria-label="Bodyweight trend chart"></canvas>
-                    </div>
-                {% else %}
+                <div class="metrics-chart">
+                    <canvas id="bodyweightChart" aria-label="Bodyweight trend chart"></canvas>
+                </div>
+                {% if not has_bodyweight_data %}
                     <p class="empty-state">
                         No bodyweight entries recorded yet. Add a body metrics check-in to see a trend.
                     </p>
@@ -44,11 +43,10 @@
                 Top sets for an example lift (Bench) based on bench top set entries.
             </p>
             <div class="card-body">
-                {% if has_bench_data %}
-                    <div class="metrics-chart">
-                        <canvas id="strengthChart" aria-label="Strength trend chart"></canvas>
-                    </div>
-                {% else %}
+                <div class="metrics-chart">
+                    <canvas id="strengthChart" aria-label="Strength trend chart"></canvas>
+                </div>
+                {% if not has_bench_data %}
                     <p class="empty-state">
                         No strength entries recorded yet. Add bench top set data in body metrics check-ins.
                     </p>
@@ -175,18 +173,19 @@
                     <td>{{ row.target_display }}</td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                </tbody>
+            </table>
+        </div>
 
-    <footer class="card-footer text-muted">
-        Values are calculated from stored check-ins. Change compares the latest entry
-        with one recorded approximately four weeks earlier when available.
-    </footer>
-</section>
+        <footer class="card-footer text-muted">
+            Values are calculated from stored check-ins. Change compares the latest entry
+            with one recorded approximately four weeks earlier when available.
+        </footer>
+    </section>
 
 {% endblock %}
 
+{% block extra_scripts %}
 <!-- Charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -241,3 +240,4 @@
     }
 })();
 </script>
+{% endblock %}

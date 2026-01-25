@@ -1142,3 +1142,10 @@ html {
     color: #5b4b8a;
     text-decoration: underline;
 }
+   
+ 
+/* Metrics charts */
+.metrics-chart {
+    height: 260px;
+}
+
