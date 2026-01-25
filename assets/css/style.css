@@ -957,6 +957,45 @@ html {
     font: inherit;
 }
 
+.metrics-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.metrics-form .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.metrics-form label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #0b1f3b;
+}
+
+.metrics-form input,
+.metrics-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 0.75rem;
+    border: 1px solid #d7dce5;
+    border-radius: 0.6rem;
+    font: inherit;
+}
+
+.metrics-form textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
 /* Modal styling */
 .session-modal-backdrop {
     position: fixed;
