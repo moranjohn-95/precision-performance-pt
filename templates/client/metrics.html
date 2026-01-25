@@ -1,9 +1,7 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
-{% block sidebar_title %}
-Client Menu
-{% endblock %}
-
+{% block sidebar_title %}Client Menu{% endblock %}
 {% block sidebar_menu %}
 <li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
 <li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
@@ -20,26 +18,108 @@ Client Menu
 
 {% block dashboard_content %}
 
-<section class="dashboard-card dashboard-card--split">
-    <div class="dashboard-card__panel">
-        <h2 class="dashboard-card__title">Bodyweight trend</h2>
-        <p class="dashboard-card__subtitle">Weekly average, example data.</p>
-        <p class="text-muted">Chart placeholder</p>
+<!-- Trend placeholders -->
+<section class="dashboard-card dashboard-card--wide">
+    <div class="metrics-trend-grid">
+        <div class="metrics-trend-card">
+            <h2 class="card-title">Bodyweight trend</h2>
+            <p class="card-subtitle">Weekly average, based on recent check-ins.</p>
+            <div class="chart-placeholder">Chart placeholder</div>
+        </div>
+        <div class="metrics-trend-card">
+            <h2 class="card-title">Strength trend</h2>
+            <p class="card-subtitle">Top sets (for example, Bench).</p>
+            <div class="chart-placeholder">Chart placeholder</div>
+        </div>
+    </div>
+</section>
+
+<!-- Add check-in + recent entries -->
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Add body metrics check-in</h2>
+        <p class="card-subtitle">
+            Log the latest measurements for bodyweight, waist, strength, and sleep.
+        </p>
+    </header>
+
+    <div class="card-body">
+        <form method="post" class="metrics-form">
+            {% csrf_token %}
+
+            <div class="metrics-form-grid">
+                <div class="form-group">
+                    {{ form.date.label_tag }}
+                    {{ form.date }}
+                </div>
+                <div class="form-group">
+                    {{ form.bodyweight_kg.label_tag }}
+                    {{ form.bodyweight_kg }}
+                </div>
+                <div class="form-group">
+                    {{ form.waist_cm.label_tag }}
+                    {{ form.waist_cm }}
+                </div>
+                <div class="form-group">
+                    {{ form.bench_top_set_kg.label_tag }}
+                    {{ form.bench_top_set_kg }}
+                </div>
+                <div class="form-group">
+                    {{ form.sleep_hours.label_tag }}
+                    {{ form.sleep_hours }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Save check-in
+            </button>
+        </form>
     </div>
 
-    <div class="dashboard-card__panel">
-        <h2 class="dashboard-card__title">Strength trend</h2>
-        <p class="dashboard-card__subtitle">Top sets (for example, Bench).</p>
-        <p class="text-muted">Chart placeholder</p>
+    {% if recent_entries %}
+    <div class="card-footer">
+        <h3 class="card-footer-title">Recent check-ins</h3>
+        <table class="dashboard-table table-compact">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Bodyweight (kg)</th>
+                    <th>Waist (cm)</th>
+                    <th>Bench top set (kg)</th>
+                    <th>Sleep (h)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in recent_entries %}
+                <tr>
+                    <td>{{ entry.date|date:"d M Y" }}</td>
+                    <td>{{ entry.bodyweight_kg|default:"—" }}</td>
+                    <td>{{ entry.waist_cm|default:"—" }}</td>
+                    <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
+                    <td>{{ entry.sleep_hours|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    </section>
+    {% endif %}
+</section>
 
-<section class="dashboard-card dashboard-card--table">
-    <div class="dashboard-card__header">
-        <h2 class="dashboard-card__title">Key metrics</h2>
-    </div>
+<!-- Key metrics summary -->
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Key metrics</h2>
+        <p class="card-subtitle">
+            Latest values and approximate change over the last four weeks.
+        </p>
+    </header>
 
-    <div class="dashboard-table-wrapper">
+    <div class="card-body">
         <table class="dashboard-table">
             <thead>
                 <tr>
@@ -50,37 +130,34 @@ Client Menu
                 </tr>
             </thead>
             <tbody>
+                {% for row in summary_rows %}
                 <tr>
-                    <td>Bodyweight</td>
-                    <td>78.4 kg</td>
-                    <td>-0.6 kg</td>
-                    <td>77.5 kg</td>
+                    <td>{{ row.label }}</td>
+                    <td>
+                        {% if row.latest is not None %}
+                            {{ row.latest }} {{ row.unit }}
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if row.change is not None %}
+                            {% if row.change > 0 %}+{% endif %}{{ row.change }} {{ row.unit }}
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                    <td>{{ row.target_display }}</td>
                 </tr>
-                <tr>
-                    <td>Waist</td>
-                    <td>84 cm</td>
-                    <td>-2 cm</td>
-                    <td>82 cm</td>
-                </tr>
-                <tr>
-                    <td>Bench top set</td>
-                    <td>60 kg × 8</td>
-                    <td>+2.5 kg</td>
-                    <td>62.5 kg × 8</td>
-                </tr>
-                <tr>
-                    <td>Sleep average</td>
-                    <td>7.1 h</td>
-                    <td>+0.3 h</td>
-                    <td>7.5 h</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <div class="dashboard-card__footer">
-        Real tracking can later store entries per date and calculate these values automatically.
-    </div>
+    <footer class="card-footer text-muted">
+        Values are calculated from stored check-ins. Change compares the latest entry
+        with one recorded approximately four weeks earlier when available.
+    </footer>
 </section>
 
 {% endblock %}

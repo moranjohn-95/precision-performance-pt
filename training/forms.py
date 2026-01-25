@@ -170,7 +170,7 @@ class BodyMetricEntryForm(forms.ModelForm):
             "date",
             "bodyweight_kg",
             "waist_cm",
-            "bench_topset_kg",
+            "bench_top_set_kg",
             "sleep_hours",
             "notes",
         ]
@@ -178,7 +178,7 @@ class BodyMetricEntryForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date"}),
             "bodyweight_kg": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
             "waist_cm": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
-            "bench_topset_kg": forms.NumberInput(attrs={"step": "0.5", "min": "0"}),
+            "bench_top_set_kg": forms.NumberInput(attrs={"step": "0.5", "min": "0"}),
             "sleep_hours": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
