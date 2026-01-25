@@ -23,13 +23,37 @@
     <div class="metrics-trend-grid">
         <div class="metrics-trend-card">
             <h2 class="card-title">Bodyweight trend</h2>
-            <p class="card-subtitle">Weekly average, based on recent check-ins.</p>
-            <div class="chart-placeholder">Chart placeholder</div>
+            <p class="card-subtitle">
+                Weekly bodyweight pattern based on check-ins.
+            </p>
+            <div class="card-body">
+                {% if has_bodyweight_data %}
+                    <div class="metrics-chart">
+                        <canvas id="bodyweightChart" aria-label="Bodyweight trend chart"></canvas>
+                    </div>
+                {% else %}
+                    <p class="empty-state">
+                        No bodyweight entries recorded yet. Add a body metrics check-in to see a trend.
+                    </p>
+                {% endif %}
+            </div>
         </div>
         <div class="metrics-trend-card">
             <h2 class="card-title">Strength trend</h2>
-            <p class="card-subtitle">Top sets (for example, Bench).</p>
-            <div class="chart-placeholder">Chart placeholder</div>
+            <p class="card-subtitle">
+                Top sets for an example lift (Bench) based on bench top set entries.
+            </p>
+            <div class="card-body">
+                {% if has_bench_data %}
+                    <div class="metrics-chart">
+                        <canvas id="strengthChart" aria-label="Strength trend chart"></canvas>
+                    </div>
+                {% else %}
+                    <p class="empty-state">
+                        No strength entries recorded yet. Add bench top set data in body metrics check-ins.
+                    </p>
+                {% endif %}
+            </div>
         </div>
     </div>
 </section>
@@ -162,3 +186,58 @@
 </section>
 
 {% endblock %}
+
+<!-- Charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+(function () {
+    const labels = {{ chart_labels_json|default:"[]"|safe }};
+    const bodyweightData = {{ bodyweight_series_json|default:"[]"|safe }};
+    const benchData = {{ bench_series_json|default:"[]"|safe }};
+
+    function makeLineChart(canvasId, data, labelText) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) {
+            return;
+        }
+        const hasValues = Array.isArray(data) && data.some(v => v !== null);
+        if (!hasValues) {
+            return;
+        }
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: labelText,
+                    data: data,
+                    tension: 0.35,
+                    pointRadius: 3,
+                    borderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        title: { display: false }
+                    },
+                    y: {
+                        beginAtZero: false
+                    }
+                }
+            }
+        });
+    }
+
+    if (Array.isArray(labels) && labels.length) {
+        makeLineChart("bodyweightChart", bodyweightData, "Bodyweight (kg)");
+        makeLineChart("strengthChart", benchData, "Bench top set (kg)");
+    }
+})();
+</script>
