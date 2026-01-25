@@ -27,6 +27,7 @@
                         <th>Bodyweight</th>
                         <th>Waist</th>
                         <th>Bench top set</th>
+                        <th>Sleep (h)</th>
                         <th>Last check-in</th>
                     </tr>
                 </thead>
@@ -54,6 +55,13 @@
                             <td>
                                 {% if row.bench_topset %}
                                     {{ row.bench_topset }} kg
+                                {% else %}
+                                    &mdash;
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.sleep_hours %}
+                                    {{ row.sleep_hours }} h
                                 {% else %}
                                     &mdash;
                                 {% endif %}
