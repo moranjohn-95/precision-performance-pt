@@ -12,6 +12,9 @@
 
 <div class="dashboard-card">
     <h2 class="dashboard-card__title">Clients from consultation requests</h2>
+    <p class="dashboard-subtitle">
+        Trainer: {{ request.user.get_full_name|default:request.user.username }}
+    </p>
     <p class="dashboard-card__subtitle">
         One row per email address, based on the latest request for that client.
     </p>
