@@ -2,7 +2,7 @@
 from django import forms
 from django.utils import timezone
 
-from .models import ConsultationRequest, WorkoutSession
+from .models import ConsultationRequest, WorkoutSession, BodyMetricEntry
 
 
 class ConsultationRequestForm(forms.ModelForm):
@@ -161,3 +161,24 @@ class WorkoutSessionForm(forms.ModelForm):
             instance.save()
 
         return instance
+
+
+class BodyMetricEntryForm(forms.ModelForm):
+    class Meta:
+        model = BodyMetricEntry
+        fields = [
+            "date",
+            "bodyweight_kg",
+            "waist_cm",
+            "bench_topset_kg",
+            "sleep_hours",
+            "notes",
+        ]
+        widgets = {
+            "date": forms.DateInput(attrs={"type": "date"}),
+            "bodyweight_kg": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
+            "waist_cm": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
+            "bench_topset_kg": forms.NumberInput(attrs={"step": "0.5", "min": "0"}),
+            "sleep_hours": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
+            "notes": forms.Textarea(attrs={"rows": 3}),
+        }
