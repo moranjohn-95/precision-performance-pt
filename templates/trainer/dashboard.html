@@ -31,6 +31,7 @@
                     <th>Email</th>
                     <th>Goal</th>
                     <th>Coaching option</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,11 @@
                     <td>{{ req.email }}</td>
                     <td>{{ req.get_training_goal_display|default:"—" }}</td>
                     <td>{{ req.get_coaching_option_display|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'accounts:trainer_consultation_detail' req.id %}" class="btn-link">
+                            View
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

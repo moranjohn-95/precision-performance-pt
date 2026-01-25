@@ -32,6 +32,11 @@ urlpatterns = [
     path("trainer/clients/", trainer_clients, name="trainer_clients"),
     path("trainer/programmes/", trainer_programmes, name="trainer_programmes"),
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
+    path(
+        "trainer/consultations/<int:pk>/",
+        views.trainer_consultation_detail,
+        name="trainer_consultation_detail",
+    ),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
     # Keep legacy name/path for programme library

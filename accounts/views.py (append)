@@ -1,0 +1,34 @@
+def _staff_check(user):
+    return user.is_staff
+
+
+@login_required
+@user_passes_test(_staff_check)
+def trainer_consultation_detail(request, pk):
+    consultation = get_object_or_404(ConsultationRequest, pk=pk)
+
+    if request.method == "POST" and "assign_to_me" in request.POST:
+        # Trainers can only assign to themselves. Prevent accidental takeover.
+        if (
+            consultation.assigned_trainer
+            and consultation.assigned_trainer != request.user
+            and not request.user.is_superuser
+        ):
+            messages.error(
+                request,
+                "This consultation is already assigned to another trainer.",
+            )
+        else:
+            consultation.assigned_trainer = request.user
+            consultation.save()
+            messages.success(
+                request,
+                "Client has been added to the trainer client list.",
+            )
+        return redirect("accounts:trainer_clients")
+
+    context = {
+        "consultation": consultation,
+    }
+    return render(request, "trainer/consultation_detail.html", context)
+

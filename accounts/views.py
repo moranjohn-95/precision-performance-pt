@@ -528,7 +528,6 @@ def trainer_metrics(request):
         },
     )
 
-
 @login_required
 @staff_member_required
 def trainer_programmes(request):
