@@ -1,0 +1,50 @@
+{% with current=request.resolver_match.url_name %}
+<li>
+    <a href="{% url 'accounts:client_dashboard' %}"
+       class="{% if current == 'client_dashboard' %}is-active{% endif %}">
+        Overview
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_today' %}"
+       class="{% if current == 'client_today' %}is-active{% endif %}">
+        Todays plan
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_programme_library' %}"
+       class="{% if current == 'client_programme_library' or current == 'client_programmes' %}is-active{% endif %}">
+        Programme library
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_workout_log' %}"
+       class="{% if current == 'client_workout_log' %}is-active{% endif %}">
+        Workout log
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_metrics' %}"
+       class="{% if current == 'client_metrics' %}is-active{% endif %}">
+        Body metrics
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_check_ins' %}"
+       class="{% if current == 'client_check_ins' %}is-active{% endif %}">
+        Check-ins
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_documents' %}"
+       class="{% if current == 'client_documents' %}is-active{% endif %}">
+        Documents
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:client_support' %}"
+       class="{% if current == 'client_support' %}is-active{% endif %}">
+        Support
+    </a>
+</li>
+{% endwith %}

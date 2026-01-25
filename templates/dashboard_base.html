@@ -13,7 +13,7 @@
             <nav class="dashboard-sidebar__nav">
                 <ul>
                     {% block sidebar_menu %}
-                    <!-- Content will go here in child templates -->
+                    {% include "client/_sidebar.html" %}
                     {% endblock %}
                 </ul>
             </nav>

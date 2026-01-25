@@ -1,20 +1,5 @@
 {% extends "dashboard_base.html" %}
 
-{% block sidebar_title %}
-Client Menu
-{% endblock %}
-
-{% block sidebar_menu %}
-<li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
-<li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
-<li><a href="{% url 'accounts:client_programme_library' %}">Programme library</a></li>
-<li><a href="{% url 'accounts:client_workout_log' %}" class="is-active">Workout log</a></li>
-<li><a href="{% url 'accounts:client_metrics' %}">Body metrics</a></li>
-<li><a href="{% url 'accounts:client_check_ins' %}">Check-ins</a></li>
-<li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
-<li><a href="{% url 'accounts:client_support' %}">Support</a></li>
-{% endblock %}
-
 {% block page_eyebrow %}Client dashboard{% endblock %}
 {% block page_title %}Workout log{% endblock %}
 
