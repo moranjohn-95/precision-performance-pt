@@ -1,0 +1,33 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Trainer Menu{% endblock %}
+{% block sidebar_menu %}
+{% include "trainer/_sidebar.html" %}
+{% endblock %}
+
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}Edit session{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">{{ session.name }}</h2>
+        <p class="card-subtitle">
+            {{ session.date|date:"d M Y" }} · {{ client.get_full_name|default:client.username }}
+        </p>
+    </header>
+    <div class="card-body">
+        <form method="post" class="form">
+            {% csrf_token %}
+            <div class="form-field">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Save changes</button>
+                <a href="{% url 'accounts:trainer_client_detail' client.id %}" class="btn-secondary">Back to client</a>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

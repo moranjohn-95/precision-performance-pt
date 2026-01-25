@@ -10,6 +10,8 @@ from .views import (
     trainer_programmes,
     trainer_metrics,
     trainer_consultation_detail,
+    trainer_client_detail,
+    trainer_session_edit,
     client_dashboard,
     client_programme_library,
     client_today,
@@ -37,6 +39,16 @@ urlpatterns = [
         "trainer/consultations/<int:pk>/",
         trainer_consultation_detail,
         name="trainer_consultation_detail",
+    ),
+    path(
+        "trainer/clients/<int:client_id>/",
+        trainer_client_detail,
+        name="trainer_client_detail",
+    ),
+    path(
+        "trainer/sessions/<int:session_id>/edit/",
+        trainer_session_edit,
+        name="trainer_session_edit",
     ),
     path(
         "trainer/clients/<int:pk>/",
