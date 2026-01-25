@@ -1,4 +1,4 @@
-﻿# accounts/views.py
+# accounts/views.py
 from collections import OrderedDict
 import datetime
 import json
@@ -14,6 +14,8 @@ from django.shortcuts import get_object_or_404, render, redirect
 
 from training.forms import WorkoutSessionForm, BodyMetricEntryForm
 from training.models import ConsultationRequest, WorkoutSession, BodyMetricEntry
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from .models import ClientProfile
 
 
@@ -125,10 +127,10 @@ def client_workout_log(request):
             incline_weight_raw = (request.POST.get("incline_weight") or "").strip()
 
             def format_sets(*vals):
-                return " | ".join(v or "â€”" for v in vals)
+                return " | ".join(v or "—" for v in vals)
 
             def format_weight(raw_val):
-                return f"{raw_val}kg" if raw_val else "â€”"
+                return f"{raw_val}kg" if raw_val else "—"
 
             bench_sets_display = format_sets(bench_set1, bench_set2, bench_set3)
             row_sets_display = format_sets(row_set1, row_set2, row_set3)
@@ -290,7 +292,7 @@ def client_metrics(request):
             "label": "Bench top set",
             "field": "bench_top_set_kg",
             "unit": "kg",
-            "target_display": "62.5 kg Ã- 8",
+            "target_display": "62.5 kg �- 8",
         },
         {
             "label": "Sleep average",
@@ -441,25 +443,46 @@ def trainer_dashboard(request):
 @login_required(login_url="accounts:trainer_login")
 @staff_required
 def trainer_clients(request):
-    """
-    Simple view of potential clients derived from consultation requests.
-    Groups requests by email so each client appears once.
-    """
+    """Show one row per email for the trainer's assigned clients."""
+    trainer = request.user
+
     qs = (
-        ConsultationRequest.objects.filter(assigned_trainer=request.user)
+        ConsultationRequest.objects
+        .filter(assigned_trainer=trainer)
         .order_by("-created_at")
     )
 
-    client_map = OrderedDict()
+    latest_by_email = {}
     for req in qs:
-        if req.email not in client_map:
-            client_map[req.email] = req
+        key = (req.email or "").lower()
+        if key and key not in latest_by_email:
+            latest_by_email[key] = req
 
-    clients = list(client_map.values())
+    latest_requests = sorted(
+        latest_by_email.values(),
+        key=lambda r: r.created_at,
+        reverse=True,
+    )
+
+    rows = []
+    for req in latest_requests:
+        full_name = f"{req.first_name} {req.last_name}".strip() or req.email
+        portal_user = User.objects.filter(email__iexact=req.email).first()
+
+        rows.append(
+            {
+                "name": full_name,
+                "email": req.email,
+                "goal": req.training_goal,
+                "coaching_option": req.coaching_option,
+                "last_request_date": req.created_at.date(),
+                "user_id": portal_user.id if portal_user else None,
+            }
+        )
 
     context = {
-        "clients": clients,
-        "section": "clients",
+        "trainer": trainer,
+        "clients": rows,
     }
     return render(request, "trainer/clients.html", context)
 
@@ -525,14 +548,14 @@ def trainer_programmes(request):
     programme_blocks = [
         {
             "name": "Hypertrophy block (6 weeks)",
-            "phase": "Weeks 1â€“6",
+            "phase": "Weeks 1–6",
             "clients": 5,
             "status": "Active",
             "next_action": "Review week-3 check-ins",
         },
         {
             "name": "Strength foundation (4 weeks)",
-            "phase": "Weeks 1â€“4",
+            "phase": "Weeks 1–4",
             "clients": 3,
             "status": "Planning",
             "next_action": "Assign to new consultation requests",
@@ -541,12 +564,12 @@ def trainer_programmes(request):
 
     programme_templates = [
         {
-            "name": "General strength â€“ 3 days",
+            "name": "General strength – 3 days",
             "focus": "Full-body strength",
             "length": "8 weeks",
         },
         {
-            "name": "Fat-loss circuit â€“ 2 days",
+            "name": "Fat-loss circuit – 2 days",
             "focus": "Conditioning / cardio",
             "length": "6 weeks",
         },
@@ -593,6 +616,7 @@ def trainer_consultation_detail(request, pk):
         "trainer/consultation_detail.html",
         {"consultation": consultation},
     )
+
 
 
 

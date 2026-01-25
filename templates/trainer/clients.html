@@ -31,20 +31,29 @@
                 </tr>
             </thead>
             <tbody>
-                {% for c in clients %}
-                    <tr>
-                        <td>{{ c.first_name }} {{ c.last_name }}</td>
-                        <td>{{ c.email }}</td>
-                        <td>{{ c.get_training_goal_display|default:"—" }}</td>
-                        <td>{{ c.get_coaching_option_display|default:"—" }}</td>
-                        <td>{{ c.created_at|date:"d M Y" }}</td>
-                    </tr>
+                {% for row in clients %}
+                <tr>
+                    <td>
+                        {% if row.user_id %}
+                            <a href="{% url 'accounts:trainer_client_detail' row.user_id %}">
+                                {{ row.name }}
+                            </a>
+                        {% else %}
+                            {{ row.name }}
+                            <span class="tag tag-muted">No portal account yet</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ row.email }}</td>
+                    <td>{{ row.goal }}</td>
+                    <td>{{ row.coaching_option }}</td>
+                    <td>{{ row.last_request_date|date:"d M Y" }}</td>
+                </tr>
                 {% empty %}
-                    <tr>
-                        <td colspan="5" class="muted-text">
-                            No clients are currently assigned to this trainer.
-                        </td>
-                    </tr>
+                <tr>
+                    <td colspan="5" class="muted-text">
+                        No clients are currently assigned to this trainer.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
