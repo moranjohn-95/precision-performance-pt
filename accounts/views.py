@@ -1,4 +1,4 @@
-# accounts/views.py
+﻿# accounts/views.py
 from collections import OrderedDict
 import datetime
 import json
@@ -81,21 +81,9 @@ def client_programme_library(request):
         "current_week": 3,
         "weeks": [1, 2, 3, 4, 5, 6],
         "sessions": [
-            {
-                "day": "Day 1 — Upper",
-                "summary": "Bench, Row, Accessories",
-                "cta": "Open",
-            },
-            {
-                "day": "Day 2 — Lower",
-                "summary": "Squat, RDL, Core",
-                "cta": "Open",
-            },
-            {
-                "day": "Day 3 — Full",
-                "summary": "Press, Pull, Conditioning",
-                "cta": "View",
-            },
+            {"day": "Day 1 - Upper", "summary": "Bench, Row, Accessories", "cta": "Open"},
+            {"day": "Day 2 - Lower", "summary": "Squat, RDL, Core", "cta": "Open"},
+            {"day": "Day 3 - Full", "summary": "Press, Pull, Conditioning", "cta": "View"},
         ],
     }
 
@@ -137,10 +125,10 @@ def client_workout_log(request):
             incline_weight_raw = (request.POST.get("incline_weight") or "").strip()
 
             def format_sets(*vals):
-                return " | ".join(v or "—" for v in vals)
+                return " | ".join(v or "â€”" for v in vals)
 
             def format_weight(raw_val):
-                return f"{raw_val}kg" if raw_val else "—"
+                return f"{raw_val}kg" if raw_val else "â€”"
 
             bench_sets_display = format_sets(bench_set1, bench_set2, bench_set3)
             row_sets_display = format_sets(row_set1, row_set2, row_set3)
@@ -302,7 +290,7 @@ def client_metrics(request):
             "label": "Bench top set",
             "field": "bench_top_set_kg",
             "unit": "kg",
-            "target_display": "62.5 kg × 8",
+            "target_display": "62.5 kg Ã- 8",
         },
         {
             "label": "Sleep average",
@@ -537,14 +525,14 @@ def trainer_programmes(request):
     programme_blocks = [
         {
             "name": "Hypertrophy block (6 weeks)",
-            "phase": "Weeks 1–6",
+            "phase": "Weeks 1â€“6",
             "clients": 5,
             "status": "Active",
             "next_action": "Review week-3 check-ins",
         },
         {
             "name": "Strength foundation (4 weeks)",
-            "phase": "Weeks 1–4",
+            "phase": "Weeks 1â€“4",
             "clients": 3,
             "status": "Planning",
             "next_action": "Assign to new consultation requests",
@@ -553,12 +541,12 @@ def trainer_programmes(request):
 
     programme_templates = [
         {
-            "name": "General strength – 3 days",
+            "name": "General strength â€“ 3 days",
             "focus": "Full-body strength",
             "length": "8 weeks",
         },
         {
-            "name": "Fat-loss circuit – 2 days",
+            "name": "Fat-loss circuit â€“ 2 days",
             "focus": "Conditioning / cardio",
             "length": "6 weeks",
         },
@@ -569,4 +557,42 @@ def trainer_programmes(request):
         "programme_templates": programme_templates,
     }
     return render(request, "trainer/programmes.html", context)
+
+
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_consultation_detail(request, pk):
+    """
+    Detail view for a consultation request with assign-to-me action.
+    """
+    consultation = get_object_or_404(ConsultationRequest, pk=pk)
+
+    if request.method == "POST" and "assign_to_me" in request.POST:
+        if (
+            consultation.assigned_trainer
+            and consultation.assigned_trainer != request.user
+            and not request.user.is_superuser
+        ):
+            messages.error(
+                request,
+                "This consultation is already assigned to another trainer.",
+            )
+        else:
+            consultation.assigned_trainer = request.user
+            consultation.save()
+            messages.success(
+                request,
+                "Client has been added to the trainer client list.",
+            )
+        return redirect("accounts:trainer_clients")
+
+    return render(
+        request,
+        "trainer/consultation_detail.html",
+        {"consultation": consultation},
+    )
+
+
 

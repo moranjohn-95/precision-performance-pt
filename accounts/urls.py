@@ -9,6 +9,7 @@ from .views import (
     trainer_clients,
     trainer_programmes,
     trainer_metrics,
+    trainer_consultation_detail,
     client_dashboard,
     client_programme_library,
     client_today,
@@ -34,7 +35,7 @@ urlpatterns = [
     path("trainer/metrics/", trainer_metrics, name="trainer_metrics"),
     path(
         "trainer/consultations/<int:pk>/",
-        views.trainer_consultation_detail,
+        trainer_consultation_detail,
         name="trainer_consultation_detail",
     ),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
