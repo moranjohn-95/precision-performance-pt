@@ -1,0 +1,30 @@
+{% with current=request.resolver_match.url_name %}
+<li>
+    <a href="{% url 'accounts:trainer_dashboard' %}"
+       class="{% if current == 'trainer_dashboard' %}is-active{% endif %}">
+        Overview
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:trainer_clients' %}"
+       class="{% if current == 'trainer_clients' %}is-active{% endif %}">
+        My clients
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:trainer_programmes' %}"
+       class="{% if current == 'trainer_programmes' %}is-active{% endif %}">
+        Programmes
+    </a>
+</li>
+<li>
+    <a href="{% url 'accounts:trainer_metrics' %}"
+       class="{% if current == 'trainer_metrics' %}is-active{% endif %}">
+        Metrics
+    </a>
+</li>
+<li><span class="dashboard-menu-link is-disabled">Check-ins</span></li>
+<li><span class="dashboard-menu-link is-disabled">Messaging</span></li>
+<li><span class="dashboard-menu-link is-disabled">Resources</span></li>
+<li><span class="dashboard-menu-link is-disabled">Account</span></li>
+{% endwith %}

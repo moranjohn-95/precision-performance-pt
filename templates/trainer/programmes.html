@@ -1,18 +1,8 @@
 {% extends "dashboard_base.html" %}
 
-{% block sidebar_title %}
-Trainer Menu
-{% endblock %}
-
+{% block sidebar_title %}Trainer Menu{% endblock %}
 {% block sidebar_menu %}
-<li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
-<li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
-<li><a href="{% url 'accounts:trainer_programmes' %}" class="is-active">Programmes</a></li>
-<li><a href="#">Check-ins</a></li>
-<li><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
-<li><a href="#">Messaging</a></li>
-<li><a href="#">Resources</a></li>
-<li><a href="#">Account</a></li>
+{% include "trainer/_sidebar.html" %}
 {% endblock %}
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
