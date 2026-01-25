@@ -457,18 +457,17 @@ def trainer_clients(request):
     Simple view of potential clients derived from consultation requests.
     Groups requests by email so each client appears once.
     """
-    qs = ConsultationRequest.objects.order_by(
-        "last_name",
-        "first_name",
-        "-created_at",
+    qs = (
+        ConsultationRequest.objects.filter(assigned_trainer=request.user)
+        .order_by("-created_at")
     )
 
-    unique_by_email = OrderedDict()
+    client_map = OrderedDict()
     for req in qs:
-        if req.email not in unique_by_email:
-            unique_by_email[req.email] = req
+        if req.email not in client_map:
+            client_map[req.email] = req
 
-    clients = list(unique_by_email.values())
+    clients = list(client_map.values())
 
     context = {
         "clients": clients,
