@@ -1,6 +1,7 @@
 # accounts/views.py
 from collections import OrderedDict
 import datetime
+import json
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -328,10 +329,32 @@ def client_metrics(request):
         .order_by("-date", "-created_at")[:5]
     )
 
+    # Chart data: all entries ordered by date
+    chart_entries = BodyMetricEntry.objects.filter(client=user).order_by("date")
+    chart_labels = [entry.date.strftime("%d %b") for entry in chart_entries]
+
+    bodyweight_series = [
+        float(entry.bodyweight_kg) if entry.bodyweight_kg is not None else None
+        for entry in chart_entries
+    ]
+
+    bench_series = [
+        float(entry.bench_top_set_kg) if entry.bench_top_set_kg is not None else None
+        for entry in chart_entries
+    ]
+
+    has_bodyweight_data = any(v is not None for v in bodyweight_series)
+    has_bench_data = any(v is not None for v in bench_series)
+
     context = {
         "form": form,
         "summary_rows": summary_rows,
         "recent_entries": recent_entries,
+        "chart_labels_json": json.dumps(chart_labels),
+        "bodyweight_series_json": json.dumps(bodyweight_series),
+        "bench_series_json": json.dumps(bench_series),
+        "has_bodyweight_data": has_bodyweight_data,
+        "has_bench_data": has_bench_data,
     }
     return render(request, "client/metrics.html", context)
 
