@@ -1,5 +1,6 @@
 # accounts/views.py
 from collections import OrderedDict
+import datetime
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -10,8 +11,8 @@ from django.utils import timezone
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, render, redirect
 
-from training.forms import WorkoutSessionForm
-from training.models import ConsultationRequest, WorkoutSession
+from training.forms import WorkoutSessionForm, BodyMetricEntryForm
+from training.models import ConsultationRequest, WorkoutSession, BodyMetricEntry
 from .models import ClientProfile
 
 
@@ -235,7 +236,104 @@ def client_workout_edit(request):
 def client_metrics(request):
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
-    return render(request, "client/metrics.html")
+
+    user = request.user
+
+    if request.method == "POST":
+        form = BodyMetricEntryForm(request.POST)
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.client = user
+            entry.save()
+            messages.success(request, "Body metrics check-in saved.")
+            return redirect("accounts:client_metrics")
+    else:
+        form = BodyMetricEntryForm(initial={"date": timezone.localdate()})
+
+    entries_qs = BodyMetricEntry.objects.filter(client=user).order_by(
+        "date",
+        "created_at",
+    )
+    entries = list(entries_qs)
+
+    def latest_and_change(field_name):
+        latest_entry = None
+        for e in reversed(entries):
+            value = getattr(e, field_name)
+            if value is not None:
+                latest_entry = e
+                break
+
+        if latest_entry is None:
+            return None, None
+
+        latest_value = getattr(latest_entry, field_name)
+        latest_date = latest_entry.date
+        cutoff = latest_date - datetime.timedelta(weeks=4)
+
+        baseline_entry = None
+        for e in entries:
+            if e.date <= cutoff and getattr(e, field_name) is not None:
+                baseline_entry = e
+
+        if baseline_entry is None:
+            change = None
+        else:
+            change = latest_value - getattr(baseline_entry, field_name)
+
+        return latest_value, change
+
+    summary_rows = []
+    metrics_spec = [
+        {
+            "label": "Bodyweight",
+            "field": "bodyweight_kg",
+            "unit": "kg",
+            "target_display": "77.5 kg",
+        },
+        {
+            "label": "Waist",
+            "field": "waist_cm",
+            "unit": "cm",
+            "target_display": "82 cm",
+        },
+        {
+            "label": "Bench top set",
+            "field": "bench_top_set_kg",
+            "unit": "kg",
+            "target_display": "62.5 kg × 8",
+        },
+        {
+            "label": "Sleep average",
+            "field": "sleep_hours",
+            "unit": "h",
+            "target_display": "7.5 h",
+        },
+    ]
+
+    for spec in metrics_spec:
+        latest, change = latest_and_change(spec["field"])
+        summary_rows.append(
+            {
+                "label": spec["label"],
+                "unit": spec["unit"],
+                "target_display": spec["target_display"],
+                "latest": latest,
+                "change": change,
+            }
+        )
+
+    recent_entries = (
+        BodyMetricEntry.objects.filter(client=user)
+        .order_by("-date", "-created_at")[:5]
+    )
+
+    context = {
+        "form": form,
+        "summary_rows": summary_rows,
+        "recent_entries": recent_entries,
+    }
+    return render(request, "client/metrics.html", context)
 
 
 @login_required
