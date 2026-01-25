@@ -1,4 +1,4 @@
-{% extends "dashboard_base.html" %}
+﻿{% extends "dashboard_base.html" %}
 
 {% block sidebar_title %}Trainer Menu{% endblock %}
 {% block sidebar_menu %}
@@ -13,19 +13,31 @@
     <header class="card-header">
         <h2 class="card-title">{{ session.name }}</h2>
         <p class="card-subtitle">
-            {{ session.date|date:"d M Y" }} � {{ client.get_full_name|default:client.username }}
+            {{ session.date|date:"d M Y" }} · {{ client.get_full_name|default:client.username }}
         </p>
     </header>
+
     <div class="card-body">
         <form method="post" class="form">
             {% csrf_token %}
+
             <div class="form-field">
-                {{ form.notes.label_tag }}
+                <label for="{{ form.notes.id_for_label }}">
+                    Notes <span class="field-optional">(optional)</span>
+                </label>
                 {{ form.notes }}
+                <p class="help-text">
+                    Add coaching notes, feedback, or session details for future reference.
+                </p>
             </div>
+
             <div class="form-actions">
-                <button type="submit" class="btn-primary">Save changes</button>
-                <a href="{% url 'accounts:trainer_client_detail' client.id %}" class="btn-secondary">Back to client</a>
+                <button type="submit" class="btn-primary">
+                    Save changes
+                </button>
+                <a href="{% url 'accounts:trainer_client_detail' client.id %}" class="btn-secondary">
+                    Back to client
+                </a>
             </div>
         </form>
     </div>

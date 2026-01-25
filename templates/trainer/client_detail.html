@@ -17,6 +17,7 @@
             {{ client.get_full_name|default:client.username }}
         </p>
     </header>
+
     <div class="card-body">
         <div class="dashboard-table-wrapper">
             <table class="dashboard-table">
@@ -24,7 +25,6 @@
                     <tr>
                         <th>Session</th>
                         <th>Date</th>
-                        <th>Status</th>
                         <th>Notes</th>
                         <th class="action-cell">Action</th>
                     </tr>
@@ -34,15 +34,16 @@
                     <tr>
                         <td>{{ s.name }}</td>
                         <td>{{ s.date|date:"d/m/Y" }}</td>
-                        <td>{{ s.status|default:"Logged"|capfirst }}</td>
                         <td>{{ s.notes|default_if_none:""|truncatechars:60 }}</td>
                         <td class="action-cell nowrap">
-                            <a href="{% url 'accounts:trainer_session_edit' s.id %}" class="text-link">Open</a>
+                            <a href="{% url 'accounts:trainer_session_edit' s.id %}" class="text-link">
+                                Open
+                            </a>
                         </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-muted">No sessions recorded yet.</td>
+                        <td colspan="4" class="text-muted">No sessions recorded yet.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -56,13 +57,13 @@
         <h2 class="card-title">Bodyweight trend</h2>
         <p class="card-subtitle">Based on bodyweight check-ins.</p>
     </header>
+
     <div class="card-body">
-        {% if has_bodyweight_data %}
         <div class="metrics-chart">
             <canvas id="bodyweightChart"></canvas>
         </div>
-        {% else %}
-        <p class="empty-state">No bodyweight entries recorded yet.</p>
+        {% if not has_bodyweight_data %}
+            <p class="empty-state">No bodyweight entries recorded yet.</p>
         {% endif %}
     </div>
 </section>
@@ -72,12 +73,12 @@
         <h2 class="card-title">Strength trend</h2>
         <p class="card-subtitle">Bench top set entries.</p>
     </header>
+
     <div class="card-body">
-        {% if has_bench_data %}
         <div class="metrics-chart">
             <canvas id="strengthChart"></canvas>
         </div>
-        {% else %}
+        {% if not has_bench_data %}
             <p class="empty-state">No bench top set data recorded yet.</p>
         {% endif %}
     </div>
@@ -87,6 +88,7 @@
     <header class="card-header">
         <h2 class="card-title">Recent check-ins</h2>
     </header>
+
     <div class="card-body">
         <div class="dashboard-table-wrapper">
             <table class="dashboard-table">
@@ -103,10 +105,10 @@
                     {% for entry in recent_entries %}
                     <tr>
                         <td>{{ entry.date|date:"d M Y" }}</td>
-                        <td>{{ entry.bodyweight_kg|default:"—" }}</td>
-                        <td>{{ entry.waist_cm|default:"—" }}</td>
-                        <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
-                        <td>{{ entry.sleep_hours|default:"—" }}</td>
+                        <td>{{ entry.bodyweight_kg|default:"â€”" }}</td>
+                        <td>{{ entry.waist_cm|default:"â€”" }}</td>
+                        <td>{{ entry.bench_top_set_kg|default:"â€”" }}</td>
+                        <td>{{ entry.sleep_hours|default:"â€”" }}</td>
                     </tr>
                     {% empty %}
                     <tr>
@@ -124,6 +126,7 @@
         <h2 class="card-title">Key metrics</h2>
         <p class="card-subtitle">Latest values and change over ~4 weeks.</p>
     </header>
+
     <div class="card-body">
         <div class="dashboard-table-wrapper">
             <table class="dashboard-table">
@@ -142,6 +145,10 @@
                         <td>{{ row.latest }}</td>
                         <td>{{ row.change }}</td>
                         <td>{{ row.target }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-muted">No summary data available yet.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -163,7 +170,8 @@
     function makeLineChart(canvasId, data, labelText) {
         const canvas = document.getElementById(canvasId);
         if (!canvas) return;
-        const hasValues = Array.isArray(data) && data.some(v => v !== null);
+
+        const hasValues = Array.isArray(data) && data.some(v => v !== null && v !== undefined);
         if (!hasValues) return;
 
         new Chart(canvas, {
