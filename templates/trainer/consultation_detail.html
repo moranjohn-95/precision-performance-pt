@@ -1,74 +1,122 @@
 {% extends "dashboard_base.html" %}
 
+{% block title %}Consultation details | Precision Performance PT{% endblock %}
 {% block sidebar_title %}Trainer Menu{% endblock %}
 {% block sidebar_menu %}
 {% include "trainer/_sidebar.html" %}
 {% endblock %}
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
-{% block page_title %}Consultation detail{% endblock %}
+{% block page_title %}Consultation details{% endblock %}
 
 {% block dashboard_content %}
 <section class="dashboard-card">
-    <h2 class="dashboard-card__title">Consultation</h2>
-    <p class="dashboard-subtitle">
-        {{ consultation.first_name }} {{ consultation.last_name }} — {{ consultation.email }}
-    </p>
+    <header class="card-header">
+        <h2 class="card-title">Consultation</h2>
+        <p class="card-subtitle">
+            Trainer: {{ request.user.get_full_name|default:request.user.username }}
+        </p>
+    </header>
 
-    <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
-            <tbody>
-                <tr>
-                    <th scope="row">Submitted</th>
-                    <td>{{ consultation.created_at|date:"d M Y" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Training goal</th>
-                    <td>{{ consultation.get_training_goal_display|default:"—" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Coaching option</th>
-                    <td>{{ consultation.get_coaching_option_display|default:"—" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Preferred date</th>
-                    <td>{{ consultation.preferred_date|default:"—" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Preferred time window</th>
-                    <td>{{ consultation.get_preferred_time_window_display|default:"—" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Availability notes</th>
-                    <td>{{ consultation.availability_notes|linebreaksbr }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Training background</th>
-                    <td>{{ consultation.training_background|linebreaksbr }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Status</th>
-                    <td>{{ consultation.get_status_display|default:"—" }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Assigned trainer</th>
-                    <td>
-                        {% if consultation.assigned_trainer %}
-                            {{ consultation.assigned_trainer.get_full_name|default:consultation.assigned_trainer.username }}
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="card-body">
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Submitted</th>
+                        <td>{{ consultation.created_at|date:"d M Y" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ consultation.first_name }} {{ consultation.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Email</th>
+                        <td>{{ consultation.email }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Phone</th>
+                        <td>{{ consultation.phone|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Training goal</th>
+                        <td>{{ consultation.get_training_goal_display|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Coaching option</th>
+                        <td>{{ consultation.get_coaching_option_display|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Preferred date</th>
+                        <td>{{ consultation.preferred_date|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Preferred time window</th>
+                        <td>{{ consultation.get_preferred_time_window_display|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Availability notes</th>
+                        <td>{{ consultation.availability_notes|linebreaksbr }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Training background</th>
+                        <td>{{ consultation.training_background|linebreaksbr }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>{{ consultation.get_status_display|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Assigned trainer</th>
+                        <td>
+                            {% if consultation.assigned_trainer %}
+                                {{ consultation.assigned_trainer.get_full_name|default:consultation.assigned_trainer.username }}
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <form method="post" class="form-actions" style="margin-top: 1rem;">
-        {% csrf_token %}
-        <button type="submit" name="assign_to_me" class="btn-primary">
-            Assign to my client list
-        </button>
-    </form>
+    <footer class="card-footer card-footer--actions">
+        <form method="post">
+            {% csrf_token %}
+
+            {% if consultation.assigned_trainer %}
+                <p class="text-muted">
+                    Assigned trainer:
+                    {{ consultation.assigned_trainer.get_full_name|default:consultation.assigned_trainer.username }}
+                </p>
+
+                {% if consultation.assigned_trainer == request.user %}
+                    <button type="submit" class="btn-secondary" disabled>
+                        Already in trainer client list
+                    </button>
+                {% else %}
+                    <button type="submit" class="btn-secondary" disabled>
+                        Assigned to another trainer
+                    </button>
+                {% endif %}
+            {% else %}
+                <button
+                    type="submit"
+                    name="assign_to_me"
+                    class="btn-primary"
+                >
+                    Assign to my client list
+                </button>
+            {% endif %}
+
+            <a
+                href="{% url 'accounts:trainer_dashboard' %}"
+                class="btn-link"
+            >
+                Back to overview
+            </a>
+        </form>
+    </footer>
 </section>
 {% endblock %}
