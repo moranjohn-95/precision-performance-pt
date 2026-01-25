@@ -95,6 +95,7 @@ Client Menu
             <div class="workout-table">
                 <div class="workout-row workout-row--header">
                     <div class="workout-cell workout-cell--exercise">Exercise</div>
+                    <div class="workout-cell workout-cell--weight">Weight (kg)</div>
                     <div class="workout-cell workout-cell--target">Target</div>
                     <div class="workout-cell">Set 1</div>
                     <div class="workout-cell">Set 2</div>
@@ -106,6 +107,16 @@ Client Menu
                     <div class="workout-cell workout-cell--exercise">
                         <strong>Bench Press</strong><br>
                         <span class="text-muted">Main press</span>
+                    </div>
+                    <div class="workout-cell workout-cell--weight">
+                        <input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            name="bench_weight"
+                            class="form-control"
+                            placeholder="kg"
+                        >
                     </div>
                     <div class="workout-cell workout-cell--target">
                         3 × 8
@@ -127,6 +138,16 @@ Client Menu
                         <strong>Seated Row</strong><br>
                         <span class="text-muted">Upper back</span>
                     </div>
+                    <div class="workout-cell workout-cell--weight">
+                        <input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            name="row_weight"
+                            class="form-control"
+                            placeholder="kg"
+                        >
+                    </div>
                     <div class="workout-cell workout-cell--target">
                         3 × 10
                     </div>
@@ -146,6 +167,16 @@ Client Menu
                     <div class="workout-cell workout-cell--exercise">
                         <strong>DB Incline</strong><br>
                         <span class="text-muted">Chest / shoulders</span>
+                    </div>
+                    <div class="workout-cell workout-cell--weight">
+                        <input
+                            type="number"
+                            step="0.5"
+                            min="0"
+                            name="incline_weight"
+                            class="form-control"
+                            placeholder="kg"
+                        >
                     </div>
                     <div class="workout-cell workout-cell--target">
                         3 × 12

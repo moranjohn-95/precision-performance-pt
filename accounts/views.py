@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db.models import Count
+from django.utils import timezone
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, render, redirect
 
@@ -113,7 +114,78 @@ def client_workout_log(request):
     if request.method == "POST":
         form = WorkoutSessionForm(request.POST)
         if form.is_valid():
-            form.save(user=request.user)
+            cd = form.cleaned_data
+
+            # Set inputs
+            bench_set1 = cd.get("bench_set1")
+            bench_set2 = cd.get("bench_set2")
+            bench_set3 = cd.get("bench_set3")
+
+            row_set1 = cd.get("row_set1")
+            row_set2 = cd.get("row_set2")
+            row_set3 = cd.get("row_set3")
+
+            incline_set1 = cd.get("incline_set1")
+            incline_set2 = cd.get("incline_set2")
+            incline_set3 = cd.get("incline_set3")
+
+            # Weight inputs (not part of the form)
+            bench_weight_raw = (request.POST.get("bench_weight") or "").strip()
+            row_weight_raw = (request.POST.get("row_weight") or "").strip()
+            incline_weight_raw = (request.POST.get("incline_weight") or "").strip()
+
+            def format_sets(*vals):
+                return " | ".join(v or "—" for v in vals)
+
+            def format_weight(raw_val):
+                return f"{raw_val}kg" if raw_val else "—"
+
+            bench_sets_display = format_sets(bench_set1, bench_set2, bench_set3)
+            row_sets_display = format_sets(row_set1, row_set2, row_set3)
+            incline_sets_display = format_sets(
+                incline_set1,
+                incline_set2,
+                incline_set3,
+            )
+
+            session_details_lines = [
+                "Session details:",
+                (
+                    f"Bench Press ({format_weight(bench_weight_raw)}): "
+                    f"{bench_sets_display}"
+                ),
+                (
+                    f"Seated Row ({format_weight(row_weight_raw)}): "
+                    f"{row_sets_display}"
+                ),
+                (
+                    f"DB Incline ({format_weight(incline_weight_raw)}): "
+                    f"{incline_sets_display}"
+                ),
+            ]
+
+            base_notes = cd.get("notes") or ""
+            session_notes = "\n\n".join(
+                part for part in (base_notes, "\n".join(session_details_lines)) if part
+            )
+
+            session = form.save(commit=False)
+
+            if not session.date:
+                session.date = timezone.localdate()
+
+            if getattr(session, "client_id", None) is None:
+                session.client = request.user
+
+            if hasattr(session, "status") and not getattr(session, "status", None):
+                try:
+                    session.status = "logged"
+                except Exception:
+                    pass
+
+            session.notes = session_notes
+            session.save()
+
             messages.success(request, "Workout session saved.")
             return redirect("accounts:client_workout_log")
     else:
