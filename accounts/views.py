@@ -490,49 +490,43 @@ def trainer_programmes(request):
 @staff_required
 def trainer_metrics(request):
     """
-    Trainer view: basic statistics on consultation requests.
-    Uses ConsultationRequest to build simple counts.
+    Trainer view: overview of latest body metric entries per client.
     """
-    # Counts by training goal
-    goal_counts_qs = (
-        ConsultationRequest.objects.values("training_goal")
-        .annotate(total=Count("id"))
-        .order_by("training_goal")
+    # Later this can filter by clients assigned to this trainer.
+    entries = (
+        BodyMetricEntry.objects.select_related("client")
+        .order_by("client__id", "-date")
     )
-    goal_labels = dict(ConsultationRequest.TRAINING_GOAL_CHOICES)
-    goal_stats = [
-        {
-            "code": row["training_goal"],
-            "label": goal_labels.get(row["training_goal"] or "", "Not specified"),
-            "total": row["total"],
-        }
-        for row in goal_counts_qs
-    ]
 
-    # Counts by coaching option
-    option_counts_qs = (
-        ConsultationRequest.objects.values("coaching_option")
-        .annotate(total=Count("id"))
-        .order_by("coaching_option")
+    latest_by_user = {}
+    for entry in entries:
+        user_id = entry.client_id
+        if user_id not in latest_by_user:
+            latest_by_user[user_id] = entry
+
+    client_rows = []
+    for entry in latest_by_user.values():
+        client = entry.client
+        client_rows.append(
+            {
+                "client_name": client.get_full_name() or client.username,
+                "email": client.email,
+                "date": entry.date,
+                "bodyweight": entry.bodyweight_kg,
+                "waist": entry.waist_cm,
+                "bench_topset": getattr(entry, "bench_top_set_kg", None),
+            }
+        )
+
+    client_rows.sort(key=lambda row: row["client_name"].lower())
+
+    return render(
+        request,
+        "trainer/metrics.html",
+        {
+            "client_rows": client_rows,
+        },
     )
-    option_labels = dict(ConsultationRequest.COACHING_OPTION_CHOICES)
-    option_stats = [
-        {
-            "code": row["coaching_option"],
-            "label": option_labels.get(row["coaching_option"] or "", "Not specified"),
-            "total": row["total"],
-        }
-        for row in option_counts_qs
-    ]
-
-    total_requests = sum(item["total"] for item in goal_stats)
-
-    context = {
-        "total_requests": total_requests,
-        "goal_stats": goal_stats,
-        "option_stats": option_stats,
-    }
-    return render(request, "trainer/metrics.html", context)
 
 
 @login_required

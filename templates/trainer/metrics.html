@@ -1,135 +1,102 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
-{% block sidebar_title %}
-Trainer Menu
-{% endblock %}
+{% block title %}Trainer metrics | Precision Performance PT{% endblock %}
 
-{% block sidebar_menu %}
-<li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
-<li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
-<li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
-<li><a href="#">Check-ins</a></li>
-<li><a href="{% url 'accounts:trainer_metrics' %}" class="is-active">Metrics</a></li>
-<li><a href="#">Messaging</a></li>
-<li><a href="#">Resources</a></li>
-<li><a href="#">Account</a></li>
-{% endblock %}
+{% block content %}
+<section class="dashboard-page trainer-dashboard">
+    <div class="dashboard-layout">
 
-{% block page_eyebrow %}Trainer dashboard{% endblock %}
-{% block page_title %}Metrics{% endblock %}
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <nav class="dashboard-menu">
+                <h2 class="dashboard-menu-title">Trainer Menu</h2>
+                <ul>
+                    <li><a href="{% url 'accounts:trainer_dashboard' %}">Overview</a></li>
+                    <li><a href="{% url 'accounts:trainer_clients' %}">My clients</a></li>
+                    <li><a href="{% url 'accounts:trainer_programmes' %}">Programmes</a></li>
+                    <li class="is-active"><a href="{% url 'accounts:trainer_metrics' %}">Metrics</a></li>
+                    <li><span class="dashboard-menu-link is-disabled">Check-ins</span></li>
+                    <li><span class="dashboard-menu-link is-disabled">Messaging</span></li>
+                    <li><span class="dashboard-menu-link is-disabled">Resources</span></li>
+                    <li><span class="dashboard-menu-link is-disabled">Account</span></li>
+                </ul>
+            </nav>
+        </aside>
 
-{% block dashboard_content %}
+        <!-- Main content -->
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <p class="dashboard-kicker">Trainer dashboard</p>
+                <h1>Client metrics</h1>
+                <p>Snapshot of recent body metrics check-ins for active clients.</p>
+            </header>
 
-<section class="dashboard-cards-grid">
-    <article class="dashboard-card">
-        <h2 class="dashboard-card__title">Total consultation requests</h2>
-        <p class="dashboard-card__metric">
-            {{ total_requests|default:"0" }}
-        </p>
-        <p class="dashboard-card__subtitle">
-            All requests captured through the booking form.
-        </p>
-    </article>
+            <section class="card card-table">
+                <header class="card-header">
+                    <h2 class="card-title">Latest check-ins</h2>
+                    <p class="card-subtitle">
+                        One row per client, based on the most recent body metrics entry.
+                    </p>
+                </header>
 
-    <article class="dashboard-card">
-        <h2 class="dashboard-card__title">Most common goal</h2>
-        {% with goal_stats|first as top_goal %}
-            <p class="dashboard-card__metric">
-                {{ top_goal.label|default:"Not available" }}
-            </p>
-            <p class="dashboard-card__subtitle">
-                Based on the current set of consultation requests.
-            </p>
-        {% endwith %}
-    </article>
+                <div class="card-body">
+                    {% if client_rows %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Bodyweight</th>
+                                    <th>Waist</th>
+                                    <th>Bench top set</th>
+                                    <th>Last check-in</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in client_rows %}
+                                    <tr>
+                                        <td>
+                                            <div class="table-primary-text">{{ row.client_name }}</div>
+                                            <div class="table-secondary-text">{{ row.email }}</div>
+                                        </td>
+                                        <td>
+                                            {% if row.bodyweight %}
+                                                {{ row.bodyweight }} kg
+                                            {% else %}
+                                                &mdash;
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if row.waist %}
+                                                {{ row.waist }} cm
+                                            {% else %}
+                                                &mdash;
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if row.bench_topset %}
+                                                {{ row.bench_topset }} kg
+                                            {% else %}
+                                                &mdash;
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ row.date|date:"d M Y" }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="empty-state">
+                            No body metrics check-ins are available yet.
+                        </p>
+                    {% endif %}
+                </div>
 
-    <article class="dashboard-card">
-        <h2 class="dashboard-card__title">Most selected coaching option</h2>
-        {% with option_stats|first as top_option %}
-            <p class="dashboard-card__metric">
-                {{ top_option.label|default:"Not available" }}
-            </p>
-            <p class="dashboard-card__subtitle">
-                Calculated from incoming consultation requests.
-            </p>
-        {% endwith %}
-    </article>
-</section>
-
-<section class="dashboard-charts-row">
-    <div class="dashboard-card dashboard-card--chart">
-        <h2 class="dashboard-section-title">Requests by training goal</h2>
-        <p class="dashboard-section-subtitle">
-            This area can later hold a chart component.
-        </p>
-    </div>
-
-    <div class="dashboard-card dashboard-card--chart">
-        <h2 class="dashboard-section-title">Requests by coaching option</h2>
-        <p class="dashboard-section-subtitle">
-            Another placeholder for a visual chart in a later iteration.
-        </p>
-    </div>
-</section>
-
-<section class="dashboard-grid-two">
-    <div class="dashboard-card">
-        <h2 class="dashboard-section-title">Breakdown by training goal</h2>
-
-        <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Goal</th>
-                        <th>Requests</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in goal_stats %}
-                        <tr>
-                            <td>{{ row.label }}</td>
-                            <td>{{ row.total }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="2">
-                                No consultation requests have been recorded yet.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="dashboard-card">
-        <h2 class="dashboard-section-title">Breakdown by coaching option</h2>
-
-        <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Coaching option</th>
-                        <th>Requests</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in option_stats %}
-                        <tr>
-                            <td>{{ row.label }}</td>
-                            <td>{{ row.total }}</td>
-                        </tr>
-                    {% empty %}
-                        <tr>
-                            <td colspan="2">
-                                No consultation requests have been recorded yet.
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                <footer class="card-footer text-muted">
+                    When client–trainer assignment is introduced, this table can be filtered to clients assigned to the signed-in trainer.
+                </footer>
+            </section>
+        </main>
     </div>
 </section>
-
 {% endblock %}
