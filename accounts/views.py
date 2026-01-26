@@ -828,10 +828,14 @@ def trainer_programme_detail(request, block_id):
     if request.method == "GET" and is_tailored:
         exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
 
-    preview_days = []
-    for d in template_block.days.all().order_by("order").prefetch_related(
+    template_days_qs = template_block.days.all().order_by("order").prefetch_related(
         "exercises"
-    ):
+    )
+    if selected_day:
+        template_days_qs = template_days_qs.filter(order=selected_day.order)
+
+    preview_days = []
+    for d in template_days_qs:
         preview_days.append(
             {
                 "day": d,
