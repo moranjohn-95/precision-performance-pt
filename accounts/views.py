@@ -529,16 +529,18 @@ def trainer_programme_detail(request, block_id):
         id=block_id,
     )
 
-    # ✅ Only allow edits if this is a tailored copy (has at least 1 assignment)
-    can_edit = block.assignments.exists()
-
     ExerciseFormSet = modelformset_factory(
         ProgrammeExercise,
         fields=("target_sets", "target_reps", "target_weight_kg"),
         extra=0,
     )
 
-    exercises_qs = ProgrammeExercise.objects.filter(day__block=block).order_by("day__order", "order")
+    exercises_qs = (
+        ProgrammeExercise.objects.filter(day__block=block)
+        .select_related("day")
+        .order_by("day__order", "order")
+    )
+    can_edit = ClientProgramme.objects.filter(block=block).exists()
     exercise_formset = None
 
     def clone_programme_block(template_block, trainer_user, client_user):
@@ -551,21 +553,7 @@ def trainer_programme_detail(request, block_id):
             description=template_block.description,
             weeks=template_block.weeks,
             created_by=trainer_user,
-            # These fields only apply if your model actually has them:
-            # If they do not exist in your ProgrammeBlock model, remove them.
-            is_template=False if hasattr(ProgrammeBlock, "is_template") else None,
-            parent_template=template_block if hasattr(ProgrammeBlock, "parent_template") else None,
         )
-
-        # If we added None for non-existent fields above, Django may error.
-        # So we clean the dict safely:
-        safe_fields = {}
-        for field_name in ["is_template", "parent_template"]:
-            if hasattr(cloned_block, field_name) and getattr(cloned_block, field_name) is None:
-                try:
-                    setattr(cloned_block, field_name, getattr(template_block, field_name, None))
-                except Exception:
-                    pass
 
         for day in template_block.days.all().order_by("order"):
             cloned_day = ProgrammeDay.objects.create(
@@ -605,7 +593,9 @@ def trainer_programme_detail(request, block_id):
     # ----------------------------
     if request.method == "POST" and "save_exercises" in request.POST:
         if not can_edit:
-            return HttpResponseForbidden("Template programmes cannot be edited. Assign to a client first.")
+            return HttpResponseForbidden(
+                "Template programmes cannot be edited. Assign to a client first."
+            )
 
         exercise_formset = ExerciseFormSet(
             request.POST,

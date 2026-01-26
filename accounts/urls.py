@@ -8,6 +8,7 @@ from .views import (
     trainer_dashboard,
     trainer_clients,
     trainer_programmes,
+    trainer_programme_detail,
     trainer_metrics,
     trainer_consultation_detail,
     trainer_client_detail,
