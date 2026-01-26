@@ -15,37 +15,54 @@
                 <p class="dashboard-kicker">Trainer dashboard</p>
                 <h1>{{ block.name }}</h1>
                 <p class="dashboard-subtitle">
-                    {% if block.description %}{{ block.description }}{% else %}Programme block{% endif %}
+                    {% if block.description %}
+                        {{ block.description }}
+                    {% else %}
+                        Programme block
+                    {% endif %}
                     · {{ block.weeks }} week{{ block.weeks|pluralize }}
                 </p>
             </header>
 
             <section class="card">
                 <header class="card-header">
-                <h2 class="card-title">Assign to client</h2>
-                <p class="card-subtitle">Assign this programme to an eligible client.</p>
-            </header>
-            <div class="card-body">
-                {% if assignable_clients %}
-                    <form method="post">
-                        {% csrf_token %}
-                        <label for="assign_client_id">Client</label>
-                        <select id="assign_client_id" name="assign_client_id" class="form-control">
-                            {% for u in assignable_clients %}
-                                <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.email }})</option>
-                            {% endfor %}
-                        </select>
-                        <div class="form-actions" style="margin-top: 1rem;">
-                            <button type="submit" class="btn-primary">Create tailored copy + assign</button>
-                        </div>
-                        <p class="text-muted" style="margin-top: 0.5rem;">
-                            This creates a client-specific copy so the template stays unchanged.
-                        </p>
-                    </form>
-                {% else %}
-                    <p class="text-muted">No eligible clients found for assignment.</p>
-                {% endif %}
-            </div>
+                    <h2 class="card-title">Assign to client</h2>
+                    <p class="card-subtitle">Assign this programme to an eligible client.</p>
+                </header>
+
+                <div class="card-body">
+                    {% if assignable_clients %}
+                        <form method="post">
+                            {% csrf_token %}
+
+                            <label for="assign_client_id">Client</label>
+                            <select
+                                id="assign_client_id"
+                                name="assign_client_id"
+                                class="form-control"
+                            >
+                                {% for u in assignable_clients %}
+                                    <option value="{{ u.id }}">
+                                        {{ u.get_full_name|default:u.username }}
+                                        ({{ u.email }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="form-actions" style="margin-top: 1rem;">
+                                <button type="submit" class="btn-primary">
+                                    Create tailored copy + assign
+                                </button>
+                            </div>
+
+                            <p class="text-muted" style="margin-top: 0.5rem;">
+                                This creates a client-specific copy so the template stays unchanged.
+                            </p>
+                        </form>
+                    {% else %}
+                        <p class="text-muted">No eligible clients found for assignment.</p>
+                    {% endif %}
+                </div>
             </section>
 
             <section class="card card-table">
@@ -53,11 +70,13 @@
                     <h2 class="card-title">Programme days</h2>
                     <p class="card-subtitle">Days and exercises in this programme.</p>
                 </header>
+
                 <div class="card-body">
                     {% if days %}
                         {% for day in days %}
                             <div class="programme-day">
                                 <h3 class="programme-day__title">{{ day.name }}</h3>
+
                                 {% if day.exercises.all %}
                                     <table class="table">
                                         <thead>
@@ -80,7 +99,9 @@
                                         </tbody>
                                     </table>
                                 {% else %}
-                                    <p class="text-muted">No exercises added for this day yet.</p>
+                                    <p class="text-muted">
+                                        No exercises added for this day yet.
+                                    </p>
                                 {% endif %}
                             </div>
                         {% endfor %}
@@ -89,6 +110,66 @@
                     {% endif %}
                 </div>
             </section>
+
+            {% if can_edit and exercise_formset %}
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {{ exercise_formset.management_form }}
+
+                    <section class="card card-table">
+                        <header class="card-header">
+                            <h2 class="card-title">Edit tailored exercises</h2>
+                            <p class="card-subtitle">
+                                These changes only affect this client-specific copy.
+                            </p>
+                        </header>
+
+                        <div class="card-body">
+                            <div class="dashboard-table-wrapper">
+                                <table class="dashboard-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Exercise</th>
+                                            <th>Sets</th>
+                                            <th>Reps</th>
+                                            <th>Target weight (kg)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for form in exercise_formset %}
+                                            <tr>
+                                                <td>
+                                                    {{ form.instance.exercise_name }}
+                                                    {{ form.id }}
+                                                </td>
+                                                <td>{{ form.target_sets }}</td>
+                                                <td>{{ form.target_reps }}</td>
+                                                <td>{{ form.target_weight_kg }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="form-actions" style="margin-top: 1rem;">
+                                <button
+                                    type="submit"
+                                    name="save_exercises"
+                                    value="1"
+                                    class="btn-primary"
+                                >
+                                    Save tailored changes
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            {% else %}
+                <p class="text-muted" style="margin-top: 1rem;">
+                    This is a template programme. Assign it to a client to create an
+                    editable tailored copy.
+                </p>
+            {% endif %}
         </main>
     </div>
 </section>
