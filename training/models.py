@@ -1,4 +1,4 @@
-from django.conf import settings
+﻿from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -20,11 +20,11 @@ class ConsultationRequest(models.Model):
     ]
 
     TIME_WINDOW_CHOICES = [
-        ("early_morning", "Early morning (06:00–09:00)"),
-        ("late_morning", "Late morning (09:00–12:00)"),
-        ("early_afternoon", "Early afternoon (12:00–15:00)"),
-        ("late_afternoon", "Late afternoon (15:00–18:00)"),
-        ("evening", "Evening (18:00–20:30)"),
+        ("early_morning", "Early morning (06:00-09:00)"),
+        ("late_morning", "Late morning (09:00-12:00)"),
+        ("early_afternoon", "Early afternoon (12:00-15:00)"),
+        ("late_afternoon", "Late afternoon (15:00-18:00)"),
+        ("evening", "Evening (18:00-20:30)"),
     ]
 
     STATUS_NEW = "new"
@@ -105,7 +105,7 @@ class WorkoutSession(models.Model):
     date = models.DateField(default=timezone.now)
     name = models.CharField(
         max_length=120,
-        help_text="Short label such as 'Upper Body — Week 3 / Day 2'.",
+        help_text="Short label such as 'Upper Body - Week 3 / Day 2'.",
     )
     notes = models.TextField(blank=True)
 
@@ -116,7 +116,7 @@ class WorkoutSession(models.Model):
         ordering = ["-date", "-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.client} – {self.name} – {self.date}"
+        return f"{self.client} - {self.date}"
 
 
 class WorkoutSet(models.Model):
@@ -151,7 +151,7 @@ class WorkoutSet(models.Model):
         ordering = ["session", "exercise_name", "set_number"]
 
     def __str__(self) -> str:
-        return f"{self.session} – {self.exercise_name} set {self.set_number}"
+        return f"{self.session} - {self.exercise_name} set {self.set_number}"
 
 
 class BodyMetricEntry(models.Model):
@@ -201,4 +201,104 @@ class BodyMetricEntry(models.Model):
         ordering = ["-date", "-created_at"]
 
     def __str__(self) -> str:
-        return f"{self.client} – {self.date}"
+        return f"{self.client} - {self.date}"
+
+
+class ProgrammeBlock(models.Model):
+    name = models.CharField(max_length=150)
+    description = models.TextField(blank=True)
+    weeks = models.PositiveIntegerField(default=4)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="programme_blocks_created",
+        help_text="Trainer who created this programme template.",
+    )
+
+    class Meta:
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+
+class ProgrammeDay(models.Model):
+    block = models.ForeignKey(
+        ProgrammeBlock,
+        on_delete=models.CASCADE,
+        related_name="days",
+    )
+    name = models.CharField(max_length=100)
+    order = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ["block", "order"]
+
+    def __str__(self):
+        return f"{self.block.name} - {self.name}"
+
+
+class ProgrammeExercise(models.Model):
+    day = models.ForeignKey(
+        ProgrammeDay,
+        on_delete=models.CASCADE,
+        related_name="exercises",
+    )
+    exercise_name = models.CharField(max_length=120)
+    target_sets = models.PositiveIntegerField(default=3)
+    target_reps = models.PositiveIntegerField(default=10)
+    target_weight_kg = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Planned working weight in kg (optional).",
+    )
+    order = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        ordering = ["day", "order"]
+
+    def __str__(self):
+        return f"{self.exercise_name} ({self.target_sets} x {self.target_reps})"
+
+
+class ClientProgramme(models.Model):
+    client = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="client_programmes",
+    )
+    trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="trainer_programmes",
+    )
+    block = models.ForeignKey(
+        ProgrammeBlock,
+        on_delete=models.CASCADE,
+        related_name="assignments",
+    )
+    start_date = models.DateField(null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        default="active",
+        choices=(
+            ("active", "Active"),
+            ("planned", "Planned"),
+            ("completed", "Completed"),
+        ),
+    )
+
+    class Meta:
+        verbose_name = "Client programme"
+        verbose_name_plural = "Client programmes"
+        unique_together = ("client", "block")
+
+    def __str__(self):
+        return f"{self.client} - {self.block}"
+

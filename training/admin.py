@@ -4,6 +4,10 @@ from .models import (
     WorkoutSession,
     WorkoutSet,
     BodyMetricEntry,
+    ProgrammeBlock,
+    ProgrammeDay,
+    ProgrammeExercise,
+    ClientProgramme,
 )
 
 
@@ -71,3 +75,46 @@ class BodyMetricEntryAdmin(admin.ModelAdmin):
     list_filter = ("date", "client")
     search_fields = ("client__email", "client__username")
     ordering = ("-date", "-created_at")
+
+
+class ProgrammeExerciseInline(admin.TabularInline):
+    model = ProgrammeExercise
+    extra = 2
+
+
+class ProgrammeDayInline(admin.StackedInline):
+    model = ProgrammeDay
+    extra = 1
+    show_change_link = True
+
+
+@admin.register(ProgrammeBlock)
+class ProgrammeBlockAdmin(admin.ModelAdmin):
+    list_display = ("name", "weeks", "created_by")
+    inlines = [ProgrammeDayInline]
+
+
+@admin.register(ProgrammeDay)
+class ProgrammeDayAdmin(admin.ModelAdmin):
+    list_display = ("name", "block", "order")
+    inlines = [ProgrammeExerciseInline]
+    ordering = ("block", "order")
+
+
+@admin.register(ProgrammeExercise)
+class ProgrammeExerciseAdmin(admin.ModelAdmin):
+    list_display = (
+        "exercise_name",
+        "day",
+        "target_sets",
+        "target_reps",
+        "target_weight_kg",
+        "order",
+    )
+    ordering = ("day", "order")
+
+
+@admin.register(ClientProgramme)
+class ClientProgrammeAdmin(admin.ModelAdmin):
+    list_display = ("client", "trainer", "block", "status", "start_date")
+    list_filter = ("status", "block")
