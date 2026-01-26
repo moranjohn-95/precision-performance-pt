@@ -703,79 +703,39 @@ def trainer_metrics(request):
 @staff_member_required
 def trainer_programmes(request):
     """
-
     Trainer view: high-level overview of programme blocks and templates.
-
-    Data is static sample content for now.
-
+    Now driven by ProgrammeBlock records instead of static data.
     """
+    from training.models import ProgrammeBlock
 
-    programme_blocks = [
+    blocks = ProgrammeBlock.objects.prefetch_related("assignments")
 
-        {
+    programme_blocks = []
+    programme_templates = []
 
-            "name": "Hypertrophy block (6 weeks)",
-
-            "phase": "Weeks 1-6",
-
-            "clients": 5,
-
+    for block in blocks:
+        clients = block.assignments.count()
+        row = {
+            "name": block.name,
+            "phase": f"Weeks 1-{block.weeks}",
+            "clients": clients,
             "status": "Active",
-
-            "next_action": "Review week-3 check-ins",
-
-        },
-
-        {
-
-            "name": "Strength foundation (4 weeks)",
-
-            "phase": "Weeks 1-4",
-
-            "clients": 3,
-
-            "status": "Planning",
-
-            "next_action": "Assign to new consultation requests",
-
-        },
-
-    ]
-
-
-
-    programme_templates = [
-
-        {
-
-            "name": "General strength - 3 days",
-
-            "focus": "Full-body strength",
-
-            "length": "8 weeks",
-
-        },
-
-        {
-
-            "name": "Fat-loss circuit - 2 days",
-
-            "focus": "Conditioning / cardio",
-
-            "length": "6 weeks",
-
-        },
-
-    ]
-
-
+            "next_action": "Review check-ins",
+        }
+        if clients > 0:
+            programme_blocks.append(row)
+        else:
+            programme_templates.append(
+                {
+                    "name": block.name,
+                    "focus": block.description or "—",
+                    "length": f"{block.weeks} weeks",
+                }
+            )
 
     context = {
-
         "programme_blocks": programme_blocks,
-
         "programme_templates": programme_templates,
-
     }
     return render(request, "trainer/programmes.html", context)
 
