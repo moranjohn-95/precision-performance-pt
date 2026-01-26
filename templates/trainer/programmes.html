@@ -28,17 +28,21 @@
                 </tr>
             </thead>
             <tbody>
-                {% for block in programme_blocks %}
+                {# programme_blocks now holds ClientProgramme rows #}
+                {% for cp in programme_blocks %}
                     <tr>
                         <td>
-                            <a class="text-link" href="{% url 'accounts:trainer_programme_detail' block.id %}">
-                                {{ block.name }}
+                            <a
+                                class="text-link"
+                                href="{% url 'accounts:trainer_programme_detail' block_id=cp.block.parent_template.id|default:cp.block.id %}?cp={{ cp.id }}"
+                            >
+                                {{ cp.block.name }}
                             </a>
                         </td>
-                        <td>{{ block.phase }}</td>
-                        <td>{{ block.clients }}</td>
-                        <td>{{ block.status }}</td>
-                        <td>{{ block.next_action }}</td>
+                        <td>{{ cp.phase }}</td>
+                        <td>{{ cp.clients }}</td>
+                        <td>{{ cp.status }}</td>
+                        <td>{{ cp.next_action }}</td>
                     </tr>
                 {% empty %}
                     <tr>

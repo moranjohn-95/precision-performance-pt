@@ -14,11 +14,7 @@
         <div>
             <h2 class="card-title">{{ block.name }}</h2>
             <p class="card-subtitle">
-                {% if block.description %}
-                    {{ block.description }}
-                {% else %}
-                    Programme block
-                {% endif %}
+                {{ block.description|default:"Programme block" }}
                 &middot; {{ block.weeks }} week{{ block.weeks|pluralize }}
             </p>
         </div>
@@ -30,55 +26,60 @@
     </header>
 </section>
 
-{% if is_tailored and assignment_client %}
-<section class="dashboard-card dashboard-card--wide">
-    <header class="card-header">
-        <h2 class="card-title">Editing tailored copy</h2>
-        <p class="card-subtitle">
-            Client: {{ assignment_client.get_full_name|default:assignment_client.username }}
-            &middot; {{ assignment_client.email }}
-        </p>
-    </header>
-</section>
+{# Client selection #}
+{% if assignments %}
+<form method="get" class="form" style="margin-bottom: 1rem;">
+    <label for="cp" class="form-label">Select client</label>
+    <select
+        id="cp"
+        name="cp"
+        class="form-control"
+        onchange="this.form.submit()"
+    >
+        {% for cp in assignments %}
+            <option
+                value="{{ cp.id }}"
+                {% if selected_cp_id == cp.id %}selected{% endif %}
+                {% if not cp.block.parent_template_id %}disabled{% endif %}
+            >
+                {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
+                {% if not cp.block.parent_template_id %} (Template){% endif %}
+            </option>
+        {% endfor %}
+    </select>
+</form>
 {% endif %}
 
-{% if not is_tailored %}
-<section class="dashboard-card dashboard-card--wide">
-    <header class="card-header">
-        <h2 class="card-title">Assign to client</h2>
-        <p class="card-subtitle">
-            This is a template. Assign it to create a tailored copy.
-        </p>
-    </header>
-    <div class="card-body">
-        {% if assignable_clients %}
-            <form method="post">
-                {% csrf_token %}
-                <label for="assign_client_id">Client</label>
-                <select id="assign_client_id" name="assign_client_id" class="form-control">
-                    {% for u in assignable_clients %}
-                        <option value="{{ u.id }}">
-                            {{ u.get_full_name|default:u.username }} ({{ u.email }})
-                        </option>
-                    {% endfor %}
-                </select>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">
-                        Create tailored copy + assign
-                    </button>
-                </div>
-            </form>
-        {% else %}
-            <p class="text-muted">No eligible clients found for assignment.</p>
-        {% endif %}
-    </div>
-</section>
+{# Day filter only when tailored #}
+{% if tailored_days %}
+<form method="get" class="form" style="margin-bottom: 1rem;">
+    <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+    <label for="day" class="form-label">Filter by day</label>
+    <select
+        id="day"
+        name="day"
+        class="form-control"
+        onchange="this.form.submit()"
+    >
+        {% for d in tailored_days %}
+            <option
+                value="{{ d.id }}"
+                {% if selected_day_id == d.id %}selected{% endif %}
+            >
+                {{ d.name }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
 {% endif %}
 
+{# Template preview #}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Programme days (template)</h2>
-        <p class="card-subtitle">Days and exercises in the template programme.</p>
+        <p class="card-subtitle">
+            Read-only view of the template. Edits are applied to tailored copies only.
+        </p>
     </header>
     <div class="card-body">
         {% if preview_days %}
@@ -124,52 +125,69 @@
     </div>
 </section>
 
-{% if is_tailored %}
+{# Assignment actions #}
+{% if not is_tailored and assignable_clients %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h2 class="card-title">Edit tailored exercises</h2>
-        <p class="card-subtitle">
-            These changes affect only this client-specific copy.
-        </p>
+        <h2 class="card-title">Assign to client</h2>
+        <p class="card-subtitle">Create a tailored copy for an eligible client.</p>
     </header>
     <div class="card-body">
-        <form method="get" class="form-inline" style="margin-bottom: 1rem;">
-            <label for="cp" style="margin-right: 0.5rem;">Select client</label>
-            <select id="cp" name="cp" class="form-control" onchange="this.form.submit()">
-                {% for cp in assignments %}
-                    {% if cp.block.parent_template %}
-                        <option value="{{ cp.id }}" {% if selected_cp_id == cp.id %}selected{% endif %}>
-                            {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
-                        </option>
-                    {% else %}
-                        <option value="{{ cp.id }}" disabled>
-                            {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }}) (Template)
-                        </option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-
-            {% if tailored_days %}
-                <label for="day" style="margin: 0 0.5rem 0 1rem;">Day</label>
-                <select id="day" name="day" class="form-control" onchange="this.form.submit()">
-                    {% for day in tailored_days %}
-                        <option value="{{ day.id }}" {% if selected_day_id == day.id %}selected{% endif %}>
-                            {{ day.name }}
+        <form method="post" class="form">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="assign_client_id">Client</label>
+                <select id="assign_client_id" name="assign_client_id" class="form-control">
+                    {% for u in assignable_clients %}
+                        <option value="{{ u.id }}">
+                            {{ u.get_full_name|default:u.username }} ({{ u.email }})
                         </option>
                     {% endfor %}
                 </select>
-            {% endif %}
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary" name="assign_to_client" value="1">
+                    Create tailored copy + assign
+                </button>
+            </div>
         </form>
+    </div>
+</section>
+{% endif %}
 
-        {% if can_edit and exercise_formset %}
-        <form method="post" class="form">
-            {% csrf_token %}
-            {{ exercise_formset.management_form }}
+{% if not can_edit and assignments %}
+<section class="dashboard-card dashboard-card--wide">
+    <div class="card-body">
+        <p class="text-muted">
+            Template assignments cannot be edited. Select a tailored copy to edit, or
+            convert a template assignment.
+        </p>
+    </div>
+</section>
+{% endif %}
 
+{# Edit tailored exercises #}
+{% if can_edit and exercise_formset %}
+<form method="post" class="form">
+    {% csrf_token %}
+    {{ exercise_formset.management_form }}
+
+    <section class="dashboard-card dashboard-card--wide">
+        <header class="card-header">
+            <h2 class="card-title">Edit tailored exercises</h2>
+            <p class="card-subtitle">
+                Editing tailored copy for:
+                {{ assignment_client.get_full_name|default:assignment_client.username }}
+                ({{ assignment_client.email }})
+            </p>
+        </header>
+
+        <div class="card-body">
             <div class="dashboard-table-wrapper">
                 <table class="dashboard-table">
                     <thead>
                         <tr>
+                            <th>Day</th>
                             <th>Exercise</th>
                             <th>Sets</th>
                             <th>Reps</th>
@@ -179,6 +197,7 @@
                     <tbody>
                         {% for form in exercise_formset %}
                             <tr>
+                                <td>{{ form.instance.day.name }}</td>
                                 <td>
                                     {{ form.instance.exercise_name }}
                                     {{ form.id }}
@@ -191,27 +210,15 @@
                     </tbody>
                 </table>
             </div>
+
             <div class="form-actions">
                 <button type="submit" name="save_exercises" value="1" class="btn-primary">
                     Save tailored changes
                 </button>
             </div>
-        </form>
-        {% elif assignment %}
-            <p class="text-muted" style="margin-top: 1rem;">
-                This assignment points to the template. Convert to a tailored copy to edit safely.
-            </p>
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" name="convert_to_tailored" value="1" class="btn-primary">
-                    Convert to tailored copy
-                </button>
-            </form>
-        {% else %}
-            <p class="text-muted">No exercises available for this day.</p>
-        {% endif %}
-    </div>
-</section>
+        </div>
+    </section>
+</form>
 {% endif %}
 
 {% endblock %}
