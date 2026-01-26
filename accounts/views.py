@@ -756,6 +756,34 @@ def trainer_programme_detail(request, block_id):
                 )
                 return redirect(f"{redirect_base}?cp={existing_cp.id}")
 
+            # Legacy assignment pointing at the template itself? Convert it.
+            legacy_cp = ClientProgramme.objects.filter(
+                client=client_user,
+                block=template_block,
+            ).select_related("block").first()
+
+            if legacy_cp:
+                cloned_block = clone_programme_block(
+                    template_block,
+                    request.user,
+                    client_user,
+                )
+                legacy_cp.block = cloned_block
+                legacy_cp.trainer = request.user
+                legacy_cp.status = "active"
+                if not legacy_cp.start_date:
+                    legacy_cp.start_date = timezone.now().date()
+                legacy_cp.save()
+                messages.info(
+                    request,
+                    "Existing template assignment converted to a tailored copy.",
+                )
+                redirect_base = reverse_lazy(
+                    "accounts:trainer_programme_detail",
+                    kwargs={"block_id": template_block.id},
+                )
+                return redirect(f"{redirect_base}?cp={legacy_cp.id}")
+
             # Clone the programme before assigning, so template stays unchanged
             cloned_block = clone_programme_block(
                 template_block,
