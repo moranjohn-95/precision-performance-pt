@@ -141,21 +141,17 @@ def client_today(request):
 
 def client_programme_library(request):
     """
-    Client view: show current training block and sessions.
-    Uses static demo data for now.
+    Show active programme assignments for the logged-in client,
+    including blocks, days, and exercises.
     """
-    programme = {
-        "name": "Hypertrophy Block (6 weeks)",
-        "current_week": 3,
-        "weeks": [1, 2, 3, 4, 5, 6],
-        "sessions": [
-            {"day": "Day 1 - Upper", "summary": "Bench, Row, Accessories", "cta": "Open"},
-            {"day": "Day 2 - Lower", "summary": "Squat, RDL, Core", "cta": "Open"},
-            {"day": "Day 3 - Full", "summary": "Press, Pull, Conditioning", "cta": "View"},
-        ],
-    }
+    assignments = (
+        ClientProgramme.objects.filter(client=request.user, status="active")
+        .select_related("block", "trainer")
+        .prefetch_related("block__days__exercises")
+        .order_by("start_date", "block__name")
+    )
 
-    context = {"programme": programme}
+    context = {"assignments": assignments}
     return render(request, "client/programme_library.html", context)
 
 
