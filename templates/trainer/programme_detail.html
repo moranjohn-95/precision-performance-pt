@@ -23,7 +23,9 @@
             </p>
         </div>
         <div>
-            <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">Back to programmes</a>
+            <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">
+                Back to programmes
+            </a>
         </div>
     </header>
 </section>
@@ -75,8 +77,8 @@
 
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h2 class="card-title">Programme days</h2>
-        <p class="card-subtitle">Days and exercises in this programme.</p>
+        <h2 class="card-title">Programme days (template)</h2>
+        <p class="card-subtitle">Days and exercises in the template programme.</p>
     </header>
     <div class="card-body">
         {% if preview_days %}
@@ -122,7 +124,7 @@
     </div>
 </section>
 
-{% if is_tailored and exercise_formset %}
+{% if is_tailored %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Edit tailored exercises</h2>
@@ -135,23 +137,31 @@
             <label for="cp" style="margin-right: 0.5rem;">Select client</label>
             <select id="cp" name="cp" class="form-control" onchange="this.form.submit()">
                 {% for cp in assignments %}
-                    <option value="{{ cp.id }}" {% if selected_cp_id == cp.id %}selected{% endif %}>
-                        {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
-                    </option>
+                    {% if cp.block.parent_template %}
+                        <option value="{{ cp.id }}" {% if selected_cp_id == cp.id %}selected{% endif %}>
+                            {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
+                        </option>
+                    {% else %}
+                        <option value="{{ cp.id }}" disabled>
+                            {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }}) (Template)
+                        </option>
+                    {% endif %}
                 {% endfor %}
             </select>
 
-            <label for="day" style="margin: 0 0.5rem 0 1rem;">Filter by day</label>
-            <select id="day" name="day" class="form-control" onchange="this.form.submit()">
-                <option value="">All days</option>
-                {% for day in days %}
-                    <option value="{{ day.id }}" {% if selected_day_id == day.id %}selected{% endif %}>
-                        {{ day.name }}
-                    </option>
-                {% endfor %}
-            </select>
+            {% if tailored_days %}
+                <label for="day" style="margin: 0 0.5rem 0 1rem;">Day</label>
+                <select id="day" name="day" class="form-control" onchange="this.form.submit()">
+                    {% for day in tailored_days %}
+                        <option value="{{ day.id }}" {% if selected_day_id == day.id %}selected{% endif %}>
+                            {{ day.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
         </form>
 
+        {% if can_edit and exercise_formset %}
         <form method="post" class="form">
             {% csrf_token %}
             {{ exercise_formset.management_form }}
@@ -160,7 +170,6 @@
                 <table class="dashboard-table">
                     <thead>
                         <tr>
-                            <th>Day</th>
                             <th>Exercise</th>
                             <th>Sets</th>
                             <th>Reps</th>
@@ -170,7 +179,6 @@
                     <tbody>
                         {% for form in exercise_formset %}
                             <tr>
-                                <td>{{ form.instance.day.name }}</td>
                                 <td>
                                     {{ form.instance.exercise_name }}
                                     {{ form.id }}
@@ -189,6 +197,19 @@
                 </button>
             </div>
         </form>
+        {% elif assignment %}
+            <p class="text-muted" style="margin-top: 1rem;">
+                This assignment points to the template. Convert to a tailored copy to edit safely.
+            </p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" name="convert_to_tailored" value="1" class="btn-primary">
+                    Convert to tailored copy
+                </button>
+            </form>
+        {% else %}
+            <p class="text-muted">No exercises available for this day.</p>
+        {% endif %}
     </div>
 </section>
 {% endif %}

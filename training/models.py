@@ -216,6 +216,14 @@ class ProgrammeBlock(models.Model):
         related_name="programme_blocks_created",
         help_text="Trainer who created this programme template.",
     )
+    is_template = models.BooleanField(default=True)
+    parent_template = models.ForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="tailored_copies",
+    )
 
     class Meta:
         ordering = ["name"]
