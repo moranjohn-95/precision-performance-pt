@@ -50,11 +50,6 @@ urlpatterns = [
         trainer_session_edit,
         name="trainer_session_edit",
     ),
-    path(
-        "trainer/clients/<int:pk>/",
-        trainer_consultation_detail,
-        name="trainer_client_detail",
-    ),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
     # Keep legacy name/path for programme library

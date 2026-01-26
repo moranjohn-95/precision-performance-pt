@@ -657,24 +657,7 @@ def trainer_clients(request):
 
 @login_required(login_url="accounts:trainer_login")
 
-@staff_required
-
-def trainer_programmes(request):
-
-    """
-
-    Placeholder for trainer programme management.
-
-    """
-
-    return render(request, "trainer/programmes.html")
-
-
-
-
-
 @login_required(login_url="accounts:trainer_login")
-
 @staff_required
 def trainer_metrics(request):
     """
@@ -733,7 +716,7 @@ def trainer_programmes(request):
 
             "name": "Hypertrophy block (6 weeks)",
 
-            "phase": "Weeks 1â€“6",
+            "phase": "Weeks 1-6",
 
             "clients": 5,
 
@@ -747,7 +730,7 @@ def trainer_programmes(request):
 
             "name": "Strength foundation (4 weeks)",
 
-            "phase": "Weeks 1â€“4",
+            "phase": "Weeks 1-4",
 
             "clients": 3,
 
@@ -765,7 +748,7 @@ def trainer_programmes(request):
 
         {
 
-            "name": "General strength â€“ 3 days",
+            "name": "General strength - 3 days",
 
             "focus": "Full-body strength",
 
@@ -775,7 +758,7 @@ def trainer_programmes(request):
 
         {
 
-            "name": "Fat-loss circuit â€“ 2 days",
+            "name": "Fat-loss circuit - 2 days",
 
             "focus": "Conditioning / cardio",
 
