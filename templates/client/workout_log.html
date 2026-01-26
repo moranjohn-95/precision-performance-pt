@@ -87,95 +87,130 @@
                     <div class="workout-cell">Set 3</div>
                 </div>
 
-                <!-- Bench Press row -->
-                <div class="workout-row">
-                    <div class="workout-cell workout-cell--exercise">
-                        <strong>Bench Press</strong><br>
-                        <span class="text-muted">Main press</span>
+                {% if programme_exercises %}
+                    {% for ex in programme_exercises %}
+                        <div class="workout-row">
+                            <div class="workout-cell workout-cell--exercise">
+                                <strong>{{ ex.exercise_name }}</strong>
+                            </div>
+                            <div class="workout-cell workout-cell--weight">
+                                <input
+                                    type="number"
+                                    step="0.5"
+                                    min="0"
+                                    name="weight_{{ forloop.counter }}"
+                                    class="form-control"
+                                    placeholder="kg"
+                                >
+                            </div>
+                            <div class="workout-cell workout-cell--target">
+                                {{ ex.target_sets }} × {{ ex.target_reps }}
+                                {% if ex.target_weight_kg %}
+                                    @ {{ ex.target_weight_kg }} kg
+                                {% endif %}
+                            </div>
+                            <div class="workout-cell">
+                                <input type="text" name="set1_{{ forloop.counter }}" class="form-control">
+                            </div>
+                            <div class="workout-cell">
+                                <input type="text" name="set2_{{ forloop.counter }}" class="form-control">
+                            </div>
+                            <div class="workout-cell">
+                                <input type="text" name="set3_{{ forloop.counter }}" class="form-control">
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Bench Press row -->
+                    <div class="workout-row">
+                        <div class="workout-cell workout-cell--exercise">
+                            <strong>Bench Press</strong><br>
+                            <span class="text-muted">Main press</span>
+                        </div>
+                        <div class="workout-cell workout-cell--weight">
+                            <input
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                name="bench_weight"
+                                class="form-control"
+                                placeholder="kg"
+                            >
+                        </div>
+       	                <div class="workout-cell workout-cell--target">
+                            3 × 8
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.bench_set1 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.bench_set2 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.bench_set3 }}
+                        </div>
                     </div>
-                    <div class="workout-cell workout-cell--weight">
-                        <input
-                            type="number"
-                            step="0.5"
-                            min="0"
-                            name="bench_weight"
-                            class="form-control"
-                            placeholder="kg"
-                        >
-                    </div>
-                    <div class="workout-cell workout-cell--target">
-                        3 × 8
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.bench_set1 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.bench_set2 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.bench_set3 }}
-                    </div>
-                </div>
 
-                <!-- Seated Row row -->
-                <div class="workout-row">
-                    <div class="workout-cell workout-cell--exercise">
-                        <strong>Seated Row</strong><br>
-                        <span class="text-muted">Upper back</span>
+                    <!-- Seated Row row -->
+                    <div class="workout-row">
+                        <div class="workout-cell workout-cell--exercise">
+                            <strong>Seated Row</strong><br>
+                            <span class="text-muted">Upper back</span>
+                        </div>
+                        <div class="workout-cell workout-cell--weight">
+                            <input
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                name="row_weight"
+                                class="form-control"
+                                placeholder="kg"
+                            >
+                        </div>
+                        <div class="workout-cell workout-cell--target">
+                            3 × 10
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.row_set1 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.row_set2 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.row_set3 }}
+                        </div>
                     </div>
-                    <div class="workout-cell workout-cell--weight">
-                        <input
-                            type="number"
-                            step="0.5"
-                            min="0"
-                            name="row_weight"
-                            class="form-control"
-                            placeholder="kg"
-                        >
-                    </div>
-                    <div class="workout-cell workout-cell--target">
-                        3 × 10
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.row_set1 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.row_set2 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.row_set3 }}
-                    </div>
-                </div>
 
-                <!-- DB Incline row -->
-                <div class="workout-row">
-                    <div class="workout-cell workout-cell--exercise">
-                        <strong>DB Incline</strong><br>
-                        <span class="text-muted">Chest / shoulders</span>
+                    <!-- DB Incline row -->
+                    <div class="workout-row">
+                        <div class="workout-cell workout-cell--exercise">
+                            <strong>DB Incline</strong><br>
+                            <span class="text-muted">Chest / shoulders</span>
+                        </div>
+                        <div class="workout-cell workout-cell--weight">
+                            <input
+                                type="number"
+                                step="0.5"
+                                min="0"
+                                name="incline_weight"
+                                class="form-control"
+                                placeholder="kg"
+                            >
+                        </div>
+                        <div class="workout-cell workout-cell--target">
+                            3 × 12
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.incline_set1 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.incline_set2 }}
+                        </div>
+                        <div class="workout-cell">
+                            {{ session_form.incline_set3 }}
+                        </div>
                     </div>
-                    <div class="workout-cell workout-cell--weight">
-                        <input
-                            type="number"
-                            step="0.5"
-                            min="0"
-                            name="incline_weight"
-                            class="form-control"
-                            placeholder="kg"
-                        >
-                    </div>
-                    <div class="workout-cell workout-cell--target">
-                        3 × 12
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.incline_set1 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.incline_set2 }}
-                    </div>
-                    <div class="workout-cell">
-                        {{ session_form.incline_set3 }}
-                    </div>
-                </div>
+                {% endif %}
             </div>
 
             <!-- Notes -->

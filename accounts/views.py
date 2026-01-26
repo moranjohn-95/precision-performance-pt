@@ -20,6 +20,7 @@ from training.models import (
     WorkoutSession,
     BodyMetricEntry,
     ClientProgramme,
+    ProgrammeDay,
 )
 from django.contrib.auth import get_user_model
 from django import forms
@@ -172,6 +173,19 @@ def client_workout_log(request):
     session_name_param = (request.GET.get("session_name") or "").strip()
     if session_name_param:
         initial["name"] = session_name_param
+    programme_day = None
+    programme_exercises = []
+    if session_name_param:
+        day_qs = ProgrammeDay.objects.filter(name=session_name_param).select_related(
+            "block"
+        )
+        for day in day_qs:
+            if ClientProgramme.objects.filter(
+                client=request.user, status="active", block=day.block
+            ).exists():
+                programme_day = day
+                programme_exercises = list(day.exercises.all().order_by("order"))
+                break
 
     recent_sessions = (
         WorkoutSession.objects.filter(client=request.user)
@@ -262,6 +276,8 @@ def client_workout_log(request):
     context = {
         "sessions": recent_sessions,
         "session_form": form,
+        "programme_day": programme_day,
+        "programme_exercises": programme_exercises,
     }
     return render(request, "client/workout_log.html", context)
 
