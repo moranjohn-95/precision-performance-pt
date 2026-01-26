@@ -535,8 +535,30 @@ def trainer_programme_detail(request, block_id):
         extra=0,
     )
 
-    assignments_qs = ClientProgramme.objects.filter(block=block).select_related("client")
-    assignment = assignments_qs.first()
+    # Assignments visible to this trainer (or all if superuser)
+    if request.user.is_superuser:
+        assignments_qs = ClientProgramme.objects.filter(block__id=block_id).select_related(
+            "client",
+            "block",
+        )
+    else:
+        assignments_qs = ClientProgramme.objects.filter(
+            block__id=block_id,
+            trainer=request.user,
+        ).select_related("client", "block")
+
+    cp_param = request.GET.get("cp")
+    assignment = None
+
+    if cp_param:
+        assignment = get_object_or_404(assignments_qs, id=cp_param)
+        block = assignment.block
+    elif assignments_qs.exists():
+        assignment = assignments_qs.order_by("-start_date", "-id").first()
+        return redirect(
+            f"{reverse_lazy('accounts:trainer_programme_detail', kwargs={'block_id': block_id})}?cp={assignment.id}"
+        )
+
     is_tailored = assignment is not None
     assignment_client = assignment.client if assignment else None
 
@@ -618,10 +640,15 @@ def trainer_programme_detail(request, block_id):
             messages.success(request, "Tailored programme updated.")
             redirect_url = reverse_lazy(
                 "accounts:trainer_programme_detail",
-                kwargs={"block_id": block.id},
+                kwargs={"block_id": block_id},
             )
+            query_bits = []
+            if cp_param:
+                query_bits.append(f"cp={cp_param}")
             if day_id:
-                redirect_url = f"{redirect_url}?day={day_id}"
+                query_bits.append(f"day={day_id}")
+            if query_bits:
+                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}"
             return redirect(redirect_url)
         messages.error(request, "Please correct the errors below.")
 
@@ -688,6 +715,8 @@ def trainer_programme_detail(request, block_id):
         "is_tailored": is_tailored,
         "assignment_client": assignment_client,
         "selected_day_id": int(day_id) if day_id and day_id.isdigit() else None,
+        "assignments": list(assignments_qs),
+        "selected_cp_id": int(cp_param) if cp_param and cp_param.isdigit() else None,
         "exercise_formset": exercise_formset,
     }
     return render(request, "trainer/programme_detail.html", context)
