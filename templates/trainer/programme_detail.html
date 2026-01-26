@@ -22,27 +22,30 @@
 
             <section class="card">
                 <header class="card-header">
-                    <h2 class="card-title">Assign to client</h2>
-                    <p class="card-subtitle">Assign this programme to an eligible client.</p>
-                </header>
-                <div class="card-body">
-                    {% if assignable_clients %}
-                        <form method="post">
-                            {% csrf_token %}
-                            <label for="assign_client_id">Client</label>
-                            <select id="assign_client_id" name="assign_client_id" class="form-control">
-                                {% for u in assignable_clients %}
-                                    <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.email }})</option>
-                                {% endfor %}
-                            </select>
-                            <div class="form-actions" style="margin-top: 1rem;">
-                                <button type="submit" class="btn-primary">Assign to client</button>
-                            </div>
-                        </form>
-                    {% else %}
-                        <p class="text-muted">No eligible clients found for assignment.</p>
-                    {% endif %}
-                </div>
+                <h2 class="card-title">Assign to client</h2>
+                <p class="card-subtitle">Assign this programme to an eligible client.</p>
+            </header>
+            <div class="card-body">
+                {% if assignable_clients %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="assign_client_id">Client</label>
+                        <select id="assign_client_id" name="assign_client_id" class="form-control">
+                            {% for u in assignable_clients %}
+                                <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.email }})</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-actions" style="margin-top: 1rem;">
+                            <button type="submit" class="btn-primary">Create tailored copy + assign</button>
+                        </div>
+                        <p class="text-muted" style="margin-top: 0.5rem;">
+                            This creates a client-specific copy so the template stays unchanged.
+                        </p>
+                    </form>
+                {% else %}
+                    <p class="text-muted">No eligible clients found for assignment.</p>
+                {% endif %}
+            </div>
             </section>
 
             <section class="card card-table">

@@ -22,6 +22,7 @@ from training.models import (
     ClientProgramme,
     ProgrammeBlock,
     ProgrammeDay,
+    ProgrammeExercise,
 )
 from django.contrib.auth import get_user_model
 from django import forms
@@ -735,6 +736,32 @@ def trainer_programme_detail(request, block_id):
         id=block_id,
     )
 
+    def clone_programme_block(template_block, trainer_user, client_user):
+        cloned_block = ProgrammeBlock.objects.create(
+            name=f\"{template_block.name} (Tailored for {client_user.get_full_name() or client_user.username})\",
+            description=template_block.description,
+            weeks=template_block.weeks,
+            created_by=trainer_user,
+            is_template=False,
+            parent_template=template_block,
+        )
+        for day in template_block.days.all().order_by(\"order\"):
+            cloned_day = ProgrammeDay.objects.create(
+                block=cloned_block,
+                name=day.name,
+                order=day.order,
+            )
+            for ex in day.exercises.all().order_by(\"order\"):
+                ProgrammeExercise.objects.create(
+                    day=cloned_day,
+                    exercise_name=ex.exercise_name,
+                    target_sets=ex.target_sets,
+                    target_reps=ex.target_reps,
+                    target_weight_kg=ex.target_weight_kg,
+                    order=ex.order,
+                )
+        return cloned_block
+
     # Determine assignable clients for this trainer
     if request.user.is_superuser:
         assignable_clients = list(
@@ -758,9 +785,11 @@ def trainer_programme_detail(request, block_id):
                 client_user.email
                 and client_user.email.lower() in allowed_email_set
             ):
+                # Clone the programme before assigning, so template stays unchanged
+                cloned_block = clone_programme_block(block, request.user, client_user)
                 cp, created = ClientProgramme.objects.get_or_create(
                     client=client_user,
-                    block=block,
+                    block=cloned_block,
                     defaults={
                         "trainer": request.user,
                         "status": "active",
@@ -773,10 +802,10 @@ def trainer_programme_detail(request, block_id):
                     if not cp.start_date:
                         cp.start_date = timezone.now().date()
                     cp.save()
-                messages.success(request, "Programme assigned to client.")
+                messages.success(request, "Tailored programme copy created and assigned to client.")
             else:
                 messages.error(request, "You are not allowed to assign this client.")
-            return redirect("accounts:trainer_programme_detail", block_id=block.id)
+            return redirect("accounts:trainer_programme_detail", block_id=cloned_block.id)
 
     context = {
         "block": block,
