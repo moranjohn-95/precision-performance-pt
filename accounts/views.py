@@ -168,6 +168,11 @@ def client_workout_log(request):
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
 
+    initial = {}
+    session_name_param = (request.GET.get("session_name") or "").strip()
+    if session_name_param:
+        initial["name"] = session_name_param
+
     recent_sessions = (
         WorkoutSession.objects.filter(client=request.user)
         .order_by("-date", "-created_at")[:20]
@@ -252,7 +257,7 @@ def client_workout_log(request):
             messages.success(request, "Workout session saved.")
             return redirect("accounts:client_workout_log")
     else:
-        form = WorkoutSessionForm()
+        form = WorkoutSessionForm(initial=initial)
 
     context = {
         "sessions": recent_sessions,
