@@ -1,57 +1,77 @@
-{% extends "dashboard_base.html" %}
+﻿{% extends "dashboard_base.html" %}
 
 {% block page_eyebrow %}Client dashboard{% endblock %}
 {% block page_title %}Programme library{% endblock %}
 
 {% block dashboard_content %}
 
-<section class="dashboard-card dashboard-card--tabs">
-    <div class="dashboard-card__header">
-        <h2 class="dashboard-card__title">
-            {{ programme.name }}
-        </h2>
-        <p class="dashboard-card__subtitle">
-            Current training block and sessions. Select a week and open a session.
-        </p>
-    </div>
+{% if assignments %}
+    {% for assignment in assignments %}
+        <section class="dashboard-card dashboard-card--wide">
+            <header class="card-header">
+                <h2 class="card-title">
+                    {{ assignment.block.name }}
+                </h2>
+                <p class="card-subtitle">
+                    {% if assignment.block.description %}
+                        {{ assignment.block.description }}
+                    {% else %}
+                        Programme block
+                    {% endif %}
+                    · {{ assignment.block.weeks }} week{{ assignment.block.weeks|pluralize }}
+                    {% if assignment.trainer %}
+                        · Trainer: {{ assignment.trainer.get_full_name|default:assignment.trainer.username }}
+                    {% endif %}
+                </p>
+            </header>
 
-    <div class="programme-week-tabs">
-        {% for week in programme.weeks %}
-            {% if week == programme.current_week %}
-                <button class="week-tab is-active">Week {{ week }}</button>
-            {% else %}
-                <button class="week-tab">Week {{ week }}</button>
-            {% endif %}
-        {% endfor %}
-    </div>
+            <div class="card-body">
+                {% for day in assignment.block.days.all %}
+                    <article class="programme-session-card">
+                        <div class="programme-session-text">
+                            <h3 class="programme-session-title">{{ day.name }}</h3>
 
-    <div class="programme-session-list">
-        {% for session in programme.sessions %}
-            <article class="programme-session-card">
-                <div class="programme-session-text">
-                    <h3 class="programme-session-title">
-                        {{ session.day }}
-                    </h3>
-                    <p class="programme-session-summary">
-                        {{ session.summary }}
-                    </p>
-                </div>
-                <div class="programme-session-cta">
-                    <a href="#" class="btn-secondary">
-                        {{ session.cta }}
-                    </a>
-                </div>
-            </article>
-        {% endfor %}
-    </div>
-</section>
+                            {% if day.exercises.all %}
+                                <ul class="programme-exercise-list">
+                                    {% for ex in day.exercises.all %}
+                                        <li>
+                                            <strong>{{ ex.exercise_name }}</strong>
+                                            — {{ ex.target_sets }} × {{ ex.target_reps }}
+                                            {% if ex.target_weight_kg %}
+                                                @ {{ ex.target_weight_kg }} kg
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-muted">No exercises added for this day yet.</p>
+                            {% endif %}
+                        </div>
 
-<section class="dashboard-card">
-    <h2 class="dashboard-card__title">Notes</h2>
-    <p>
-        This section can later be extended to show multiple blocks, history of completed phases,
-        and links into the workout log for each session.
-    </p>
-</section>
+                        <div class="programme-session-cta">
+                            <a
+                                href="{% url 'accounts:client_workout_log' %}?session_name={{ day.name|urlencode }}"
+                                class="btn-secondary"
+                            >
+                                Log this session
+                            </a>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p class="text-muted">No days have been set up for this block yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    {% endfor %}
+{% else %}
+    <section class="dashboard-card dashboard-card--wide">
+        <header class="card-header">
+            <h2 class="card-title">Programme library</h2>
+        </header>
+        <div class="card-body">
+            <p>No active programmes have been assigned to this account yet.</p>
+        </div>
+    </section>
+{% endif %}
 
 {% endblock %}

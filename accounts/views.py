@@ -15,7 +15,12 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponseForbidden
 
 from training.forms import WorkoutSessionForm, BodyMetricEntryForm
-from training.models import ConsultationRequest, WorkoutSession, BodyMetricEntry
+from training.models import (
+    ConsultationRequest,
+    WorkoutSession,
+    BodyMetricEntry,
+    ClientProgramme,
+)
 from django.contrib.auth import get_user_model
 from django import forms
 
