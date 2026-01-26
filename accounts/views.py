@@ -535,12 +535,22 @@ def trainer_programme_detail(request, block_id):
         extra=0,
     )
 
+    assignments_qs = ClientProgramme.objects.filter(block=block).select_related("client")
+    assignment = assignments_qs.first()
+    is_tailored = assignment is not None
+    assignment_client = assignment.client if assignment else None
+
+    day_id = request.GET.get("day")
+    days_qs = block.days.all().order_by("order")
+
     exercises_qs = (
         ProgrammeExercise.objects.filter(day__block=block)
         .select_related("day")
         .order_by("day__order", "order")
     )
-    can_edit = ClientProgramme.objects.filter(block=block).exists()
+    if day_id:
+        exercises_qs = exercises_qs.filter(day_id=day_id)
+
     exercise_formset = None
 
     def clone_programme_block(template_block, trainer_user, client_user):
@@ -592,7 +602,7 @@ def trainer_programme_detail(request, block_id):
     # POST #1: Save tailored edits
     # ----------------------------
     if request.method == "POST" and "save_exercises" in request.POST:
-        if not can_edit:
+        if not is_tailored:
             return HttpResponseForbidden(
                 "Template programmes cannot be edited. Assign to a client first."
             )
@@ -606,12 +616,19 @@ def trainer_programme_detail(request, block_id):
         if exercise_formset.is_valid():
             exercise_formset.save()
             messages.success(request, "Tailored programme updated.")
-            return redirect("accounts:trainer_programme_detail", block_id=block.id)
+            redirect_url = reverse_lazy(
+                "accounts:trainer_programme_detail",
+                kwargs={"block_id": block.id},
+            )
+            if day_id:
+                redirect_url = f"{redirect_url}?day={day_id}"
+            return redirect(redirect_url)
+        messages.error(request, "Please correct the errors below.")
 
     # ----------------------------
     # POST #2: Assign programme (clone + assign)
     # ----------------------------
-    elif request.method == "POST":
+    elif request.method == "POST" and not is_tailored:
         # Support BOTH naming conventions to avoid breaking template
         client_id = request.POST.get("assign_client_id") or request.POST.get("client_id")
         assign_clicked = ("assign_to_client" in request.POST) or ("assign_programme" in request.POST) or bool(client_id)
@@ -651,14 +668,26 @@ def trainer_programme_detail(request, block_id):
             return redirect("accounts:trainer_programme_detail", block_id=cloned_block.id)
 
     # GET: show formset if editable
-    if request.method == "GET" and can_edit:
+    if request.method == "GET" and is_tailored:
         exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
+
+    preview_days = []
+    for d in days_qs.prefetch_related("exercises"):
+        preview_days.append(
+            {
+                "day": d,
+                "exercises": d.exercises.all().order_by("order"),
+            }
+        )
 
     context = {
         "block": block,
-        "days": block.days.all().order_by("order"),
+        "days": days_qs,
+        "preview_days": preview_days,
         "assignable_clients": assignable_clients,
-        "can_edit": can_edit,
+        "is_tailored": is_tailored,
+        "assignment_client": assignment_client,
+        "selected_day_id": int(day_id) if day_id and day_id.isdigit() else None,
         "exercise_formset": exercise_formset,
     }
     return render(request, "trainer/programme_detail.html", context)
