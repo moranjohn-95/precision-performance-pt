@@ -20,6 +20,7 @@ from training.models import (
     WorkoutSession,
     BodyMetricEntry,
     ClientProgramme,
+    ProgrammeBlock,
     ProgrammeDay,
 )
 from django.contrib.auth import get_user_model
@@ -721,6 +722,70 @@ def trainer_metrics(request):
         },
     )
 
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_programme_detail(request, block_id):
+    """
+    Trainer view: show a programme block with its days/exercises
+    and allow assignment to a client.
+    """
+    block = get_object_or_404(
+        ProgrammeBlock.objects.prefetch_related("days__exercises"),
+        id=block_id,
+    )
+
+    # Determine assignable clients for this trainer
+    if request.user.is_superuser:
+        assignable_clients = list(
+            User.objects.filter(is_staff=False).order_by("username")
+        )
+        allowed_email_set = {u.email.lower() for u in assignable_clients if u.email}
+    else:
+        assigned_emails = ConsultationRequest.objects.filter(
+            assigned_trainer=request.user
+        ).values_list("email", flat=True)
+        allowed_email_set = {e.lower() for e in assigned_emails if e}
+        assignable_clients = list(
+            User.objects.filter(email__in=allowed_email_set).order_by("username")
+        )
+
+    if request.method == "POST":
+        client_id = request.POST.get("assign_client_id")
+        if client_id:
+            client_user = get_object_or_404(User, id=client_id)
+            if request.user.is_superuser or (
+                client_user.email
+                and client_user.email.lower() in allowed_email_set
+            ):
+                cp, created = ClientProgramme.objects.get_or_create(
+                    client=client_user,
+                    block=block,
+                    defaults={
+                        "trainer": request.user,
+                        "status": "active",
+                        "start_date": timezone.now().date(),
+                    },
+                )
+                if not created:
+                    cp.trainer = request.user
+                    cp.status = "active"
+                    if not cp.start_date:
+                        cp.start_date = timezone.now().date()
+                    cp.save()
+                messages.success(request, "Programme assigned to client.")
+            else:
+                messages.error(request, "You are not allowed to assign this client.")
+            return redirect("accounts:trainer_programme_detail", block_id=block.id)
+
+    context = {
+        "block": block,
+        "days": block.days.all().order_by("order"),
+        "assignable_clients": assignable_clients,
+    }
+    return render(request, "trainer/programme_detail.html", context)
+
+
 @login_required
 @staff_member_required
 def trainer_programmes(request):
@@ -738,17 +803,19 @@ def trainer_programmes(request):
     for block in blocks:
         clients = block.assignments.count()
         row = {
+            "id": block.id,
             "name": block.name,
             "phase": f"Weeks 1-{block.weeks}",
             "clients": clients,
             "status": "Active",
             "next_action": "Review check-ins",
         }
-        if clients > 0:
+        if clients > 0 and not getattr(block, "is_template", False):
             programme_blocks.append(row)
-        else:
+        elif getattr(block, "is_template", True):
             programme_templates.append(
                 {
+                    "id": block.id,
                     "name": block.name,
                     "focus": block.description or "—",
                     "length": f"{block.weeks} weeks",

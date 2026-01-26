@@ -1,0 +1,92 @@
+﻿{% extends "dashboard_base.html" %}
+
+{% block title %}Programme detail | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="dashboard-page trainer-dashboard">
+    <div class="dashboard-layout">
+
+        <aside class="dashboard-sidebar">
+            {% include "trainer/_sidebar.html" %}
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <p class="dashboard-kicker">Trainer dashboard</p>
+                <h1>{{ block.name }}</h1>
+                <p class="dashboard-subtitle">
+                    {% if block.description %}{{ block.description }}{% else %}Programme block{% endif %}
+                    · {{ block.weeks }} week{{ block.weeks|pluralize }}
+                </p>
+            </header>
+
+            <section class="card">
+                <header class="card-header">
+                    <h2 class="card-title">Assign to client</h2>
+                    <p class="card-subtitle">Assign this programme to an eligible client.</p>
+                </header>
+                <div class="card-body">
+                    {% if assignable_clients %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <label for="assign_client_id">Client</label>
+                            <select id="assign_client_id" name="assign_client_id" class="form-control">
+                                {% for u in assignable_clients %}
+                                    <option value="{{ u.id }}">{{ u.get_full_name|default:u.username }} ({{ u.email }})</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-actions" style="margin-top: 1rem;">
+                                <button type="submit" class="btn-primary">Assign to client</button>
+                            </div>
+                        </form>
+                    {% else %}
+                        <p class="text-muted">No eligible clients found for assignment.</p>
+                    {% endif %}
+                </div>
+            </section>
+
+            <section class="card card-table">
+                <header class="card-header">
+                    <h2 class="card-title">Programme days</h2>
+                    <p class="card-subtitle">Days and exercises in this programme.</p>
+                </header>
+                <div class="card-body">
+                    {% if days %}
+                        {% for day in days %}
+                            <div class="programme-day">
+                                <h3 class="programme-day__title">{{ day.name }}</h3>
+                                {% if day.exercises.all %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Exercise</th>
+                                                <th>Sets</th>
+                                                <th>Reps</th>
+                                                <th>Target weight (kg)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for ex in day.exercises.all %}
+                                                <tr>
+                                                    <td>{{ ex.exercise_name }}</td>
+                                                    <td>{{ ex.target_sets }}</td>
+                                                    <td>{{ ex.target_reps }}</td>
+                                                    <td>{{ ex.target_weight_kg|default:"—" }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                {% else %}
+                                    <p class="text-muted">No exercises added for this day yet.</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No days have been added to this programme.</p>
+                    {% endif %}
+                </div>
+            </section>
+        </main>
+    </div>
+</section>
+{% endblock %}

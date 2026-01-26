@@ -41,6 +41,11 @@ urlpatterns = [
         name="trainer_consultation_detail",
     ),
     path(
+        "trainer/programmes/<int:block_id>/",
+        trainer_programme_detail,
+        name="trainer_programme_detail",
+    ),
+    path(
         "trainer/clients/<int:client_id>/",
         trainer_client_detail,
         name="trainer_client_detail",
