@@ -9,6 +9,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.forms import modelformset_factory
 from django.http import HttpResponseForbidden
@@ -161,10 +162,13 @@ def client_workout_log(request):
     else:
         programme_exercises = []
 
-    recent_sessions = (
+    session_qs = (
         WorkoutSession.objects.filter(client=request.user)
-        .order_by("-date", "-created_at")[:20]
+        .order_by("-date", "-created_at")
     )
+    paginator = Paginator(session_qs, 5)
+    page_number = request.GET.get("page")
+    recent_sessions = paginator.get_page(page_number)
 
     if request.method == "POST":
         post_data = request.POST.copy()
