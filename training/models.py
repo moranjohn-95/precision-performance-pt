@@ -31,12 +31,14 @@ class ConsultationRequest(models.Model):
     STATUS_ASSIGNED = "assigned"
     STATUS_CONTACTED = "contacted"
     STATUS_CLOSED = "closed"
+    STATUS_ADDED_CLASSES = "added_classes"
 
     STATUS_CHOICES = [
         (STATUS_NEW, "New"),
         (STATUS_ASSIGNED, "Assigned"),
         (STATUS_CONTACTED, "Contacted"),
         (STATUS_CLOSED, "Closed"),
+        (STATUS_ADDED_CLASSES, "Added to classes"),
     ]
 
     first_name = models.CharField(max_length=50)

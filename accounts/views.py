@@ -493,12 +493,48 @@ def trainer_dashboard(request):
             "Not specified",
         )
 
+    current_classes = ConsultationRequest.objects.filter(
+        status=ConsultationRequest.STATUS_ADDED_CLASSES,
+        coaching_option__in=["small_group", "large_group"],
+    ).order_by("-created_at")
+
+    current_small_group = current_classes.filter(coaching_option="small_group")
+    current_large_group = current_classes.filter(coaching_option="large_group")
+
     context = {
         "latest_requests": latest_requests,
         "total_requests": total_requests,
         "coaching_breakdown": coaching_breakdown,
+        "current_small_group": current_small_group,
+        "current_large_group": current_large_group,
     }
     return render(request, "trainer/dashboard.html", context)
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def add_to_current_classes(request, pk):
+    """
+    Mark a consultation as added to current classes
+    (only for small/large group coaching options).
+    """
+    if request.method != "POST":
+        return redirect("accounts:trainer_dashboard")
+
+    consultation = get_object_or_404(ConsultationRequest, pk=pk)
+
+    if consultation.coaching_option not in ["small_group", "large_group"]:
+        messages.error(
+            request,
+            "Only group coaching requests can be added to classes.",
+        )
+        return redirect("accounts:trainer_consultation_detail", pk=pk)
+
+    consultation.status = ConsultationRequest.STATUS_ADDED_CLASSES
+    consultation.assigned_trainer = request.user
+    consultation.save()
+    messages.success(request, "Added to Current Classes.")
+    return redirect("accounts:trainer_consultation_detail", pk=pk)
 
 
 @login_required(login_url="accounts:trainer_login")

@@ -13,6 +13,7 @@ from .views import (
     trainer_consultation_detail,
     trainer_client_detail,
     trainer_session_edit,
+    add_to_current_classes,
     client_dashboard,
     client_programme_library,
     client_today,
@@ -40,6 +41,11 @@ urlpatterns = [
         "trainer/consultations/<int:pk>/",
         trainer_consultation_detail,
         name="trainer_consultation_detail",
+    ),
+    path(
+        "trainer/consultations/<int:pk>/add-to-classes/",
+        add_to_current_classes,
+        name="trainer_add_to_current_classes",
     ),
     path(
         "trainer/programmes/<int:block_id>/",
