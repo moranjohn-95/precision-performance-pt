@@ -6,6 +6,9 @@
 {% block sidebar_menu %}{% include "trainer/_sidebar.html" %}{% endblock %}
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Programme detail{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+{% endblock %}
 
 {% block dashboard_content %}
 

@@ -7,16 +7,16 @@
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}My clients{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+{% endblock %}
 
 {% block dashboard_content %}
 
 <div class="dashboard-card">
-    <h2 class="dashboard-card__title">Clients from consultation requests</h2>
+    <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
     <p class="dashboard-subtitle">
-        Trainer: {{ request.user.get_full_name|default:request.user.username }}
-    </p>
-    <p class="dashboard-card__subtitle">
-        One row per email address, based on the latest request for that client.
+        Logged in: {{ request.user.get_full_name|default:request.user.username }}
     </p>
 
     <div class="dashboard-table-wrapper">
