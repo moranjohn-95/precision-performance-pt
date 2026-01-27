@@ -15,9 +15,6 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 
 <div class="dashboard-card">
     <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
-    <p class="dashboard-subtitle">
-        Logged in: {{ request.user.get_full_name|default:request.user.username }}
-    </p>
 
     <div class="dashboard-table-wrapper">
         <table class="dashboard-table">

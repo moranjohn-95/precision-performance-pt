@@ -15,10 +15,6 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 
 <div class="dashboard-card">
     <h2 class="dashboard-card__title">Consultation requests</h2>
-    <p class="dashboard-subtitle">
-        Trainer: {{ request.user.get_full_name|default:request.user.username }}
-    </p>
-
     <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
         Total requests: {{ total_requests }}
     </p>
