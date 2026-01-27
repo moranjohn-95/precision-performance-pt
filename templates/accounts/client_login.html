@@ -3,39 +3,47 @@
 {% block title %}Client login | Precision Performance PT{% endblock %}
 
 {% block content %}
-<section class="page-section">
-  <div class="page-section-inner">
-    <header class="page-section-header">
-      <h1>Client login</h1>
-      <p>Please log in to access your client dashboard.</p>
+<main class="auth-page">
+  <section class="auth-card">
+    <header class="auth-card__header">
+      <h1 class="auth-card__title">Client login</h1>
+      <p class="auth-card__subtitle">
+        Log in to access your client dashboard.
+      </p>
     </header>
 
     {% if form.non_field_errors %}
-      <div class="form-error-summary">
-        {{ form.non_field_errors }}
-      </div>
+    <div class="auth-errors">
+      {{ form.non_field_errors }}
+    </div>
     {% endif %}
 
-    <form method="post" class="consultation-form">
+    <form method="post" class="auth-form">
       {% csrf_token %}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
 
-      <div class="form-field">
+      <div class="auth-field">
         <label for="{{ form.username.id_for_label }}">Username</label>
         {{ form.username }}
+        {{ form.username.errors }}
       </div>
 
-      <div class="form-field">
+      <div class="auth-field">
         <label for="{{ form.password.id_for_label }}">Password</label>
         {{ form.password }}
+        {{ form.password.errors }}
       </div>
 
-      <div class="consultation-actions">
-        <button type="submit" class="btn-primary">
-          Log in
-        </button>
-      </div>
+      <button type="submit" class="auth-button">Log in</button>
     </form>
-  </div>
-</section>
+
+    <p class="auth-footer">
+      Are you a trainer?
+      <a href="{% url 'accounts:trainer_login' %}">Go to trainer login</a>
+    </p>
+  </section>
+</main>
 {% endblock %}
 
