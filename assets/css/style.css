@@ -1015,6 +1015,115 @@ html {
     display: flex;
 }
 
+/* Trainer login */
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef1f6;
+    padding: 2rem;
+}
+
+.auth-card {
+    width: min(520px, 100%);
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    padding: 2rem;
+    text-align: center;
+}
+
+.auth-card__title {
+    margin: 0 0 0.35rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.auth-card__subtitle {
+    margin: 0 0 1.5rem;
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.auth-errors {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-radius: 0.6rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.auth-field {
+    text-align: left;
+}
+
+.auth-field label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+    color: #0b1f3b;
+}
+
+.auth-field input {
+    width: 100%;
+    border-radius: 0.6rem;
+    border: 1px solid #d7dce5;
+    padding: 0.65rem 0.75rem;
+    font: inherit;
+}
+
+.auth-field input:focus {
+    outline: 2px solid #b6f400;
+    border-color: #b6f400;
+    box-shadow: 0 0 0 2px rgba(182, 244, 0, 0.35);
+}
+
+.auth-field .errorlist {
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    color: #b91c1c;
+    font-size: 0.9rem;
+}
+
+.auth-button {
+    width: 100%;
+    border: none;
+    border-radius: 999px;
+    background: #b6f400;
+    color: #0b1f3b;
+    font-weight: 700;
+    padding: 0.85rem;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.auth-button:hover,
+.auth-button:focus-visible {
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.2);
+}
+
+.auth-footer {
+    margin-top: 1.25rem;
+    color: #475569;
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: #1f6de8;
+}
+
+
 .session-modal {
     background: #ffffff;
     border-radius: 1rem;
