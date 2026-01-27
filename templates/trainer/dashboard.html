@@ -17,9 +17,7 @@
     </p>
 
     <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
-        Total requests: {{ total_requests }}{% if latest_requests %}
-        &nbsp;–&nbsp; Showing latest {{ latest_requests|length }} below.
-        {% endif %}
+        Total requests: {{ total_requests }}
     </p>
 
     {% if latest_requests %}
@@ -40,8 +38,8 @@
                     <td>{{ req.created_at|date:"d M Y" }}</td>
                     <td>{{ req.first_name }} {{ req.last_name }}</td>
                     <td>{{ req.email }}</td>
-                    <td>{{ req.get_training_goal_display|default:"—" }}</td>
-                    <td>{{ req.get_coaching_option_display|default:"—" }}</td>
+                    <td>{{ req.get_training_goal_display|default:"" }}</td>
+                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
                     <td>
                         <a href="{% url 'accounts:trainer_consultation_detail' req.id %}" class="btn-link">
                             View
@@ -51,13 +49,52 @@
                 {% endfor %}
             </tbody>
         </table>
+
+        {% if latest_requests.has_other_pages %}
+        <nav class="pagination-nav" aria-label="Consultation pagination">
+            <ul class="pagination">
+                {% if latest_requests.has_previous %}
+                <li class="pagination-item">
+                    <a
+                        href="?page={{ latest_requests.previous_page_number }}"
+                        class="pagination-link"
+                    >
+                        ‹ Prev
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in latest_requests.paginator.page_range %}
+                    {% if num == latest_requests.number %}
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">{{ num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item">
+                        <a href="?page={{ num }}" class="pagination-link">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if latest_requests.has_next %}
+                <li class="pagination-item">
+                    <a
+                        href="?page={{ latest_requests.next_page_number }}"
+                        class="pagination-link"
+                    >
+                        Next ›
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
     {% else %}
         <p>No consultation requests yet.</p>
     {% endif %}
 
-    <p style="margin-top: 0.75rem; font-size: 0.85rem;">
-        Remember Django admin can also be used to review requests.
-    </p>
 </div>
 
 <section class="trainer-section">

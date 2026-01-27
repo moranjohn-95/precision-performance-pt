@@ -474,7 +474,10 @@ def trainer_dashboard(request):
     - Shows latest consultation requests
     - Includes a small stats summary pulled from the database
     """
-    latest_requests = ConsultationRequest.objects.order_by("-created_at")[:4]
+    requests_qs = ConsultationRequest.objects.order_by("-created_at")
+    paginator = Paginator(requests_qs, 5)
+    page_number = request.GET.get("page")
+    latest_requests = paginator.get_page(page_number)
     total_requests = ConsultationRequest.objects.count()
 
     coaching_breakdown = (
