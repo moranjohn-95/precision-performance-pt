@@ -97,6 +97,16 @@ class WorkoutSession(models.Model):
     One workout completed by a client on a given date.
     """
 
+    STATUS_LOGGED = "logged"
+    STATUS_PLANNED = "planned"
+    STATUS_SKIPPED = "skipped"
+
+    STATUS_CHOICES = [
+        (STATUS_LOGGED, "Logged"),
+        (STATUS_PLANNED, "Planned"),
+        (STATUS_SKIPPED, "Skipped"),
+    ]
+
     client = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -106,6 +116,11 @@ class WorkoutSession(models.Model):
     name = models.CharField(
         max_length=120,
         help_text="Short label such as 'Upper Body - Week 3 / Day 2'.",
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_LOGGED,
     )
     notes = models.TextField(blank=True)
 
@@ -309,4 +324,3 @@ class ClientProgramme(models.Model):
 
     def __str__(self):
         return f"{self.client} - {self.block}"
-

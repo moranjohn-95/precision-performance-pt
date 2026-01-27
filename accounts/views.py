@@ -117,28 +117,42 @@ def client_workout_log(request):
 
     initial = {}
     session_name_param = (request.GET.get("session_name") or "").strip()
-    if session_name_param:
-        # Your WorkoutSessionForm uses "name" (not session_name)
-        initial["name"] = session_name_param
+
+    # Build available programme days for the logged-in client
+    active_assignments = (
+        ClientProgramme.objects.filter(client=request.user, status="active")
+        .select_related("block")
+        .prefetch_related("block__days__exercises")
+        .order_by("start_date", "block__name")
+    )
+    available_days = []
+    for assignment in active_assignments:
+        for day in assignment.block.days.all().order_by("order"):
+            available_days.append({"day": day, "assignment": assignment})
 
     programme_day = None
-    programme_exercises = []
-
-    # Optional: Try match ProgrammeDay by name ONLY if user has that block assigned
-    if session_name_param:
-        day_qs = (
-            ProgrammeDay.objects.filter(name=session_name_param)
-            .select_related("block")
-        )
-        for day in day_qs:
-            if ClientProgramme.objects.filter(
-                client=request.user,
-                status="active",
-                block=day.block,
-            ).exists():
-                programme_day = day
-                programme_exercises = list(day.exercises.all().order_by("order"))
+    day_id = request.GET.get("day") or request.POST.get("day")
+    if day_id and day_id.isdigit():
+        for entry in available_days:
+            if entry["day"].id == int(day_id):
+                programme_day = entry["day"]
                 break
+
+    if programme_day is None and session_name_param:
+        for entry in available_days:
+            if entry["day"].name == session_name_param:
+                programme_day = entry["day"]
+                break
+
+    if programme_day is None and available_days:
+        programme_day = available_days[0]["day"]
+
+    programme_exercises = (
+        list(programme_day.exercises.all().order_by("order")) if programme_day else []
+    )
+    if programme_day:
+        initial["name"] = programme_day.name
+        initial["day"] = programme_day.id
 
     recent_sessions = (
         WorkoutSession.objects.filter(client=request.user)
@@ -146,58 +160,33 @@ def client_workout_log(request):
     )
 
     if request.method == "POST":
-        form = WorkoutSessionForm(request.POST)
+        post_data = request.POST.copy()
+        if programme_day:
+            post_data["name"] = programme_day.name
+        form = WorkoutSessionForm(post_data)
         if form.is_valid():
             cd = form.cleaned_data
 
-            # Set inputs
-            bench_set1 = cd.get("bench_set1")
-            bench_set2 = cd.get("bench_set2")
-            bench_set3 = cd.get("bench_set3")
-
-            row_set1 = cd.get("row_set1")
-            row_set2 = cd.get("row_set2")
-            row_set3 = cd.get("row_set3")
-
-            incline_set1 = cd.get("incline_set1")
-            incline_set2 = cd.get("incline_set2")
-            incline_set3 = cd.get("incline_set3")
-
-            # Weight inputs (not part of the form)
-            bench_weight_raw = (request.POST.get("bench_weight") or "").strip()
-            row_weight_raw = (request.POST.get("row_weight") or "").strip()
-            incline_weight_raw = (request.POST.get("incline_weight") or "").strip()
-
-            def format_sets(*vals):
-                return " | ".join(v or "—" for v in vals)
-
-            def format_weight(raw_val):
-                return f"{raw_val}kg" if raw_val else "—"
-
-            bench_sets_display = format_sets(bench_set1, bench_set2, bench_set3)
-            row_sets_display = format_sets(row_set1, row_set2, row_set3)
-            incline_sets_display = format_sets(incline_set1, incline_set2, incline_set3)
-
-            session_details_lines = [
-                "Session details:",
-                (
-                    f"Bench Press ({format_weight(bench_weight_raw)}): "
-                    f"{bench_sets_display}"
-                ),
-                (
-                    f"Seated Row ({format_weight(row_weight_raw)}): "
-                    f"{row_sets_display}"
-                ),
-                (
-                    f"DB Incline ({format_weight(incline_weight_raw)}): "
-                    f"{incline_sets_display}"
-                ),
-            ]
-
             base_notes = cd.get("notes") or ""
-            session_notes = "\n\n".join(
-                part for part in (base_notes, "\n".join(session_details_lines)) if part
-            )
+
+            session_notes = base_notes
+
+            # Only auto-generate structured details when a programme day is selected
+            if programme_day and programme_exercises:
+                lines = ["Session details:"]
+                for ex in programme_exercises:
+                    set1 = request.POST.get(f"ex_{ex.id}_set1") or "-"
+                    set2 = request.POST.get(f"ex_{ex.id}_set2") or "-"
+                    set3 = request.POST.get(f"ex_{ex.id}_set3") or "-"
+                    weight_val = request.POST.get(f"ex_{ex.id}_weight") or "-"
+                    lines.append(
+                        f"{ex.exercise_name} ({ex.target_sets} x {ex.target_reps} @ {ex.target_weight_kg or '-'}) "
+                        f": {set1} | {set2} | {set3} (weight: {weight_val})"
+                    )
+
+                session_notes = "\n\n".join(
+                    part for part in (base_notes, "\n".join(lines)) if part
+                )
 
             session = form.save(commit=False)
 
@@ -207,18 +196,14 @@ def client_workout_log(request):
             if getattr(session, "client_id", None) is None:
                 session.client = request.user
 
-            # If model has status, set it (safe)
-            if hasattr(session, "status") and not getattr(session, "status", None):
-                try:
-                    session.status = "logged"
-                except Exception:
-                    pass
-
             session.notes = session_notes
             session.save()
 
             messages.success(request, "Workout session saved.")
-            return redirect("accounts:client_workout_log")
+            redirect_url = reverse_lazy("accounts:client_workout_log")
+            if programme_day:
+                redirect_url = f"{redirect_url}?day={programme_day.id}"
+            return redirect(redirect_url)
     else:
         form = WorkoutSessionForm(initial=initial)
 
@@ -227,6 +212,7 @@ def client_workout_log(request):
         "session_form": form,
         "programme_day": programme_day,
         "programme_exercises": programme_exercises,
+        "available_days": [entry["day"] for entry in available_days],
     }
     return render(request, "client/workout_log.html", context)
 
@@ -247,17 +233,21 @@ def client_workout_edit(request):
 
     session = get_object_or_404(WorkoutSession, pk=session_id, client=request.user)
 
-    name = (request.POST.get("name") or "").strip()
-    if name:
-        session.name = name
+    # Update editable fields from the modal form. Persist existing values when
+    # the form does not provide a new value.
+    name_val = (request.POST.get("name") or "").strip()
+    notes_val = request.POST.get("notes")
+    status_val = (request.POST.get("status") or "").strip()
 
-    if hasattr(session, "status"):
-        status_val = (request.POST.get("status") or "").strip()
-        if status_val:
+    if name_val:
+        session.name = name_val
+
+    if notes_val is not None:
+        session.notes = notes_val
+
+    if status_val:
+        if hasattr(session, "status"):
             session.status = status_val
-
-    if "notes" in request.POST:
-        session.notes = request.POST.get("notes", "")
 
     session.save()
     messages.success(request, "Workout session updated.")

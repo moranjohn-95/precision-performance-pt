@@ -35,12 +35,12 @@
                                 <h3 class="card-title">{{ day.name }}</h3>
                             </div>
                             <div>
-                                <a
-                                    href="{% url 'accounts:client_workout_log' %}?session_name={{ day.name|urlencode }}"
-                                    class="btn-secondary"
-                                >
-                                    Log this session
-                                </a>
+                            <a
+                                href="{% url 'accounts:client_workout_log' %}?day={{ day.id }}&session_name={{ day.name|urlencode }}"
+                                class="btn-secondary"
+                            >
+                                Log this session
+                            </a>
                             </div>
                         </header>
 
