@@ -1,32 +1,30 @@
 ﻿# accounts/views.py
 
-from collections import OrderedDict
 import datetime
 import json
 
+from django import forms
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.views import LoginView
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.db.models import Count, Q
-from django.utils import timezone
-from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404, render, redirect
-from django.http import HttpResponseForbidden
-
 from django.contrib.auth import get_user_model
-from django import forms
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.views import LoginView
+from django.db.models import Count, Q
 from django.forms import modelformset_factory
+from django.http import HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils import timezone
 
-from training.forms import WorkoutSessionForm, BodyMetricEntryForm
+from training.forms import BodyMetricEntryForm, WorkoutSessionForm
 from training.models import (
-    ConsultationRequest,
-    WorkoutSession,
     BodyMetricEntry,
     ClientProgramme,
+    ConsultationRequest,
     ProgrammeBlock,
     ProgrammeDay,
     ProgrammeExercise,
+    WorkoutSession,
 )
 
 from .models import ClientProfile
@@ -44,10 +42,10 @@ class TrainerLoginView(LoginView):
     """
     Trainer / owner login using Django's built-in authentication.
     """
+
     template_name = "accounts/trainer_login.html"
 
     def get_success_url(self):
-        # After login, go to the trainer dashboard
         return reverse_lazy("accounts:trainer_dashboard")
 
 
@@ -55,10 +53,10 @@ class ClientLoginView(LoginView):
     """
     Client login using Django's built-in authentication.
     """
+
     template_name = "accounts/client_login.html"
 
     def get_success_url(self):
-        # After login, go to the client dashboard
         return reverse_lazy("accounts:client_dashboard")
 
 
@@ -112,47 +110,56 @@ def client_programme_library(request):
 
 @login_required
 def client_workout_log(request):
+    """
+    Client workout log page.
+
+    - Direct entry defaults to the first available ProgrammeDay.
+    - Loads real ProgrammeExercise rows for the selected day.
+    - Saves via WorkoutSessionForm and compiles per-exercise inputs
+      into notes.
+    - Redirects back with ?day=<id> so the same exercises render after save.
+    """
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
 
     initial = {}
     session_name_param = (request.GET.get("session_name") or "").strip()
 
-    # Build available programme days for the logged-in client
     active_assignments = (
         ClientProgramme.objects.filter(client=request.user, status="active")
         .select_related("block")
-        .prefetch_related("block__days__exercises")
         .order_by("start_date", "block__name")
     )
-    available_days = []
-    for assignment in active_assignments:
-        for day in assignment.block.days.all().order_by("order"):
-            available_days.append({"day": day, "assignment": assignment})
 
-    programme_day = None
+    available_days_qs = (
+        ProgrammeDay.objects.filter(
+            block__in=active_assignments.values_list("block_id", flat=True)
+        )
+        .select_related("block")
+        .order_by("block__name", "order")
+    )
+
     day_id = request.GET.get("day") or request.POST.get("day")
+    programme_day = None
+
     if day_id and day_id.isdigit():
-        for entry in available_days:
-            if entry["day"].id == int(day_id):
-                programme_day = entry["day"]
-                break
+        programme_day = available_days_qs.filter(id=int(day_id)).first()
 
     if programme_day is None and session_name_param:
-        for entry in available_days:
-            if entry["day"].name == session_name_param:
-                programme_day = entry["day"]
-                break
+        programme_day = available_days_qs.filter(
+            name=session_name_param
+        ).first()
 
-    if programme_day is None and available_days:
-        programme_day = available_days[0]["day"]
+    if programme_day is None:
+        programme_day = available_days_qs.first()
 
-    programme_exercises = (
-        list(programme_day.exercises.all().order_by("order")) if programme_day else []
-    )
     if programme_day:
+        programme_exercises = list(
+            programme_day.exercises.all().order_by("order")
+        )
         initial["name"] = programme_day.name
-        initial["day"] = programme_day.id
+    else:
+        programme_exercises = []
 
     recent_sessions = (
         WorkoutSession.objects.filter(client=request.user)
@@ -161,32 +168,51 @@ def client_workout_log(request):
 
     if request.method == "POST":
         post_data = request.POST.copy()
+
         if programme_day:
             post_data["name"] = programme_day.name
+
         form = WorkoutSessionForm(post_data)
+
         if form.is_valid():
             cd = form.cleaned_data
+            base_notes = (cd.get("notes") or "").strip()
 
-            base_notes = cd.get("notes") or ""
-
-            session_notes = base_notes
-
-            # Only auto-generate structured details when a programme day is selected
+            detail_lines = []
             if programme_day and programme_exercises:
-                lines = ["Session details:"]
-                for ex in programme_exercises:
-                    set1 = request.POST.get(f"ex_{ex.id}_set1") or "-"
-                    set2 = request.POST.get(f"ex_{ex.id}_set2") or "-"
-                    set3 = request.POST.get(f"ex_{ex.id}_set3") or "-"
-                    weight_val = request.POST.get(f"ex_{ex.id}_weight") or "-"
-                    lines.append(
-                        f"{ex.exercise_name} ({ex.target_sets} x {ex.target_reps} @ {ex.target_weight_kg or '-'}) "
-                        f": {set1} | {set2} | {set3} (weight: {weight_val})"
-                    )
+                detail_lines.append("Session details:")
 
-                session_notes = "\n\n".join(
-                    part for part in (base_notes, "\n".join(lines)) if part
-                )
+                for ex in programme_exercises:
+                    set1 = (request.POST.get(f"ex_{ex.id}_set1") or "-")
+                    set2 = (request.POST.get(f"ex_{ex.id}_set2") or "-")
+                    set3 = (request.POST.get(f"ex_{ex.id}_set3") or "-")
+                    weight_val = request.POST.get(f"ex_{ex.id}_weight") or "-"
+
+                    set1 = set1.strip()
+                    set2 = set2.strip()
+                    set3 = set3.strip()
+                    weight_val = weight_val.strip()
+
+                    target_weight = ex.target_weight_kg or "-"
+                    header = (
+                        f"{ex.exercise_name} "
+                        f"({ex.target_sets} x {ex.target_reps} "
+                        f"@ {target_weight})"
+                    )
+                    results = (
+                        f"{set1} | {set2} | {set3} "
+                        f"(weight: {weight_val})"
+                    )
+                    detail_lines.append(f"{header}: {results}")
+
+            compiled_details = "\n".join(detail_lines).strip()
+
+            if base_notes and compiled_details:
+                session_notes = f"{base_notes}\n\n{compiled_details}"
+            elif compiled_details:
+                session_notes = compiled_details
+            else:
+                session_notes = base_notes
 
             session = form.save(commit=False)
 
@@ -200,6 +226,7 @@ def client_workout_log(request):
             session.save()
 
             messages.success(request, "Workout session saved.")
+
             redirect_url = reverse_lazy("accounts:client_workout_log")
             if programme_day:
                 redirect_url = f"{redirect_url}?day={programme_day.id}"
@@ -212,7 +239,7 @@ def client_workout_log(request):
         "session_form": form,
         "programme_day": programme_day,
         "programme_exercises": programme_exercises,
-        "available_days": [entry["day"] for entry in available_days],
+        "available_days": list(available_days_qs),
     }
     return render(request, "client/workout_log.html", context)
 
@@ -231,10 +258,12 @@ def client_workout_edit(request):
         messages.error(request, "Missing workout session id.")
         return redirect("accounts:client_workout_log")
 
-    session = get_object_or_404(WorkoutSession, pk=session_id, client=request.user)
+    session = get_object_or_404(
+        WorkoutSession,
+        pk=session_id,
+        client=request.user,
+    )
 
-    # Update editable fields from the modal form. Persist existing values when
-    # the form does not provide a new value.
     name_val = (request.POST.get("name") or "").strip()
     notes_val = request.POST.get("notes")
     status_val = (request.POST.get("status") or "").strip()
@@ -245,9 +274,8 @@ def client_workout_edit(request):
     if notes_val is not None:
         session.notes = notes_val
 
-    if status_val:
-        if hasattr(session, "status"):
-            session.status = status_val
+    if status_val and hasattr(session, "status"):
+        session.status = status_val
 
     session.save()
     messages.success(request, "Workout session updated.")
@@ -272,7 +300,10 @@ def client_metrics(request):
     else:
         form = BodyMetricEntryForm(initial={"date": timezone.localdate()})
 
-    entries_qs = BodyMetricEntry.objects.filter(client=user).order_by("date", "created_at")
+    entries_qs = BodyMetricEntry.objects.filter(client=user).order_by(
+        "date",
+        "created_at",
+    )
     entries = list(entries_qs)
 
     def latest_and_change(field_name):
@@ -304,16 +335,30 @@ def client_metrics(request):
 
     summary_rows = []
     metrics_spec = [
-        {"label": "Bodyweight", "field": "bodyweight_kg", "unit": "kg", "target_display": "77.5 kg"},
-        {"label": "Waist", "field": "waist_cm", "unit": "cm", "target_display": "82 cm"},
+        {
+            "label": "Bodyweight",
+            "field": "bodyweight_kg",
+            "unit": "kg",
+            "target_display": "77.5 kg",
+        },
+        {
+            "label": "Waist",
+            "field": "waist_cm",
+            "unit": "cm",
+            "target_display": "82 cm",
+        },
         {
             "label": "Bench top set",
             "field": "bench_top_set_kg",
             "unit": "kg",
-            # ✅ FIXED unicode issue:
             "target_display": "62.5 kg x 8",
         },
-        {"label": "Sleep average", "field": "sleep_hours", "unit": "h", "target_display": "7.5 h"},
+        {
+            "label": "Sleep average",
+            "field": "sleep_hours",
+            "unit": "h",
+            "target_display": "7.5 h",
+        },
     ]
 
     for spec in metrics_spec:
@@ -328,9 +373,14 @@ def client_metrics(request):
             }
         )
 
-    recent_entries = BodyMetricEntry.objects.filter(client=user).order_by("-date", "-created_at")[:5]
+    recent_entries = BodyMetricEntry.objects.filter(client=user).order_by(
+        "-date",
+        "-created_at",
+    )[:5]
 
-    chart_entries = BodyMetricEntry.objects.filter(client=user).order_by("date")
+    chart_entries = BodyMetricEntry.objects.filter(
+        client=user
+    ).order_by("date")
     chart_labels = [entry.date.strftime("%d %b") for entry in chart_entries]
 
     bodyweight_series = [
@@ -338,7 +388,9 @@ def client_metrics(request):
         for entry in chart_entries
     ]
     bench_series = [
-        float(entry.bench_top_set_kg) if entry.bench_top_set_kg is not None else None
+        float(entry.bench_top_set_kg)
+        if entry.bench_top_set_kg is not None
+        else None
         for entry in chart_entries
     ]
 
@@ -382,7 +434,10 @@ def client_support(request):
         message = request.POST.get("message", "").strip()
 
         if subject and message:
-            messages.success(request, "Support message sent. A coach will respond soon.")
+            messages.success(
+                request,
+                "Support message sent. A coach will respond soon.",
+            )
             return redirect("accounts:client_support")
 
         messages.error(request, "Both subject and message are required.")
@@ -401,7 +456,10 @@ def is_trainer(user):
 
 
 def staff_required(view_func):
-    return user_passes_test(lambda u: u.is_staff, login_url="accounts:trainer_login")(view_func)
+    return user_passes_test(
+        lambda u: u.is_staff,
+        login_url="accounts:trainer_login",
+    )(view_func)
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -423,7 +481,10 @@ def trainer_dashboard(request):
 
     choice_labels = dict(ConsultationRequest.COACHING_OPTION_CHOICES)
     for row in coaching_breakdown:
-        row["label"] = choice_labels.get(row["coaching_option"], "Not specified")
+        row["label"] = choice_labels.get(
+            row["coaching_option"],
+            "Not specified",
+        )
 
     context = {
         "latest_requests": latest_requests,
@@ -439,7 +500,9 @@ def trainer_clients(request):
     """Show one row per email for the trainer's assigned clients."""
     trainer = request.user
 
-    qs = ConsultationRequest.objects.filter(assigned_trainer=trainer).order_by("-created_at")
+    qs = ConsultationRequest.objects.filter(assigned_trainer=trainer).order_by(
+        "-created_at"
+    )
 
     latest_by_email = {}
     for req in qs:
@@ -447,7 +510,11 @@ def trainer_clients(request):
         if key and key not in latest_by_email:
             latest_by_email[key] = req
 
-    latest_requests = sorted(latest_by_email.values(), key=lambda r: r.created_at, reverse=True)
+    latest_requests = sorted(
+        latest_by_email.values(),
+        key=lambda r: r.created_at,
+        reverse=True,
+    )
 
     rows = []
     for req in latest_requests:
@@ -479,7 +546,10 @@ def trainer_metrics(request):
     """
     Trainer view: overview of latest body metric entries per client.
     """
-    entries = BodyMetricEntry.objects.select_related("client").order_by("client__id", "-date")
+    entries = BodyMetricEntry.objects.select_related("client").order_by(
+        "client__id",
+        "-date",
+    )
 
     latest_by_user = {}
     for entry in entries:
@@ -503,7 +573,11 @@ def trainer_metrics(request):
 
     client_rows.sort(key=lambda row: row["client_name"].lower())
 
-    return render(request, "trainer/metrics.html", {"client_rows": client_rows})
+    return render(
+        request,
+        "trainer/metrics.html",
+        {"client_rows": client_rows},
+    )
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -571,11 +645,10 @@ def trainer_programme_detail(request, block_id):
         Q(block__parent_template=template_block) | Q(block=template_block)
     ).select_related("client", "block", "block__parent_template")
 
-    assignments_qs = (
-        base_assignments
-        if request.user.is_superuser
-        else base_assignments.filter(trainer=request.user)
-    )
+    if request.user.is_superuser:
+        assignments_qs = base_assignments
+    else:
+        assignments_qs = base_assignments.filter(trainer=request.user)
 
     cp_param = request.GET.get("cp")
     assignment = None
@@ -590,7 +663,6 @@ def trainer_programme_detail(request, block_id):
         )
         return redirect(f"{redirect_base}?cp={assignment.id}")
 
-    # If a legacy assignment points directly to the template, convert it
     if assignment and not assignment.block.parent_template_id:
         cloned_block = clone_programme_block(
             template_block,
@@ -602,6 +674,7 @@ def trainer_programme_detail(request, block_id):
         if not assignment.start_date:
             assignment.start_date = timezone.now().date()
         assignment.save()
+
         redirect_base = reverse_lazy(
             "accounts:trainer_programme_detail",
             kwargs={"block_id": template_block.id},
@@ -614,38 +687,40 @@ def trainer_programme_detail(request, block_id):
     can_edit = is_tailored
     assignment_client = assignment.client if assignment else None
 
-    # Day selection for the tailored block
     tailored_block = assignment.block if assignment else None
-    tailored_days = (
-        tailored_block.days.all().order_by("order")
-        if tailored_block
-        else ProgrammeDay.objects.none()
-    )
+    if tailored_block:
+        tailored_days = tailored_block.days.all().order_by("order")
+    else:
+        tailored_days = ProgrammeDay.objects.none()
+
     day_param = request.GET.get("day")
     selected_day = None
+
     if tailored_days:
         if day_param and day_param.isdigit():
             selected_day = tailored_days.filter(id=int(day_param)).first()
         if selected_day is None:
             selected_day = tailored_days.first()
 
-    exercises_qs = ProgrammeExercise.objects.none()
     if selected_day:
         exercises_qs = (
             ProgrammeExercise.objects.filter(day=selected_day)
             .select_related("day")
             .order_by("order")
         )
+    else:
+        exercises_qs = ProgrammeExercise.objects.none()
 
     exercise_formset = None
 
-    # Determine assignable clients for this trainer
     if request.user.is_superuser:
         assignable_clients = list(
             User.objects.filter(is_staff=False).order_by("username")
         )
         allowed_email_set = {
-            u.email.lower() for u in assignable_clients if u.email
+            u.email.lower()
+            for u in assignable_clients
+            if u.email
         }
     else:
         assigned_emails = ConsultationRequest.objects.filter(
@@ -654,19 +729,16 @@ def trainer_programme_detail(request, block_id):
 
         allowed_email_set = {e.lower() for e in assigned_emails if e}
         assignable_clients = list(
-            User.objects.filter(
-                email__in=allowed_email_set
-            ).order_by("username")
+            User.objects.filter(email__in=allowed_email_set).order_by(
+                "username"
+            )
         )
 
-    # ----------------------------
-    # POST #1: Save tailored edits
-    # ----------------------------
     if request.method == "POST" and "save_exercises" in request.POST:
         if not is_tailored:
             return HttpResponseForbidden(
-                "Template programmes cannot be edited. "
-                "Assign to a client first."
+                "Template programmes cannot be edited. Assign to a "
+                "client first."
             )
 
         exercise_formset = ExerciseFormSet(
@@ -678,6 +750,7 @@ def trainer_programme_detail(request, block_id):
         if exercise_formset.is_valid():
             exercise_formset.save()
             messages.success(request, "Tailored programme updated.")
+
             redirect_url = reverse_lazy(
                 "accounts:trainer_programme_detail",
                 kwargs={"block_id": template_block.id},
@@ -690,20 +763,16 @@ def trainer_programme_detail(request, block_id):
             if query_bits:
                 redirect_url = f"{redirect_url}?{'&'.join(query_bits)}"
             return redirect(redirect_url)
+
         messages.error(request, "Please correct the errors below.")
 
-    # ----------------------------
-    # POST #2: Assign programme (clone + assign)
-    # ----------------------------
     elif (
         request.method == "POST"
         and not is_tailored
         and "convert_to_tailored" not in request.POST
     ):
-        # Support BOTH naming conventions to avoid breaking template
-        client_id = (
-            request.POST.get("assign_client_id")
-            or request.POST.get("client_id")
+        client_id = request.POST.get("assign_client_id") or request.POST.get(
+            "client_id"
         )
         assign_clicked = (
             "assign_to_client" in request.POST
@@ -729,7 +798,6 @@ def trainer_programme_detail(request, block_id):
                     block_id=template_block.id,
                 )
 
-            # If a tailored copy already exists, reuse it
             existing_cp = ClientProgramme.objects.filter(
                 client=client_user,
                 block__parent_template=template_block,
@@ -746,7 +814,6 @@ def trainer_programme_detail(request, block_id):
                 )
                 return redirect(f"{redirect_base}?cp={existing_cp.id}")
 
-            # Legacy assignment pointing at the template itself? Convert it.
             legacy_cp = ClientProgramme.objects.filter(
                 client=client_user,
                 block=template_block,
@@ -766,7 +833,10 @@ def trainer_programme_detail(request, block_id):
                 legacy_cp.save()
                 messages.info(
                     request,
-                    "Existing template assignment converted to a tailored copy.",
+                    (
+                        "Existing template assignment converted to a "
+                        "tailored copy."
+                    ),
                 )
                 redirect_base = reverse_lazy(
                     "accounts:trainer_programme_detail",
@@ -774,7 +844,6 @@ def trainer_programme_detail(request, block_id):
                 )
                 return redirect(f"{redirect_base}?cp={legacy_cp.id}")
 
-            # Clone the programme before assigning, so template stays unchanged
             cloned_block = clone_programme_block(
                 template_block,
                 request.user,
@@ -808,12 +877,10 @@ def trainer_programme_detail(request, block_id):
             )
             return redirect(f"{redirect_base}?cp={cp.id}")
 
-    # ----------------------------
-    # POST #3: Convert legacy assignment to tailored copy
-    # ----------------------------
     elif request.method == "POST" and "convert_to_tailored" in request.POST:
         if not assignment:
             return HttpResponseForbidden("No assignment selected.")
+
         if assignment.block.parent_template_id:
             messages.info(request, "This client already has a tailored copy.")
             redirect_base = reverse_lazy(
@@ -832,32 +899,36 @@ def trainer_programme_detail(request, block_id):
         if not assignment.start_date:
             assignment.start_date = timezone.now().date()
         assignment.save()
+
         messages.success(
             request,
             "Converted to tailored copy. You can now edit safely.",
         )
+
         redirect_base = reverse_lazy(
             "accounts:trainer_programme_detail",
             kwargs={"block_id": template_block.id},
         )
         return redirect(f"{redirect_base}?cp={assignment.id}")
 
-    # GET: show formset if editable
     if request.method == "GET" and is_tailored:
         exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
 
-    template_days_qs = template_block.days.all().order_by("order").prefetch_related(
-        "exercises"
-    )
+        template_days_qs = (
+            template_block.days.all()
+            .order_by("order")
+            .prefetch_related("exercises")
+        )
+
     if selected_day:
         template_days_qs = template_days_qs.filter(order=selected_day.order)
 
     preview_days = []
-    for d in template_days_qs:
+    for day_obj in template_days_qs:
         preview_days.append(
             {
-                "day": d,
-                "exercises": d.exercises.all().order_by("order"),
+                "day": day_obj,
+                "exercises": day_obj.exercises.all().order_by("order"),
             }
         )
 
@@ -886,17 +957,16 @@ def trainer_programmes(request):
     Trainer view: high-level overview of programme blocks and templates.
     Now driven by ProgrammeBlock records instead of static data.
     """
-    assignments = (
-        ClientProgramme.objects.select_related(
+    if request.user.is_superuser:
+        assignments = ClientProgramme.objects.select_related(
             "block",
             "block__parent_template",
         )
-        if request.user.is_superuser
-        else ClientProgramme.objects.select_related(
+    else:
+        assignments = ClientProgramme.objects.select_related(
             "block",
             "block__parent_template",
         ).filter(trainer=request.user)
-    )
 
     programme_blocks = []
     for cp in assignments:
@@ -938,19 +1008,32 @@ def trainer_consultation_detail(request, pk):
     consultation = get_object_or_404(ConsultationRequest, pk=pk)
 
     if request.method == "POST" and "assign_to_me" in request.POST:
-        if (
+        already_assigned = (
             consultation.assigned_trainer
             and consultation.assigned_trainer != request.user
             and not request.user.is_superuser
-        ):
-            messages.error(request, "This consultation is already assigned to another trainer.")
+        )
+
+        if already_assigned:
+            messages.error(
+                request,
+                "This consultation is already assigned to another trainer.",
+            )
         else:
             consultation.assigned_trainer = request.user
             consultation.save()
-            messages.success(request, "Client has been added to the trainer client list.")
+            messages.success(
+                request,
+                "Client has been added to the trainer client list.",
+            )
+
         return redirect("accounts:trainer_clients")
 
-    return render(request, "trainer/consultation_detail.html", {"consultation": consultation})
+    return render(
+        request,
+        "trainer/consultation_detail.html",
+        {"consultation": consultation},
+    )
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -968,27 +1051,42 @@ def trainer_client_detail(request, client_id):
     if not (has_assignment or trainer.is_superuser):
         return HttpResponseForbidden("Not allowed to view this client.")
 
-    workouts = WorkoutSession.objects.filter(client=client_user).order_by("-date", "-id")[:5]
+    workouts = WorkoutSession.objects.filter(client=client_user).order_by(
+        "-date",
+        "-id",
+    )[:5]
 
-    entries_qs = BodyMetricEntry.objects.filter(client=client_user).order_by("date")
+    entries_qs = BodyMetricEntry.objects.filter(
+        client=client_user
+    ).order_by("date")
     entries = list(entries_qs)
 
-    chart_labels = [e.date.strftime("%d %b") for e in entries]
-    bodyweight_values = [
-        float(e.bodyweight_kg) if e.bodyweight_kg is not None else None for e in entries
-    ]
-    bench_values = [
-        float(e.bench_top_set_kg) if e.bench_top_set_kg is not None else None for e in entries
-    ]
+    chart_labels = [entry.date.strftime("%d %b") for entry in entries]
+    bodyweight_values = []
+    bench_values = []
+
+    for entry in entries:
+        bw = entry.bodyweight_kg
+        bt = entry.bench_top_set_kg
+        bodyweight_values.append(float(bw) if bw is not None else None)
+        bench_values.append(float(bt) if bt is not None else None)
 
     has_bodyweight_data = any(v is not None for v in bodyweight_values)
     has_bench_data = any(v is not None for v in bench_values)
 
-    recent_entries = BodyMetricEntry.objects.filter(client=client_user).order_by("-date", "-created_at")[:5]
+    recent_entries = BodyMetricEntry.objects.filter(
+        client=client_user
+    ).order_by(
+        "-date",
+        "-created_at",
+    )[:5]
 
     latest = entries_qs.order_by("-date", "-created_at").first()
     four_weeks_ago = timezone.now().date() - datetime.timedelta(weeks=4)
-    earlier = entries_qs.filter(date__lte=four_weeks_ago).order_by("-date", "-created_at").first()
+    earlier = entries_qs.filter(date__lte=four_weeks_ago).order_by(
+        "-date",
+        "-created_at",
+    ).first()
 
     def latest_or_dash(entry, field, suffix=""):
         if entry is None:
@@ -1007,7 +1105,10 @@ def trainer_client_detail(request, client_id):
             return "—"
         diff = lat_val - early_val
         sign = "+" if diff > 0 else ""
-        formatted = f"{diff:.2f}" if suffix.strip() == "h" else f"{diff:.1f}"
+        if suffix.strip() == "h":
+            formatted = f"{diff:.2f}"
+        else:
+            formatted = f"{diff:.1f}"
         return f"{sign}{formatted}{suffix}"
 
     summary_rows = [
@@ -1026,7 +1127,12 @@ def trainer_client_detail(request, client_id):
         {
             "label": "Bench top set",
             "latest": latest_or_dash(latest, "bench_top_set_kg", " kg"),
-            "change": change_or_dash(latest, earlier, "bench_top_set_kg", " kg"),
+            "change": change_or_dash(
+                latest,
+                earlier,
+                "bench_top_set_kg",
+                " kg",
+            ),
             "target": "62.5 kg x 8",
         },
         {
@@ -1072,7 +1178,10 @@ def trainer_session_edit(request, session_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Session updated.")
-            return redirect("accounts:trainer_client_detail", client_id=session.client_id)
+            return redirect(
+                "accounts:trainer_client_detail",
+                client_id=session.client_id,
+            )
     else:
         form = TrainerWorkoutSessionForm(instance=session)
 
