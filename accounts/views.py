@@ -493,20 +493,43 @@ def trainer_dashboard(request):
             "Not specified",
         )
 
-    current_classes = ConsultationRequest.objects.filter(
+    classes_filter = request.GET.get("classes", "all")
+    base_classes_qs = ConsultationRequest.objects.filter(
         status=ConsultationRequest.STATUS_ADDED_CLASSES,
         coaching_option__in=["small_group", "large_group"],
     ).order_by("-created_at")
 
-    current_small_group = current_classes.filter(coaching_option="small_group")
-    current_large_group = current_classes.filter(coaching_option="large_group")
+    current_classes_qs = base_classes_qs
+    if classes_filter == "small":
+        current_classes_qs = current_classes_qs.filter(
+            coaching_option="small_group"
+        )
+    elif classes_filter == "large":
+        current_classes_qs = current_classes_qs.filter(
+            coaching_option="large_group"
+        )
+
+    classes_paginator = Paginator(current_classes_qs, 5)
+    classes_page_number = request.GET.get("classes_page")
+    current_classes = classes_paginator.get_page(classes_page_number)
+
+    total_classes_count = base_classes_qs.count()
+    small_count = base_classes_qs.filter(
+        coaching_option="small_group"
+    ).count()
+    large_count = base_classes_qs.filter(
+        coaching_option="large_group"
+    ).count()
 
     context = {
         "latest_requests": latest_requests,
         "total_requests": total_requests,
         "coaching_breakdown": coaching_breakdown,
-        "current_small_group": current_small_group,
-        "current_large_group": current_large_group,
+        "current_classes": current_classes,
+        "classes_filter": classes_filter,
+        "small_classes_count": small_count,
+        "large_classes_count": large_count,
+        "total_classes_count": total_classes_count,
     }
     return render(request, "trainer/dashboard.html", context)
 

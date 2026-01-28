@@ -105,89 +105,119 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         Group coaching requests that have been added to current classes.
     </p>
 
-    <div class="dashboard-card" style="margin-top: 1rem;">
-        <h3 class="dashboard-card__title">
-            Small Group Coaching
-            <span class="tag tag-muted">{{ current_small_group|length }}</span>
-        </h3>
-        <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Submitted</th>
-                        <th>Name</th>
-                        <th>Preferred date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for req in current_small_group %}
-                    <tr>
-                        <td>{{ req.created_at|date:"d M Y" }}</td>
-                        <td>{{ req.first_name }} {{ req.last_name }}</td>
-                        <td>{{ req.preferred_date|default:"—" }}</td>
-                        <td>
-                            <a
-                                class="btn-link"
-                                href="{% url 'accounts:trainer_consultation_detail' req.id %}"
-                            >
-                                Open
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="muted">
-                            No small group classes yet.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+    <form method="get" class="classes-filter" style="margin: 0 0 1rem;">
+        {% if request.GET.page %}
+            <input type="hidden" name="page" value="{{ request.GET.page }}">
+        {% endif %}
+        <label for="classes-filter-select" class="form-label">
+            Show:
+        </label>
+        <select
+            id="classes-filter-select"
+            name="classes"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if classes_filter == "all" %}selected{% endif %}>
+                All ({{ total_classes_count }})
+            </option>
+            <option
+                value="small"
+                {% if classes_filter == "small" %}selected{% endif %}
+            >
+                Small Group Coaching ({{ small_classes_count }})
+            </option>
+            <option
+                value="large"
+                {% if classes_filter == "large" %}selected{% endif %}
+            >
+                Larger Group Classes ({{ large_classes_count }})
+            </option>
+        </select>
+    </form>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Submitted</th>
+                    <th>Name</th>
+                    <th>Preferred date</th>
+                    <th>Coaching option</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in current_classes %}
+                <tr>
+                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td>{{ req.preferred_date|default:"—" }}</td>
+                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td>
+                        <a
+                            class="btn-link"
+                            href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                        >
+                            Open
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="muted">
+                        No current classes to show.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <div class="dashboard-card" style="margin-top: 1rem;">
-        <h3 class="dashboard-card__title">
-            Larger Group Classes
-            <span class="tag tag-muted">{{ current_large_group|length }}</span>
-        </h3>
-        <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
-                <thead>
-                    <tr>
-                        <th>Submitted</th>
-                        <th>Name</th>
-                        <th>Preferred date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for req in current_large_group %}
-                    <tr>
-                        <td>{{ req.created_at|date:"d M Y" }}</td>
-                        <td>{{ req.first_name }} {{ req.last_name }}</td>
-                        <td>{{ req.preferred_date|default:"—" }}</td>
-                        <td>
-                            <a
-                                class="btn-link"
-                                href="{% url 'accounts:trainer_consultation_detail' req.id %}"
-                            >
-                                Open
-                            </a>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="muted">
-                            No larger group classes yet.
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
+    {% if current_classes.has_other_pages %}
+    <nav class="pagination-nav" aria-label="Current classes pagination">
+        <ul class="pagination">
+            {% if current_classes.has_previous %}
+            <li class="pagination-item">
+                <a
+                    href="?classes={{ classes_filter }}&classes_page={{ current_classes.previous_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                    class="pagination-link"
+                >
+                    ‹ Prev
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in current_classes.paginator.page_range %}
+                {% if num == current_classes.number %}
+                <li class="pagination-item is-active">
+                    <span class="pagination-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="pagination-item">
+                    <a
+                        href="?classes={{ classes_filter }}&classes_page={{ num }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                        class="pagination-link"
+                    >
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_classes.has_next %}
+            <li class="pagination-item">
+                <a
+                    href="?classes={{ classes_filter }}&classes_page={{ current_classes.next_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                    class="pagination-link"
+                >
+                    Next ›
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 </section>
 
 {% endblock %}
