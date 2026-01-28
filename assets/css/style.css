@@ -906,6 +906,15 @@ html {
     background-color: #f8fafc;
 }
 
+.is-highlight {
+    outline: 3px solid #9fe40a;
+    outline-offset: 3px;
+    background: #f1ffd9;
+    box-shadow: 0 0 0 6px rgba(159, 228, 10, 0.18);
+    transition: outline 0.3s ease, background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
 /* Workout log table layout */
 .workout-table {
     display: grid;

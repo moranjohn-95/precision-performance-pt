@@ -28,8 +28,8 @@
             </header>
 
             <div class="card-body">
-                {% for day in assignment.block.days.all %}
-                    <article class="dashboard-card">
+                    {% for day in assignment.block.days.all %}
+                    <article class="dashboard-card" id="day-{{ day.id }}">
                         <header class="card-header card-header--split">
                             <div>
                                 <h3 class="card-title">{{ day.name }}</h3>
@@ -88,4 +88,10 @@
     </section>
 {% endif %}
 
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+{% load static %}
+<script defer src="{% static 'assets/js/programme_library_highlight.js' %}"></script>
 {% endblock %}

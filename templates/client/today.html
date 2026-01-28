@@ -7,18 +7,41 @@
 <section class="dashboard-card">
     <h2 class="dashboard-card__title">Today's workout</h2>
     <p class="dashboard-card__subtitle">
-        Plan for the next scheduled training session. Static demo content for now.
+        {% if plan %}
+            Next scheduled training session for your active programme.
+        {% elif assignment %}
+            You've completed this block or no upcoming session is available.
+        {% else %}
+            No active programme assigned yet.
+        {% endif %}
     </p>
-    <h3>Upper Body — Week 3 / Day 2</h3>
-    <p>Bench, Row, Accessories.</p>
-    <a href="#" class="btn-primary btn-primary--sm">Start session</a>
-</section>
 
-<section class="dashboard-card dashboard-card--secondary">
-    <h2 class="dashboard-card__title">Notes</h2>
-    <p>
-        This page can later pull the next session from the programme library and
-        link directly into the workout log for that day.
-    </p>
+    {% if plan %}
+        <h3>
+            Week {{ plan.week }} / Day {{ plan.day_number }} —
+            {{ plan.day_display }}
+        </h3>
+        <p class="text-muted">
+            {{ plan.exercise_count }} exercises planned.
+        </p>
+        <a href="{{ plan.start_url }}" class="btn-primary btn-primary--sm">
+            View in programme library
+        </a>
+    {% elif assignment %}
+        <p class="text-muted">
+            Programme: {{ assignment.block.name }} ({{ assignment.block.weeks }} weeks)
+        </p>
+        <p class="text-muted">
+            {% if completed %}
+                You have completed all scheduled sessions for this block.
+            {% else %}
+                No sessions available to display.
+            {% endif %}
+        </p>
+    {% else %}
+        <p class="text-muted">
+            You don't have an active programme yet. Check back once one is assigned.
+        </p>
+    {% endif %}
 </section>
 {% endblock %}
