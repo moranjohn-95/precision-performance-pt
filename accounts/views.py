@@ -566,9 +566,11 @@ def trainer_clients(request):
     """Show one row per email for the trainer's assigned clients."""
     trainer = request.user
 
-    qs = ConsultationRequest.objects.filter(assigned_trainer=trainer).order_by(
-        "-created_at"
-    )
+    qs = ConsultationRequest.objects.filter(
+        assigned_trainer=trainer,
+        status=ConsultationRequest.STATUS_ASSIGNED,
+        coaching_option__in=["1to1", "online"],
+    ).order_by("-created_at")
 
     latest_by_email = {}
     for req in qs:
@@ -1087,6 +1089,7 @@ def trainer_consultation_detail(request, pk):
             )
         else:
             consultation.assigned_trainer = request.user
+            consultation.status = ConsultationRequest.STATUS_ASSIGNED
             consultation.save()
             messages.success(
                 request,
