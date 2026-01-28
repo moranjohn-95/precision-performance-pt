@@ -40,7 +40,10 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     <td>{{ req.get_training_goal_display|default:"" }}</td>
                     <td>{{ req.get_coaching_option_display|default:"" }}</td>
                     <td>
-                        <a href="{% url 'accounts:trainer_consultation_detail' req.id %}" class="btn-link">
+                        <a
+                            href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                            class="btn-link"
+                        >
                             View
                         </a>
                     </td>
@@ -96,63 +99,93 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 
 </div>
 
-<section class="trainer-section">
-    <header class="trainer-section-header">
-        <h2 class="trainer-section-title">Current Classes</h2>
-        <p class="trainer-section-intro">
-            Group coaching requests that have been added to current classes.
-        </p>
-    </header>
+<section class="dashboard-card dashboard-card--wide">
+    <h2 class="dashboard-card__title">Current Classes</h2>
+    <p class="dashboard-subtitle">
+        Group coaching requests that have been added to current classes.
+    </p>
 
-    <div class="trainer-stats-grid">
-        <div class="trainer-stat-card">
-            <p class="stat-label">Small Group Coaching</p>
-            <p class="stat-value">
-                {{ current_small_group|length }}
-            </p>
-            <ul class="muted">
-                {% for req in current_small_group %}
-                <li>
-                    {{ req.first_name }} {{ req.last_name }}
-                    · {{ req.created_at|date:"d M Y" }}
-                    {% if req.preferred_date %} · Pref: {{ req.preferred_date }}{% endif %}
-                    ·
-                    <a
-                        class="text-link"
-                        href="{% url 'accounts:trainer_consultation_detail' req.id %}"
-                    >
-                        Open
-                    </a>
-                </li>
-                {% empty %}
-                <li>No small group classes yet.</li>
-                {% endfor %}
-            </ul>
+    <div class="dashboard-card" style="margin-top: 1rem;">
+        <h3 class="dashboard-card__title">
+            Small Group Coaching
+            <span class="tag tag-muted">{{ current_small_group|length }}</span>
+        </h3>
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Submitted</th>
+                        <th>Name</th>
+                        <th>Preferred date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in current_small_group %}
+                    <tr>
+                        <td>{{ req.created_at|date:"d M Y" }}</td>
+                        <td>{{ req.first_name }} {{ req.last_name }}</td>
+                        <td>{{ req.preferred_date|default:"—" }}</td>
+                        <td>
+                            <a
+                                class="btn-link"
+                                href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                            >
+                                Open
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="muted">
+                            No small group classes yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
+    </div>
 
-        <div class="trainer-stat-card">
-            <p class="stat-label">Larger Group Classes</p>
-            <p class="stat-value">
-                {{ current_large_group|length }}
-            </p>
-            <ul class="muted">
-                {% for req in current_large_group %}
-                <li>
-                    {{ req.first_name }} {{ req.last_name }}
-                    · {{ req.created_at|date:"d M Y" }}
-                    {% if req.preferred_date %} · Pref: {{ req.preferred_date }}{% endif %}
-                    ·
-                    <a
-                        class="text-link"
-                        href="{% url 'accounts:trainer_consultation_detail' req.id %}"
-                    >
-                        Open
-                    </a>
-                </li>
-                {% empty %}
-                <li>No larger group classes yet.</li>
-                {% endfor %}
-            </ul>
+    <div class="dashboard-card" style="margin-top: 1rem;">
+        <h3 class="dashboard-card__title">
+            Larger Group Classes
+            <span class="tag tag-muted">{{ current_large_group|length }}</span>
+        </h3>
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Submitted</th>
+                        <th>Name</th>
+                        <th>Preferred date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in current_large_group %}
+                    <tr>
+                        <td>{{ req.created_at|date:"d M Y" }}</td>
+                        <td>{{ req.first_name }} {{ req.last_name }}</td>
+                        <td>{{ req.preferred_date|default:"—" }}</td>
+                        <td>
+                            <a
+                                class="btn-link"
+                                href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                            >
+                                Open
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="muted">
+                            No larger group classes yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </section>
