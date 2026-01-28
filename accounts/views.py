@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
+from django.db import transaction
 from django.db.models import Count, OuterRef, Q, Subquery
 from django.forms import modelformset_factory
 from django.http import HttpResponseForbidden
@@ -1100,9 +1101,46 @@ def trainer_consultation_detail(request, pk):
                 "This consultation is already assigned to another trainer.",
             )
         else:
-            consultation.assigned_trainer = request.user
-            consultation.status = ConsultationRequest.STATUS_ASSIGNED
-            consultation.save()
+            # Create or reuse a portal account for this consultation
+            # and link it to the trainer.
+            with transaction.atomic():
+                trainer_user = request.user
+                email_val = (consultation.email or "").strip()
+                first = consultation.first_name or ""
+                last = consultation.last_name or ""
+
+                # Generate or find a User by email (case-insensitive).
+                user = User.objects.filter(email__iexact=email_val).first()
+                if user is None and email_val:
+                    base_username = email_val.split("@")[0] or "client"
+                    username = base_username
+                    suffix = 1
+                    while User.objects.filter(username__iexact=username).exists():
+                        username = f"{base_username}{suffix}"
+                        suffix += 1
+
+                    user = User.objects.create(
+                        username=username,
+                        email=email_val,
+                        first_name=first,
+                        last_name=last,
+                    )
+                    user.set_unusable_password()
+                    user.save()
+
+                # Ensure ClientProfile exists and point to this consultation.
+                if user:
+                    profile, _ = ClientProfile.objects.get_or_create(user=user)
+                    if profile.preferred_trainer is None:
+                        profile.preferred_trainer = trainer_user
+                    if profile.consultation_request is None:
+                        profile.consultation_request = consultation
+                    profile.save()
+
+                consultation.assigned_trainer = trainer_user
+                consultation.status = ConsultationRequest.STATUS_ASSIGNED
+                consultation.save()
+
             messages.success(
                 request,
                 "Client has been added to the trainer client list.",
