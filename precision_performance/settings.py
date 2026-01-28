@@ -130,3 +130,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "assets",
 ]
+
+# Email backend (console for development)
+if DEBUG:
+    EMAIL_BACKEND = (
+        "django.core.mail.backends.filebased.EmailBackend"
+    )
+    EMAIL_FILE_PATH = BASE_DIR / "tmp_emails"
+    EMAIL_FILE_PATH.mkdir(parents=True, exist_ok=True)

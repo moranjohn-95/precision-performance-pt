@@ -40,6 +40,10 @@
     </form>
 
     <p class="auth-footer">
+      <a href="{% url 'password_reset' %}">Forgot password?</a>
+    </p>
+
+    <p class="auth-footer">
       Are you a trainer?
       <a href="{% url 'accounts:trainer_login' %}">Go to trainer login</a>
     </p>

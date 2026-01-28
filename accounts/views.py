@@ -17,6 +17,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.contrib.auth.forms import PasswordResetForm
 
 from training.forms import BodyMetricEntryForm, WorkoutSessionForm
 from training.models import (
@@ -1103,6 +1104,9 @@ def trainer_consultation_detail(request, pk):
         else:
             # Create or reuse a portal account for this consultation
             # and link it to the trainer.
+            user_created = False
+            needs_reset = False
+
             with transaction.atomic():
                 trainer_user = request.user
                 email_val = (consultation.email or "").strip()
@@ -1115,7 +1119,9 @@ def trainer_consultation_detail(request, pk):
                     base_username = email_val.split("@")[0] or "client"
                     username = base_username
                     suffix = 1
-                    while User.objects.filter(username__iexact=username).exists():
+                    while User.objects.filter(
+                        username__iexact=username
+                    ).exists():
                         username = f"{base_username}{suffix}"
                         suffix += 1
 
@@ -1127,6 +1133,7 @@ def trainer_consultation_detail(request, pk):
                     )
                     user.set_unusable_password()
                     user.save()
+                    user_created = True
 
                 # Ensure ClientProfile exists and point to this consultation.
                 if user:
@@ -1136,15 +1143,38 @@ def trainer_consultation_detail(request, pk):
                     if profile.consultation_request is None:
                         profile.consultation_request = consultation
                     profile.save()
+                    needs_reset = user_created or (
+                        user and not user.has_usable_password()
+                    )
 
                 consultation.assigned_trainer = trainer_user
                 consultation.status = ConsultationRequest.STATUS_ASSIGNED
                 consultation.save()
 
-            messages.success(
-                request,
-                "Client has been added to the trainer client list.",
-            )
+            # Send password reset/setup email if needed
+            if needs_reset and user and user.email:
+                try:
+                    form = PasswordResetForm({"email": user.email})
+                    if form.is_valid():
+                        form.save(
+                            request=request,
+                            use_https=request.is_secure(),
+                        )
+                    messages.success(
+                        request,
+                        "Account created and password setup email sent.",
+                    )
+                except Exception:
+                    messages.warning(
+                        request,
+                        "Account created. Client can set password using "
+                        "the Forgot password link.",
+                    )
+            else:
+                messages.success(
+                    request,
+                    "Client has been added to the trainer client list.",
+                )
 
         return redirect("accounts:trainer_clients")
 
