@@ -1307,3 +1307,30 @@ html {
     height: 260px;
 }
 
+
+/* Status badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+.badge--open {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #3730a3;
+}
+.badge--assigned {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+.badge--classes {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1d4ed8;
+}
+

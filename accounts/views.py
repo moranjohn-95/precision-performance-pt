@@ -474,7 +474,20 @@ def trainer_dashboard(request):
     - Shows latest consultation requests
     - Includes a small stats summary pulled from the database
     """
+    status_filter = request.GET.get("status", "open")
+
     requests_qs = ConsultationRequest.objects.order_by("-created_at")
+    if status_filter == "open":
+        requests_qs = requests_qs.filter(
+            status=ConsultationRequest.STATUS_NEW
+        )
+    elif status_filter == "dealt":
+        requests_qs = requests_qs.filter(
+            status__in=[
+                ConsultationRequest.STATUS_ASSIGNED,
+                ConsultationRequest.STATUS_ADDED_CLASSES,
+            ]
+        )
     paginator = Paginator(requests_qs, 5)
     page_number = request.GET.get("page")
     latest_requests = paginator.get_page(page_number)
@@ -525,6 +538,7 @@ def trainer_dashboard(request):
         "latest_requests": latest_requests,
         "total_requests": total_requests,
         "coaching_breakdown": coaching_breakdown,
+        "status_filter": status_filter,
         "current_classes": current_classes,
         "classes_filter": classes_filter,
         "small_classes_count": small_count,
@@ -1076,6 +1090,14 @@ def trainer_consultation_detail(request, pk):
     consultation = get_object_or_404(ConsultationRequest, pk=pk)
 
     if request.method == "POST" and "assign_to_me" in request.POST:
+        if consultation.coaching_option in ["small_group", "large_group"]:
+            messages.error(
+                request,
+                "Group coaching requests must be added to Current Classes, "
+                "not assigned to the client list.",
+            )
+            return redirect("accounts:trainer_consultation_detail", pk=pk)
+
         already_assigned = (
             consultation.assigned_trainer
             and consultation.assigned_trainer != request.user

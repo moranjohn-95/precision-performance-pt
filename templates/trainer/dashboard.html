@@ -19,6 +19,36 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         Total requests: {{ total_requests }}
     </p>
 
+    <form method="get" class="table-filter" style="margin: 0 0 1rem;">
+        {% if request.GET.classes %}
+            <input type="hidden" name="classes" value="{{ request.GET.classes }}">
+        {% endif %}
+        {% if request.GET.classes_page %}
+            <input
+                type="hidden"
+                name="classes_page"
+                value="{{ request.GET.classes_page }}"
+            >
+        {% endif %}
+        <label for="status-filter" class="form-label">Show:</label>
+        <select
+            id="status-filter"
+            name="status"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="open" {% if status_filter == "open" %}selected{% endif %}>
+                Open
+            </option>
+            <option value="dealt" {% if status_filter == "dealt" %}selected{% endif %}>
+                Dealt with
+            </option>
+            <option value="all" {% if status_filter == "all" %}selected{% endif %}>
+                All
+            </option>
+        </select>
+    </form>
+
     {% if latest_requests %}
         <table class="dashboard-table">
             <thead>
@@ -28,6 +58,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     <th>Email</th>
                     <th>Goal</th>
                     <th>Coaching option</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -39,6 +70,19 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     <td>{{ req.email }}</td>
                     <td>{{ req.get_training_goal_display|default:"" }}</td>
                     <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td>
+                        {% if req.status == req.STATUS_ADDED_CLASSES %}
+                            <span class="badge badge--classes">
+                                Added to classes
+                            </span>
+                        {% elif req.status == req.STATUS_ASSIGNED %}
+                            <span class="badge badge--assigned">
+                                Assigned to client
+                            </span>
+                        {% else %}
+                            <span class="badge badge--open">Open</span>
+                        {% endif %}
+                    </td>
                     <td>
                         <a
                             href="{% url 'accounts:trainer_consultation_detail' req.id %}"
@@ -58,7 +102,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 {% if latest_requests.has_previous %}
                 <li class="pagination-item">
                     <a
-                        href="?page={{ latest_requests.previous_page_number }}"
+                        href="?status={{ status_filter }}&page={{ latest_requests.previous_page_number }}"
                         class="pagination-link"
                     >
                         ‹ Prev
@@ -73,7 +117,10 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     </li>
                     {% else %}
                     <li class="pagination-item">
-                        <a href="?page={{ num }}" class="pagination-link">
+                        <a
+                            href="?status={{ status_filter }}&page={{ num }}"
+                            class="pagination-link"
+                        >
                             {{ num }}
                         </a>
                     </li>
@@ -83,7 +130,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 {% if latest_requests.has_next %}
                 <li class="pagination-item">
                     <a
-                        href="?page={{ latest_requests.next_page_number }}"
+                        href="?status={{ status_filter }}&page={{ latest_requests.next_page_number }}"
                         class="pagination-link"
                     >
                         Next ›
