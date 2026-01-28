@@ -172,5 +172,5 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     "bench": {{ bench_series_json|default:"[]"|safe }}
   }
 </script>
-<script src="{% static 'assets/js/client_detail_charts.js' %}"></script>
+<script src="{% static 'js/client_detail_charts.js' %}"></script>
 {% endblock %}
