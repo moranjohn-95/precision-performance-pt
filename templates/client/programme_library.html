@@ -5,6 +5,7 @@
 
 {% block dashboard_content %}
 
+{% with current_week=request.GET.week|default:"1" %}
 {% if assignments %}
     {% for assignment in assignments %}
         <section class="dashboard-card dashboard-card--wide">
@@ -36,7 +37,7 @@
                             </div>
                             <div>
                             <a
-                                href="{% url 'accounts:client_workout_log' %}?day={{ day.id }}&session_name={{ day.name|urlencode }}"
+                                href="{% url 'accounts:client_workout_log' %}?day={{ day.id }}&week={{ current_week }}&session_name={{ day.name|urlencode }}"
                                 class="btn-secondary"
                             >
                                 Log this session
@@ -87,6 +88,7 @@
         </div>
     </section>
 {% endif %}
+{% endwith %}
 
 {% endblock %}
 
