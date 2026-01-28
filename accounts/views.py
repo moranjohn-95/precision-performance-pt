@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, OuterRef, Q, Subquery
 from django.forms import modelformset_factory
-from django.http import HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
@@ -671,6 +671,11 @@ def trainer_programme_detail(request, block_id):
     )
 
     template_block = block.parent_template if block.parent_template else block
+    template_days_qs = (
+        template_block.days.all()
+        .order_by("order")
+        .prefetch_related("exercises")
+    )
 
     ExerciseFormSet = modelformset_factory(
         ProgrammeExercise,
@@ -718,6 +723,12 @@ def trainer_programme_detail(request, block_id):
     base_assignments = ClientProgramme.objects.filter(
         Q(block__parent_template=template_block) | Q(block=template_block)
     ).select_related("client", "block", "block__parent_template")
+
+    has_assignments = base_assignments.exists()
+    owns_assignments = base_assignments.filter(trainer=request.user).exists()
+
+    if has_assignments and not (request.user.is_superuser or owns_assignments):
+        raise Http404("Programme not found")
 
     if request.user.is_superuser:
         assignments_qs = base_assignments
@@ -988,17 +999,14 @@ def trainer_programme_detail(request, block_id):
     if request.method == "GET" and is_tailored:
         exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
 
-        template_days_qs = (
-            template_block.days.all()
-            .order_by("order")
-            .prefetch_related("exercises")
+    filtered_template_days = template_days_qs
+    if selected_day:
+        filtered_template_days = template_days_qs.filter(
+            order=selected_day.order
         )
 
-    if selected_day:
-        template_days_qs = template_days_qs.filter(order=selected_day.order)
-
     preview_days = []
-    for day_obj in template_days_qs:
+    for day_obj in filtered_template_days:
         preview_days.append(
             {
                 "day": day_obj,
@@ -1008,7 +1016,7 @@ def trainer_programme_detail(request, block_id):
 
     context = {
         "block": template_block,
-        "days": template_block.days.all().order_by("order"),
+        "days": template_days_qs,
         "preview_days": preview_days,
         "assignable_clients": assignable_clients,
         "is_tailored": is_tailored,
