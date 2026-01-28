@@ -127,6 +127,8 @@ def client_workout_log(request):
 
     initial = {}
     session_name_param = (request.GET.get("session_name") or "").strip()
+    selected_week_param = request.GET.get("week") or request.POST.get("week")
+    selected_week = 1
 
     active_assignments = (
         ClientProgramme.objects.filter(client=request.user, status="active")
@@ -164,6 +166,17 @@ def client_workout_log(request):
     else:
         programme_exercises = []
 
+    if programme_day and selected_week_param and selected_week_param.isdigit():
+        selected_week = int(selected_week_param)
+    max_weeks = (
+        programme_day.block.weeks if programme_day and programme_day.block else 6
+    )
+    if selected_week < 1:
+        selected_week = 1
+    if selected_week > max_weeks:
+        selected_week = max_weeks
+    week_options = list(range(1, max_weeks + 1))
+
     session_qs = (
         WorkoutSession.objects.filter(client=request.user)
         .order_by("-date", "-created_at")
@@ -183,6 +196,11 @@ def client_workout_log(request):
         if form.is_valid():
             cd = form.cleaned_data
             base_notes = (cd.get("notes") or "").strip()
+            client_programme = None
+            if programme_day:
+                client_programme = active_assignments.filter(
+                    block=programme_day.block
+                ).first()
 
             detail_lines = []
             if programme_day and programme_exercises:
@@ -220,6 +238,28 @@ def client_workout_log(request):
             else:
                 session_notes = base_notes
 
+            existing_session = None
+            if programme_day and client_programme:
+                existing_session = WorkoutSession.objects.filter(
+                    client=request.user,
+                    client_programme=client_programme,
+                    programme_day=programme_day,
+                    week_number=selected_week,
+                ).first()
+
+            if existing_session:
+                messages.info(
+                    request,
+                    (
+                        f"A log already exists for Week {selected_week} / "
+                        f"{programme_day.name}. Opening it instead."
+                    ),
+                )
+                redirect_url = reverse_lazy("accounts:client_workout_log")
+                params = [f"day={programme_day.id}", f"week={selected_week}"]
+                redirect_url = f"{redirect_url}?{'&'.join(params)}"
+                return redirect(redirect_url)
+
             session = form.save(commit=False)
 
             if not session.date:
@@ -228,14 +268,24 @@ def client_workout_log(request):
             if getattr(session, "client_id", None) is None:
                 session.client = request.user
 
+            session.client_programme = client_programme
+            session.programme_day = programme_day
+            session.week_number = selected_week
+            if programme_day:
+                session.name = f"Week {selected_week} - {programme_day.name}"
             session.notes = session_notes
             session.save()
 
             messages.success(request, "Workout session saved.")
 
             redirect_url = reverse_lazy("accounts:client_workout_log")
+            query_bits = []
             if programme_day:
-                redirect_url = f"{redirect_url}?day={programme_day.id}"
+                query_bits.append(f"day={programme_day.id}")
+            if selected_week:
+                query_bits.append(f"week={selected_week}")
+            if query_bits:
+                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}"
             return redirect(redirect_url)
     else:
         form = WorkoutSessionForm(initial=initial)
@@ -246,6 +296,8 @@ def client_workout_log(request):
         "programme_day": programme_day,
         "programme_exercises": programme_exercises,
         "available_days": list(available_days_qs),
+        "week_options": week_options,
+        "selected_week": selected_week,
     }
     return render(request, "client/workout_log.html", context)
 

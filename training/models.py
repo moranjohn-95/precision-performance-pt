@@ -114,6 +114,21 @@ class WorkoutSession(models.Model):
         on_delete=models.CASCADE,
         related_name="workout_sessions",
     )
+    client_programme = models.ForeignKey(
+        "training.ClientProgramme",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="workout_sessions",
+    )
+    programme_day = models.ForeignKey(
+        "training.ProgrammeDay",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="workout_sessions",
+    )
+    week_number = models.PositiveIntegerField(default=1)
     date = models.DateField(default=timezone.now)
     name = models.CharField(
         max_length=120,
@@ -131,6 +146,16 @@ class WorkoutSession(models.Model):
 
     class Meta:
         ordering = ["-date", "-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "client_programme",
+                    "programme_day",
+                    "week_number",
+                ],
+                name="uniq_session_per_week_day",
+            )
+        ]
 
     def __str__(self) -> str:
         return f"{self.client} - {self.date}"

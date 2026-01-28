@@ -108,6 +108,24 @@
         {% if available_days %}
         <form method="get" class="form" style="margin-bottom: 1rem;">
             <div class="form-field">
+                <label for="week">Week</label>
+                <select
+                    id="week"
+                    name="week"
+                    class="form-control"
+                    onchange="this.form.submit()"
+                >
+                    {% for w in week_options %}
+                    <option
+                        value="{{ w }}"
+                        {% if selected_week == w %}selected{% endif %}
+                    >
+                        Week {{ w }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-field">
                 <label for="day">Session</label>
                 <select
                     id="day"
@@ -132,6 +150,9 @@
             {% csrf_token %}
             {% if programme_day %}
             <input type="hidden" name="day" value="{{ programme_day.id }}">
+            {% endif %}
+            {% if selected_week %}
+            <input type="hidden" name="week" value="{{ selected_week }}">
             {% endif %}
 
             <div class="form-grid">
