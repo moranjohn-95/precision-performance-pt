@@ -533,7 +533,23 @@ def client_metrics(request):
 
     user = request.user
 
-    if request.method == "POST":
+    action = request.POST.get("action", "").strip().lower()
+
+    if request.method == "POST" and action in {"update", "delete"}:
+        entry_id = request.POST.get("entry_id")
+        entry = get_object_or_404(BodyMetricEntry, id=entry_id, client=user)
+
+        if action == "delete":
+            entry.delete()
+            messages.success(request, "Check-in deleted.")
+            return redirect("accounts:client_metrics")
+
+        form = BodyMetricEntryForm(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Check-in updated.")
+            return redirect("accounts:client_metrics")
+    elif request.method == "POST":
         form = BodyMetricEntryForm(request.POST)
         if form.is_valid():
             entry = form.save(commit=False)

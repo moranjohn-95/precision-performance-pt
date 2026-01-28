@@ -115,6 +115,7 @@
                     <th>Waist (cm)</th>
                     <th>Bench top set (kg)</th>
                     <th>Sleep (h)</th>
+                    <th class="action-cell">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -125,6 +126,21 @@
                     <td>{{ entry.waist_cm|default:"—" }}</td>
                     <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
                     <td>{{ entry.sleep_hours|default:"—" }}</td>
+                    <td class="action-cell nowrap">
+                        <a
+                            href="#"
+                            class="text-link js-open-metric"
+                            data-entry-id="{{ entry.id }}"
+                            data-date="{{ entry.date|date:'Y-m-d' }}"
+                            data-bodyweight="{{ entry.bodyweight_kg|default_if_none:'' }}"
+                            data-waist="{{ entry.waist_cm|default_if_none:'' }}"
+                            data-bench="{{ entry.bench_top_set_kg|default_if_none:'' }}"
+                            data-sleep="{{ entry.sleep_hours|default_if_none:'' }}"
+                            data-notes="{{ entry.notes|default_if_none:''|escape }}"
+                        >
+                            Open
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -183,6 +199,69 @@
         </footer>
     </section>
 
+<div id="metrics-modal-backdrop" class="session-modal-backdrop is-hidden">
+    <div class="session-modal">
+        <header class="session-modal-header">
+            <h2 id="metrics-modal-title">Body metrics entry</h2>
+            <button type="button" class="session-modal-close js-close-metric" aria-label="Close">
+                ×
+            </button>
+        </header>
+
+        <form method="post" action="{% url 'accounts:client_metrics' %}" class="session-modal-form">
+            {% csrf_token %}
+            <input type="hidden" name="entry_id" id="metric-entry-id">
+            <input type="hidden" name="action" value="update">
+
+            <div class="session-modal-body">
+                <div class="form-field">
+                    <label for="metric-date">Date</label>
+                    <input type="date" id="metric-date" name="date">
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-bodyweight">Bodyweight (kg)</label>
+                    <input type="number" step="0.1" min="0" id="metric-bodyweight" name="bodyweight_kg">
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-waist">Waist (cm)</label>
+                    <input type="number" step="0.1" min="0" id="metric-waist" name="waist_cm">
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-bench">Bench top set (kg)</label>
+                    <input type="number" step="0.5" min="0" id="metric-bench" name="bench_top_set_kg">
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-sleep">Sleep (h)</label>
+                    <input type="number" step="0.1" min="0" id="metric-sleep" name="sleep_hours">
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-notes">Notes</label>
+                    <textarea id="metric-notes" name="notes" rows="4"></textarea>
+                </div>
+            </div>
+
+            <footer class="session-modal-footer">
+                <button type="button" class="btn-secondary js-close-metric">Cancel</button>
+                <button type="submit" class="btn-primary">Save changes</button>
+                <button
+                    type="submit"
+                    class="btn-secondary"
+                    name="action"
+                    value="delete"
+                    onclick="return confirm('Delete this entry?');"
+                >
+                    Delete
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_scripts %}
@@ -240,4 +319,5 @@
     }
 })();
 </script>
+<script defer src="{% static 'js/body_metrics_modal.js' %}"></script>
 {% endblock %}
