@@ -433,11 +433,12 @@ def client_workout_log(request):
                 ).first()
 
             if existing_session:
-                messages.info(
+                messages.error(
                     request,
                     (
-                        f"A log already exists for Week {selected_week} / "
-                        f"{programme_day.name}. Opening it instead."
+                        "This session log already exist for "
+                        f"Week {selected_week}/{programme_day.name}. "
+                        "Please edit session below if needed."
                     ),
                 )
                 redirect_url = reverse_lazy("accounts:client_workout_log")
