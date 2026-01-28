@@ -727,8 +727,9 @@ def trainer_programme_detail(request, block_id):
     has_assignments = base_assignments.exists()
     owns_assignments = base_assignments.filter(trainer=request.user).exists()
 
-    if has_assignments and not (request.user.is_superuser or owns_assignments):
-        raise Http404("Programme not found")
+    if not request.user.is_superuser:
+        if not block.is_template and not owns_assignments:
+            raise Http404("Programme not found")
 
     if request.user.is_superuser:
         assignments_qs = base_assignments
@@ -1040,38 +1041,52 @@ def trainer_programmes(request):
     Now driven by ProgrammeBlock records instead of static data.
     """
     if request.user.is_superuser:
-        assignments = ClientProgramme.objects.select_related(
-            "block",
-            "block__parent_template",
-        )
+        active_blocks_qs = ProgrammeBlock.objects.filter(
+            is_template=False,
+            assignments__isnull=False,
+        ).distinct()
     else:
-        assignments = ClientProgramme.objects.select_related(
-            "block",
-            "block__parent_template",
-        ).filter(trainer=request.user)
+        active_blocks_qs = ProgrammeBlock.objects.filter(
+            is_template=False,
+            assignments__trainer=request.user,
+        ).distinct()
 
     programme_blocks = []
-    for cp in assignments:
-        block = cp.block
+    for block in active_blocks_qs.select_related("parent_template"):
+        trainer_assignments = block.assignments.all()
+        if not request.user.is_superuser:
+            trainer_assignments = trainer_assignments.filter(
+                trainer=request.user
+            )
+
+        first_cp = trainer_assignments.order_by("-start_date", "-id").first()
+
         programme_blocks.append(
             {
-                "id": cp.id,
                 "block": block,
-                "clients": block.assignments.count(),
+                "cp_id": first_cp.id if first_cp else None,
+                "clients": trainer_assignments.count(),
                 "phase": f"Weeks 1-{block.weeks}",
                 "status": "Active",
                 "next_action": "Review check-ins",
             }
         )
 
+    template_blocks_qs = (
+        ProgrammeBlock.objects.filter(is_template=True)
+        .annotate(assignments_count=Count("assignments"))
+        .filter(assignments_count=0)
+        .distinct()
+    )
+
     programme_templates = [
         {
             "id": block.id,
             "name": block.name,
-            "focus": block.description or "—",
+            "focus": block.description or "-",
             "length": f"{block.weeks} weeks",
         }
-        for block in ProgrammeBlock.objects.filter(is_template=True)
+        for block in template_blocks_qs
     ]
 
     context = {

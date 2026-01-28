@@ -31,13 +31,12 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 </tr>
             </thead>
             <tbody>
-                {# programme_blocks now holds ClientProgramme rows #}
                 {% for cp in programme_blocks %}
                     <tr>
                         <td>
                             <a
                                 class="text-link"
-                                href="{% url 'accounts:trainer_programme_detail' block_id=cp.block.parent_template.id|default:cp.block.id %}?cp={{ cp.id }}"
+                                href="{% url 'accounts:trainer_programme_detail' block_id=cp.block.id %}{% if cp.cp_id %}?cp={{ cp.cp_id }}{% endif %}"
                             >
                                 {{ cp.block.name }}
                             </a>
