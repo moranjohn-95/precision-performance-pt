@@ -80,10 +80,92 @@ def client_dashboard(request):
     except ClientProfile.DoesNotExist:
         pass
 
+    active_assignment = (
+        ClientProgramme.objects.filter(
+            client=request.user,
+            status="active",
+        )
+        .select_related("block")
+        .order_by("-start_date", "-id")
+        .first()
+    )
+
+    plan = None
+    completed = False
+
+    if active_assignment and active_assignment.block:
+        block = active_assignment.block
+        days = list(block.days.all().order_by("order"))
+
+        if days:
+            last_session = (
+                WorkoutSession.objects.filter(
+                    client=request.user,
+                    client_programme=active_assignment,
+                )
+                .select_related("programme_day")
+                .order_by(
+                    "-week_number",
+                    "-programme_day__order",
+                    "-date",
+                    "-id",
+                )
+                .first()
+            )
+
+            next_week = 1
+            next_day = days[0]
+
+            if last_session and last_session.programme_day:
+                current_day_order = last_session.programme_day.order or 0
+                next_week = last_session.week_number or 1
+
+                later_day = next(
+                    (
+                        d
+                        for d in days
+                        if (d.order or 0) > current_day_order
+                    ),
+                    None,
+                )
+
+                if later_day:
+                    next_day = later_day
+                else:
+                    if next_week < block.weeks:
+                        next_week += 1
+                        next_day = days[0]
+                    else:
+                        completed = True
+
+            if not completed:
+                start_url = reverse_lazy(
+                    "accounts:client_programme_library"
+                )
+                start_url = f"{start_url}?week={next_week}#day-{next_day.id}"
+
+                clean_name = next_day.name or ""
+                if clean_name.lower().startswith("day "):
+                    parts = clean_name.split("-", 1)
+                    if len(parts) == 2:
+                        clean_name = parts[1].strip()
+
+                plan = {
+                    "week": next_week,
+                    "day": next_day,
+                    "day_number": next_day.order or 1,
+                    "exercise_count": next_day.exercises.count(),
+                    "start_url": start_url,
+                    "day_display": clean_name,
+                }
+
     context = {
         "profile": profile,
         "latest_sessions": [],
         "latest_metrics": [],
+        "plan": plan,
+        "assignment": active_assignment,
+        "completed": completed,
     }
     return render(request, "client/dashboard.html", context)
 

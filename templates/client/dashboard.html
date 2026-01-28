@@ -9,11 +9,44 @@ Hello, {{ request.user.first_name|default:"Client" }}
 {% block dashboard_content %}
 
 <div class="dashboard-card">
-    <h2 class="dashboard-card__title">Today’s workout</h2>
-    <p>Upper Body — Week 3 / Day 2</p>
-    <p>
-        <a href="#" class="btn-primary-small">Start session</a>
+    <h2 class="dashboard-card__title">Today's workout</h2>
+    <p class="dashboard-card__subtitle">
+        {% if plan %}
+            Next scheduled training session for your active programme.
+        {% elif assignment %}
+            You've completed this block or no upcoming session is available.
+        {% else %}
+            No active programme assigned yet.
+        {% endif %}
     </p>
+
+    {% if plan %}
+        <h3>
+            Week {{ plan.week }} / Day {{ plan.day_number }} —
+            {{ plan.day_display }}
+        </h3>
+        <p class="text-muted">
+            {{ plan.exercise_count }} exercises planned.
+        </p>
+        <a href="{{ plan.start_url }}" class="btn-primary btn-primary--sm">
+            Start session
+        </a>
+    {% elif assignment %}
+        <p class="text-muted">
+            Programme: {{ assignment.block.name }} ({{ assignment.block.weeks }} weeks)
+        </p>
+        <p class="text-muted">
+            {% if completed %}
+                You have completed all scheduled sessions for this block.
+            {% else %}
+                No sessions available to display.
+            {% endif %}
+        </p>
+    {% else %}
+        <p class="text-muted">
+            You don't have an active programme yet. Check back once one is assigned.
+        </p>
+    {% endif %}
 </div>
 
 <div class="dashboard-card">
