@@ -8,26 +8,14 @@
 {% block page_title %}Programme detail{% endblock %}
 {% block page_subtitle %}
 Logged in: {{ request.user.get_full_name|default:request.user.username }}
+<div style="margin-top: 0.5rem;">
+    <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">
+        Back to programmes
+    </a>
+</div>
 {% endblock %}
 
 {% block dashboard_content %}
-
-<section class="dashboard-card dashboard-card--wide">
-    <header class="card-header card-header--split">
-        <div>
-            <h2 class="card-title">{{ block.name }}</h2>
-            <p class="card-subtitle">
-                {{ block.description|default:"Programme block" }}
-                &middot; {{ block.weeks }} week{{ block.weeks|pluralize }}
-            </p>
-        </div>
-        <div>
-            <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">
-                Back to programmes
-            </a>
-        </div>
-    </header>
-</section>
 
 {# Client selection #}
 {% if assignments %}
