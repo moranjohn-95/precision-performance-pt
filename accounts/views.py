@@ -580,43 +580,29 @@ def trainer_clients(request):
     """Show one row per email for the trainer's assigned clients."""
     trainer = request.user
 
-    qs = ConsultationRequest.objects.filter(
+    client_type = request.GET.get("type", "all")
+
+    base_qs = ConsultationRequest.objects.filter(
         assigned_trainer=trainer,
         status=ConsultationRequest.STATUS_ASSIGNED,
         coaching_option__in=["1to1", "online"],
     ).order_by("-created_at")
 
-    latest_by_email = {}
-    for req in qs:
-        key = (req.email or "").lower()
-        if key and key not in latest_by_email:
-            latest_by_email[key] = req
+    if client_type == "online":
+        qs = base_qs.filter(coaching_option="online")
+    elif client_type == "1to1":
+        qs = base_qs.filter(coaching_option="1to1")
+    else:
+        qs = base_qs
 
-    latest_requests = sorted(
-        latest_by_email.values(),
-        key=lambda r: r.created_at,
-        reverse=True,
-    )
-
-    rows = []
-    for req in latest_requests:
-        full_name = f"{req.first_name} {req.last_name}".strip() or req.email
-        portal_user = User.objects.filter(email__iexact=req.email).first()
-
-        rows.append(
-            {
-                "name": full_name,
-                "email": req.email,
-                "goal": req.training_goal,
-                "coaching_option": req.coaching_option,
-                "last_request_date": req.created_at.date(),
-                "user_id": portal_user.id if portal_user else None,
-            }
-        )
+    paginator = Paginator(qs, 5)
+    page_number = request.GET.get("page")
+    clients_page = paginator.get_page(page_number)
 
     context = {
         "trainer": trainer,
-        "clients": rows,
+        "clients_page": clients_page,
+        "client_type": client_type,
         "section": "clients",
     }
     return render(request, "trainer/clients.html", context)
