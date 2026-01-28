@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Count, OuterRef, Q, Subquery
 from django.forms import modelformset_factory
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -582,11 +582,15 @@ def trainer_clients(request):
 
     client_type = request.GET.get("type", "all")
 
+    user_id_sq = User.objects.filter(
+        email__iexact=OuterRef("email")
+    ).values("id")[:1]
+
     base_qs = ConsultationRequest.objects.filter(
         assigned_trainer=trainer,
         status=ConsultationRequest.STATUS_ASSIGNED,
         coaching_option__in=["1to1", "online"],
-    ).order_by("-created_at")
+    ).annotate(portal_user_id=Subquery(user_id_sq)).order_by("-created_at")
 
     if client_type == "online":
         qs = base_qs.filter(coaching_option="online")

@@ -58,8 +58,11 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 <tr>
                     <td>
                         {% with full_name=req.first_name|add:" "|add:req.last_name %}
-                        {% if req.user_id %}
-                            <a href="{% url 'accounts:trainer_client_detail' req.user_id %}">
+                        {% if req.portal_user_id %}
+                            <a
+                                class="text-link"
+                                href="{% url 'accounts:trainer_client_detail' req.portal_user_id %}"
+                            >
                                 {{ full_name|default:req.email }}
                             </a>
                         {% else %}
