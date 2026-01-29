@@ -161,33 +161,78 @@ Hello, {{ request.user.first_name|default:"Client" }}
 </div>
 
 <div class="dashboard-card">
-    <h2 class="dashboard-card__title">Recent activity</h2>
-    <table class="dashboard-table">
-        <thead>
-            <tr>
-                <th>Activity</th>
-                <th>When</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Logged: Upper Body</td>
-                <td>Mon</td>
-                <td>Done</td>
-            </tr>
-            <tr>
-                <td>Metric: Bodyweight</td>
-                <td>Mon</td>
-                <td>Saved</td>
-            </tr>
-            <tr>
-                <td>Message to trainer</td>
-                <td>Tue</td>
-                <td>Sent</td>
-            </tr>
-        </tbody>
-    </table>
+    <h2 class="dashboard-card__title">Quick links</h2>
+    <div class="quick-links-grid">
+        <a href="{% url 'accounts:client_programme_library' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M2 2h12v12H2z"></path>
+                    <path d="M5 4h6v1H5zM5 7h6v1H5zM5 10h4v1H5z"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Programme library</p>
+                <p class="quick-link-hint">View your plan</p>
+            </div>
+        </a>
+        <a href="{% url 'accounts:client_workout_log' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M3 2h10v2H3zM3 6h10v2H3zM3 10h10v2H3z"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Workout log</p>
+                <p class="quick-link-hint">Log a session</p>
+            </div>
+        </a>
+        <a href="{% url 'accounts:client_metrics' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M2 10h2v4H2zM6 7h2v7H6zM10 4h2v10h-2zM14 1h2v13h-2z"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Body metrics</p>
+                <p class="quick-link-hint">Check-ins & charts</p>
+            </div>
+        </a>
+        <a href="{% url 'accounts:client_check_ins' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M8 1l7 4v6l-7 4-7-4V5z"></path>
+                    <path d="M8 9l-3-2 3-2 3 2z"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Check-ins</p>
+                <p class="quick-link-hint">Send updates</p>
+            </div>
+        </a>
+        <a href="{% url 'accounts:client_documents' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M3 1h7l3 3v11H3z"></path>
+                    <path d="M10 1v4h4"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Documents</p>
+                <p class="quick-link-hint">Files & resources</p>
+            </div>
+        </a>
+        <a href="{% url 'accounts:client_support' %}" class="quick-link-card">
+            <span class="quick-link-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" role="presentation">
+                    <path d="M8 1a7 7 0 100 14A7 7 0 008 1zm0 10.5a1 1 0 110 2 1 1 0 010-2zM7 4h2v4H7z"></path>
+                </svg>
+            </span>
+            <div>
+                <p class="quick-link-label">Support</p>
+                <p class="quick-link-hint">Get help</p>
+            </div>
+        </a>
+    </div>
 </div>
 
 {% endblock %}
