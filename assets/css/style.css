@@ -1432,3 +1432,19 @@ html {
     fill: currentColor;
 }
 
+.stat-card--sessions .stat-icon {
+    color: #2563eb;
+}
+
+.stat-card--sleep .stat-icon {
+    color: #7c3aed;
+}
+
+.stat-card--weight .stat-icon {
+    color: #0891b2;
+}
+
+.stat-card--bench .stat-icon {
+    color: #f97316;
+}
+

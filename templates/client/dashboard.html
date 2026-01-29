@@ -53,7 +53,7 @@ Hello, {{ request.user.first_name|default:"Client" }}
     <h2 class="dashboard-card__title">This week</h2>
     <div class="stats-grid">
         {% with s=stats.sessions %}
-        <div class="stat-card">
+        <div class="stat-card stat-card--sessions">
             <div class="stat-head">
                 <span class="stat-icon" aria-hidden="true">
                     <svg viewBox="0 0 16 16" role="presentation">
@@ -61,7 +61,7 @@ Hello, {{ request.user.first_name|default:"Client" }}
                         <path d="M4 0h1v3H4V0zm7 0h1v3h-1V0z"></path>
                     </svg>
                 </span>
-                <p class="stat-label">Sessions completed</p>
+                <p class="stat-label">Sessions done</p>
             </div>
             <p class="stat-value">
                 {{ s.value|default:"—" }}
@@ -74,7 +74,7 @@ Hello, {{ request.user.first_name|default:"Client" }}
         {% endwith %}
 
         {% with s=stats.sleep %}
-        <div class="stat-card">
+        <div class="stat-card stat-card--sleep">
             <div class="stat-head">
                 <span class="stat-icon" aria-hidden="true">
                     <svg viewBox="0 0 16 16" role="presentation">
@@ -100,14 +100,14 @@ Hello, {{ request.user.first_name|default:"Client" }}
         {% endwith %}
 
         {% with s=stats.bodyweight %}
-        <div class="stat-card">
+        <div class="stat-card stat-card--weight">
             <div class="stat-head">
                 <span class="stat-icon" aria-hidden="true">
                     <svg viewBox="0 0 16 16" role="presentation">
                         <path d="M3 2h10l2 8.5H1L3 2zm1.5 1L2.7 9.5h10.6L11.5 3h-7zM6 13h4v1H6v-1z"></path>
                     </svg>
                 </span>
-                <p class="stat-label">Latest bodyweight</p>
+                <p class="stat-label">Bodyweight</p>
             </div>
             <p class="stat-value">
                 {% if s.value %}
@@ -126,14 +126,14 @@ Hello, {{ request.user.first_name|default:"Client" }}
         {% endwith %}
 
         {% with s=stats.bench %}
-        <div class="stat-card">
+        <div class="stat-card stat-card--bench">
             <div class="stat-head">
                 <span class="stat-icon" aria-hidden="true">
                     <svg viewBox="0 0 16 16" role="presentation">
                         <path d="M3 7h2V5h2v2h2V5h2v2h2v2h-2v2h-2V9H7v2H5V9H3V7z"></path>
                     </svg>
                 </span>
-                <p class="stat-label">Latest bench top set</p>
+                <p class="stat-label">Bench top set</p>
             </div>
             <p class="stat-value">
                 {% if s.value %}
