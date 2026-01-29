@@ -25,6 +25,8 @@ from .views import (
     client_support,
     client_support_tickets,
     client_support_ticket_detail,
+    trainer_support,
+    trainer_support_ticket,
 )
 
 app_name = "accounts"
@@ -92,6 +94,12 @@ urlpatterns = [
         "client/support/tickets/<int:ticket_id>/",
         client_support_ticket_detail,
         name="client_support_ticket_detail",
+    ),
+    path("trainer/support/", trainer_support, name="trainer_support"),
+    path(
+        "trainer/support/<int:ticket_id>/",
+        trainer_support_ticket,
+        name="trainer_support_ticket",
     ),
 
     # Logout (back to home page)

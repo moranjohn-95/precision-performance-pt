@@ -1,0 +1,86 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Trainer Menu{% endblock %}
+{% block sidebar_menu %}
+{% include "trainer/_sidebar.html" %}
+{% endblock %}
+
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}Support{% endblock %}
+
+{% block dashboard_content %}
+
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <p class="card-kicker">
+            <a href="{% url 'accounts:trainer_support' %}" class="text-link">
+                ← Back to inbox
+            </a>
+        </p>
+        <h2 class="card-title">{{ ticket.subject }}</h2>
+        <p class="card-subtitle">
+            Client: {{ ticket.client.get_full_name|default:ticket.client.username }}
+            · Status: {{ ticket.get_status_display }}
+        </p>
+    </header>
+
+    <div class="support-thread">
+        {% for message in thread %}
+            <article class="support-message">
+                <header class="support-message__meta">
+                    <span class="support-message__author">
+                        {% if message.sender_id == request.user.id %}
+                            You
+                        {% else %}
+                            Client
+                        {% endif %}
+                    </span>
+                    <span class="support-message__time">
+                        {{ message.created_at|date:"d M Y H:i" }}
+                    </span>
+                </header>
+                <p class="support-message__body">{{ message.body|linebreaksbr }}</p>
+            </article>
+        {% empty %}
+            <p class="text-muted">No messages yet.</p>
+        {% endfor %}
+    </div>
+
+    <footer class="card-footer">
+        <form method="post" class="support-reply-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reply">
+            <div class="form-field">
+                <label for="id_body">Reply</label>
+                <textarea
+                    id="id_body"
+                    name="body"
+                    rows="4"
+                    required
+                ></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    Send reply
+                </button>
+            </div>
+        </form>
+
+        <form method="post" class="support-status-form">
+            {% csrf_token %}
+            {% if ticket.status == ticket.STATUS_CLOSED %}
+                <input type="hidden" name="action" value="reopen">
+                <button type="submit" class="btn-secondary">
+                    Reopen ticket
+                </button>
+            {% else %}
+                <input type="hidden" name="action" value="close">
+                <button type="submit" class="btn-secondary">
+                    Close ticket
+                </button>
+            {% endif %}
+        </form>
+    </footer>
+</section>
+
+{% endblock %}

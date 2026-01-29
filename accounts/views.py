@@ -921,6 +921,97 @@ def client_support_ticket_detail(request, ticket_id):
     )
 
 
+@login_required
+def trainer_support(request):
+    if not request.user.is_staff:
+        return redirect("accounts:client_dashboard")
+
+    if request.user.is_superuser:
+        tickets_qs = SupportTicket.objects.all()
+    else:
+        tickets_qs = SupportTicket.objects.filter(trainer=request.user)
+
+    tickets = tickets_qs.order_by("-updated_at", "-created_at")
+    status_counts = {
+        "open": tickets_qs.filter(status=SupportTicket.STATUS_OPEN).count(),
+        "waiting": tickets_qs.filter(
+            status=SupportTicket.STATUS_WAITING
+        ).count(),
+        "closed": tickets_qs.filter(status=SupportTicket.STATUS_CLOSED).count(),
+    }
+
+    return render(
+        request,
+        "trainer/support_inbox.html",
+        {
+            "tickets": tickets,
+            "status_counts": status_counts,
+        },
+    )
+
+
+@login_required
+def trainer_support_ticket(request, ticket_id):
+    if not request.user.is_staff:
+        return redirect("accounts:client_dashboard")
+
+    if request.user.is_superuser:
+        ticket = get_object_or_404(SupportTicket, id=ticket_id)
+    else:
+        ticket = get_object_or_404(
+            SupportTicket,
+            id=ticket_id,
+            trainer=request.user,
+        )
+
+    thread = SupportMessage.objects.filter(ticket=ticket).order_by("created_at")
+
+    if request.method == "POST":
+        action = request.POST.get("action", "").lower()
+        body = request.POST.get("body", "").strip()
+
+        if action == "reply":
+            if not body:
+                messages.error(request, "Message cannot be empty.")
+                return redirect(
+                    "accounts:trainer_support_ticket",
+                    ticket_id=ticket.id,
+                )
+
+            SupportMessage.objects.create(
+                ticket=ticket,
+                sender=request.user,
+                body=body,
+            )
+            ticket.status = SupportTicket.STATUS_WAITING
+            ticket.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Reply sent.")
+
+        elif action == "close":
+            ticket.status = SupportTicket.STATUS_CLOSED
+            ticket.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Ticket closed.")
+
+        elif action == "reopen":
+            ticket.status = SupportTicket.STATUS_OPEN
+            ticket.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Ticket reopened.")
+
+        return redirect(
+            "accounts:trainer_support_ticket",
+            ticket_id=ticket.id,
+        )
+
+    return render(
+        request,
+        "trainer/support_ticket_detail.html",
+        {
+            "ticket": ticket,
+            "thread": thread,
+        },
+    )
+
+
 def is_trainer(user):
     """
     For now we'll treat Django's is_staff flag as 'trainer / owner'.
