@@ -897,6 +897,17 @@ def client_support_ticket_detail(request, ticket_id):
     ).order_by("created_at")
 
     if request.method == "POST":
+        action = request.POST.get("action", "").lower()
+
+        if action == "close":
+            ticket.status = SupportTicket.STATUS_CLOSED
+            ticket.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Ticket closed.")
+            return redirect(
+                "accounts:client_support_ticket_detail",
+                ticket_id=ticket.id,
+            )
+
         body = request.POST.get("body", "").strip()
         if not body:
             messages.error(request, "Message cannot be empty.")

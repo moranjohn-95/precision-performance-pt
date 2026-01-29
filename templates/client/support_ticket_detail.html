@@ -56,6 +56,15 @@
         <p class="support-thread-status">
             Status: {{ ticket.get_status_display }}
         </p>
+        {% if ticket.status != ticket.STATUS_CLOSED %}
+            <form method="post" class="support-status-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="close">
+                <button type="submit" class="btn-secondary">
+                    Close ticket
+                </button>
+            </form>
+        {% endif %}
     </div>
 
     {% if ticket.status != ticket.STATUS_CLOSED %}
