@@ -946,6 +946,7 @@ def trainer_support(request):
         {
             "tickets": tickets,
             "status_counts": status_counts,
+            "current": "trainer_support",
         },
     )
 
@@ -1008,6 +1009,7 @@ def trainer_support_ticket(request, ticket_id):
         {
             "ticket": ticket,
             "thread": thread,
+            "current": "trainer_support",
         },
     )
 

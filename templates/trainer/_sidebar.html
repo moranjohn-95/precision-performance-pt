@@ -23,6 +23,12 @@
         Metrics
     </a>
 </li>
+<li>
+    <a href="{% url 'accounts:trainer_support' %}"
+       class="{% if current == 'trainer_support' %}is-active{% endif %}">
+        Support
+    </a>
+</li>
 <li><span class="dashboard-menu-link is-disabled">Check-ins</span></li>
 <li><span class="dashboard-menu-link is-disabled">Messaging</span></li>
 <li><span class="dashboard-menu-link is-disabled">Resources</span></li>
