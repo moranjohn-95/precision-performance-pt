@@ -819,6 +819,10 @@ def client_support(request):
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
 
+    tickets = SupportTicket.objects.filter(
+        client=request.user,
+    ).order_by("-updated_at", "-created_at")
+
     if request.method == "POST":
         subject = request.POST.get("subject", "").strip()
         message = request.POST.get("message", "").strip()
@@ -854,7 +858,11 @@ def client_support(request):
 
         messages.error(request, "Both subject and message are required.")
 
-    return render(request, "client/support.html")
+    return render(
+        request,
+        "client/support.html",
+        {"tickets": tickets},
+    )
 
 
 @login_required
