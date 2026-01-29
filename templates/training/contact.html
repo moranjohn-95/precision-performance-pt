@@ -13,14 +13,6 @@
             </p>
         </header>
 
-        {% if messages %}
-            <div class="form-error-summary">
-                {% for message in messages %}
-                    <p>{{ message }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-
         {% if form.non_field_errors %}
             <div class="form-error-summary">
                 {% for error in form.non_field_errors %}
