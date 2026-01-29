@@ -151,6 +151,11 @@ Hello, {{ request.user.first_name|default:"Client" }}
         </div>
         {% endwith %}
     </div>
+    <div class="this-week-footer">
+        <a href="{% url 'accounts:client_metrics' %}" class="btn-primary btn-primary--sm">
+            See more
+        </a>
+    </div>
 </div>
 
 <div class="dashboard-card">

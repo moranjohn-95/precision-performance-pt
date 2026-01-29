@@ -1448,3 +1448,13 @@ html {
     color: #f97316;
 }
 
+
+.this-week-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    display: flex;
+    justify-content: flex-start;
+    border-top: 1px solid #e2e8f0;
+    padding-left: 0.25rem;
+}
+
