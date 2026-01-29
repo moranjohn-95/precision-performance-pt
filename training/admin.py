@@ -9,6 +9,8 @@ from .models import (
     ProgrammeDay,
     ProgrammeExercise,
     ClientProgramme,
+    SupportTicket,
+    SupportMessage,
 )
 
 
@@ -134,3 +136,24 @@ class ProgrammeExerciseAdmin(admin.ModelAdmin):
 class ClientProgrammeAdmin(admin.ModelAdmin):
     list_display = ("client", "trainer", "block", "status", "start_date")
     list_filter = ("status", "block")
+
+
+@admin.register(SupportTicket)
+class SupportTicketAdmin(admin.ModelAdmin):
+    list_display = ("subject", "client", "trainer", "status", "created_at")
+    list_filter = ("status", "trainer", "created_at")
+    search_fields = (
+        "subject",
+        "client__username",
+        "client__email",
+        "trainer__username",
+    )
+    ordering = ("-created_at",)
+
+
+@admin.register(SupportMessage)
+class SupportMessageAdmin(admin.ModelAdmin):
+    list_display = ("ticket", "sender", "created_at")
+    list_filter = ("created_at",)
+    search_fields = ("ticket__subject", "sender__username", "body")
+    ordering = ("-created_at",)

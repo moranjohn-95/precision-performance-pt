@@ -160,6 +160,71 @@ class ContactQuery(models.Model):
         return f"{self.first_name} {self.last_name} - {label} - {created}"
 
 
+class SupportTicket(models.Model):
+    STATUS_OPEN = "open"
+    STATUS_WAITING = "waiting"
+    STATUS_CLOSED = "closed"
+
+    STATUS_CHOICES = [
+        (STATUS_OPEN, "Open"),
+        (STATUS_WAITING, "Waiting"),
+        (STATUS_CLOSED, "Closed"),
+    ]
+
+    client = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="support_tickets",
+    )
+    trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_tickets",
+    )
+    subject = models.CharField(max_length=120)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_OPEN,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.subject} ({self.get_status_display()})"
+
+
+class SupportMessage(models.Model):
+    ticket = models.ForeignKey(
+        SupportTicket,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="support_messages",
+    )
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self) -> str:
+        created = (
+            self.created_at.strftime("%Y-%m-%d %H:%M")
+            if self.created_at
+            else ""
+        )
+        return f"Message on {self.ticket} by {self.sender} at {created}"
+
+
 class WorkoutSession(models.Model):
     """
     One workout completed by a client on a given date.
