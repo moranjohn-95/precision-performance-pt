@@ -1,0 +1,81 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Client Menu{% endblock %}
+{% block sidebar_menu %}
+<li><a href="{% url 'accounts:client_dashboard' %}">Overview</a></li>
+<li><a href="{% url 'accounts:client_today' %}">Todays plan</a></li>
+<li><a href="{% url 'accounts:client_programme_library' %}">Programme library</a></li>
+<li><a href="{% url 'accounts:client_workout_log' %}">Workout log</a></li>
+<li><a href="{% url 'accounts:client_metrics' %}">Body metrics</a></li>
+<li><a href="{% url 'accounts:client_check_ins' %}">Check-ins</a></li>
+<li><a href="{% url 'accounts:client_documents' %}">Documents</a></li>
+<li><a href="{% url 'accounts:client_support' %}" class="is-active">Support</a></li>
+{% endblock %}
+
+{% block page_eyebrow %}Client dashboard{% endblock %}
+{% block page_title %}Client support{% endblock %}
+{% block page_subtitle %}Ticket thread{% endblock %}
+
+{% block dashboard_content %}
+
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <p class="card-kicker">
+            <a href="{% url 'accounts:client_support' %}" class="text-link">
+                ← Back to support
+            </a>
+        </p>
+        <h2 class="card-title">{{ ticket.subject }}</h2>
+        <p class="card-subtitle">
+            <span class="status-pill status-pill--{{ ticket.status }}">
+                {{ ticket.get_status_display }}
+            </span>
+        </p>
+    </header>
+
+    <div class="support-thread">
+        {% for message in thread %}
+            <article class="support-message">
+                <header class="support-message__meta">
+                    <span class="support-message__author">
+                        {% if message.sender_id == request.user.id %}
+                            You
+                        {% else %}
+                            Coach
+                        {% endif %}
+                    </span>
+                    <span class="support-message__time">
+                        {{ message.created_at|date:"d M Y H:i" }}
+                    </span>
+                </header>
+                <p class="support-message__body">{{ message.body|linebreaksbr }}</p>
+            </article>
+        {% empty %}
+            <p class="text-muted">No messages yet.</p>
+        {% endfor %}
+    </div>
+
+    {% if ticket.status != ticket.STATUS_CLOSED %}
+    <footer class="card-footer">
+        <form method="post" class="support-reply-form">
+            {% csrf_token %}
+            <div class="form-field">
+                <label for="id_body">Reply</label>
+                <textarea
+                    id="id_body"
+                    name="body"
+                    rows="4"
+                    required
+                ></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    Send reply
+                </button>
+            </div>
+        </form>
+    </footer>
+    {% endif %}
+</section>
+
+{% endblock %}
