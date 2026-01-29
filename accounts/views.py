@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import Count, OuterRef, Q, Subquery
+from django.db.models import Avg, Count, OuterRef, Q, Subquery
 from django.forms import modelformset_factory
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
@@ -166,6 +166,40 @@ def client_dashboard(request):
         "plan": plan,
         "assignment": active_assignment,
         "completed": completed,
+        "stats": {},
+    }
+
+    since_date = timezone.localdate() - datetime.timedelta(days=7)
+
+    sessions_completed = WorkoutSession.objects.filter(
+        client=request.user,
+        date__gte=since_date,
+    ).count()
+
+    metrics_qs = BodyMetricEntry.objects.filter(
+        client=request.user,
+        date__gte=since_date,
+    )
+    sleep_avg = metrics_qs.aggregate(avg=Avg("sleep_hours")).get("avg")
+
+    latest_metric = (
+        BodyMetricEntry.objects.filter(client=request.user)
+        .order_by("-date", "-created_at")
+        .first()
+    )
+
+    latest_bodyweight = (
+        latest_metric.bodyweight_kg if latest_metric else None
+    )
+    latest_bench = (
+        latest_metric.bench_top_set_kg if latest_metric else None
+    )
+
+    context["stats"] = {
+        "sessions_completed": sessions_completed,
+        "sleep_avg": sleep_avg,
+        "latest_bodyweight": latest_bodyweight,
+        "latest_bench": latest_bench,
     }
     return render(request, "client/dashboard.html", context)
 

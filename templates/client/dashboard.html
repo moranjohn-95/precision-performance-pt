@@ -51,10 +51,54 @@ Hello, {{ request.user.first_name|default:"Client" }}
 
 <div class="dashboard-card">
     <h2 class="dashboard-card__title">This week</h2>
-    <p style="margin: 0; font-size: 0.9rem; color: #475569;">
-        Quick summary cards will go here later (sessions, sleep, weight, etc.).
-        For now this is static content to match the mockups.
-    </p>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <p class="stat-label">Sessions completed</p>
+            <p class="stat-value">
+                {{ stats.sessions_completed|default:"—" }}
+            </p>
+            <p class="stat-hint">Last 7 days</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Avg sleep</p>
+            <p class="stat-value">
+                {% if stats.sleep_avg %}
+                    {{ stats.sleep_avg|floatformat:1 }} h
+                {% else %}
+                    —
+                {% endif %}
+            </p>
+            <p class="stat-hint">
+                {% if stats.sleep_avg %}Last 7 days{% else %}Not logged yet{% endif %}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Latest bodyweight</p>
+            <p class="stat-value">
+                {% if stats.latest_bodyweight %}
+                    {{ stats.latest_bodyweight }} kg
+                {% else %}
+                    —
+                {% endif %}
+            </p>
+            <p class="stat-hint">
+                {% if stats.latest_bodyweight %}Most recent entry{% else %}Not logged yet{% endif %}
+            </p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-label">Latest bench top set</p>
+            <p class="stat-value">
+                {% if stats.latest_bench %}
+                    {{ stats.latest_bench }} kg
+                {% else %}
+                    —
+                {% endif %}
+            </p>
+            <p class="stat-hint">
+                {% if stats.latest_bench %}Most recent entry{% else %}Not logged yet{% endif %}
+            </p>
+        </div>
+    </div>
 </div>
 
 <div class="dashboard-card">

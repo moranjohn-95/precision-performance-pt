@@ -1353,3 +1353,38 @@ html {
     color: #1d4ed8;
 }
 
+
+/* Client dashboard stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 0.5rem;
+}
+
+.stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.stat-label {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.stat-value {
+    margin: 4px 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.stat-hint {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
