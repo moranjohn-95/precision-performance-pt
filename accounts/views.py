@@ -27,6 +27,8 @@ from training.models import (
     ProgrammeBlock,
     ProgrammeDay,
     ProgrammeExercise,
+    SupportMessage,
+    SupportTicket,
     WorkoutSession,
 )
 
@@ -822,9 +824,31 @@ def client_support(request):
         message = request.POST.get("message", "").strip()
 
         if subject and message:
+            trainer = None
+            profile = ClientProfile.objects.filter(user=request.user).first()
+            if profile:
+                trainer = profile.preferred_trainer
+
+            ticket = SupportTicket.objects.create(
+                client=request.user,
+                trainer=trainer,
+                subject=subject,
+                status=SupportTicket.STATUS_OPEN,
+            )
+            SupportMessage.objects.create(
+                ticket=ticket,
+                sender=request.user,
+                body=message,
+            )
+
+            success_text = (
+                "Support request sent to your coach."
+                if trainer
+                else "Support request sent."
+            )
             messages.success(
                 request,
-                "Support message sent. A coach will respond soon.",
+                success_text,
             )
             return redirect("accounts:client_support")
 
