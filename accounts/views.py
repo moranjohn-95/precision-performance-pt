@@ -1477,6 +1477,32 @@ def trainer_client_detail(request, client_id):
     if not (has_assignment or trainer.is_superuser):
         return HttpResponseForbidden("Not allowed to view this client.")
 
+    action = request.POST.get("action", "").strip().lower()
+    if request.method == "POST" and action in {"update", "delete"}:
+        entry_id = request.POST.get("entry_id")
+        entry = get_object_or_404(
+            BodyMetricEntry,
+            id=entry_id,
+            client=client_user,
+        )
+
+        if action == "delete":
+            entry.delete()
+            messages.success(request, "Check-in deleted.")
+            return redirect(
+                "accounts:trainer_client_detail",
+                client_id=client_user.id,
+            )
+
+        form = BodyMetricEntryForm(request.POST, instance=entry)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Check-in updated.")
+            return redirect(
+                "accounts:trainer_client_detail",
+                client_id=client_user.id,
+            )
+
     workouts = WorkoutSession.objects.filter(client=client_user).order_by(
         "-date",
         "-id",

@@ -103,6 +103,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         <th>Waist (cm)</th>
                         <th>Bench top set (kg)</th>
                         <th>Sleep (h)</th>
+                        <th class="action-cell">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,10 +114,25 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         <td>{{ entry.waist_cm|default:"—" }}</td>
                         <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
                         <td>{{ entry.sleep_hours|default:"—" }}</td>
+                        <td class="action-cell nowrap">
+                            <a
+                                href="#"
+                                class="text-link js-open-metric"
+                                data-entry-id="{{ entry.id }}"
+                                data-date="{{ entry.date|date:'Y-m-d' }}"
+                                data-bodyweight="{{ entry.bodyweight_kg|default:'' }}"
+                                data-waist="{{ entry.waist_cm|default:'' }}"
+                                data-bench="{{ entry.bench_top_set_kg|default:'' }}"
+                                data-sleep="{{ entry.sleep_hours|default:'' }}"
+                                data-notes="{{ entry.notes|default_if_none:''|escapejs }}"
+                            >
+                                Open
+                            </a>
+                        </td>
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-muted">No check-ins recorded yet.</td>
+                        <td colspan="6" class="text-muted">No check-ins recorded yet.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -161,6 +177,75 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     </div>
 </section>
 
+<div id="metrics-modal-backdrop" class="session-modal-backdrop is-hidden">
+    <div class="session-modal">
+        <header class="session-modal-header">
+            <h2 id="metrics-modal-title">Edit check-in</h2>
+            <button type="button" class="session-modal-close js-close-metric" aria-label="Close">
+                ×
+            </button>
+        </header>
+
+        <form method="post" class="session-modal-form">
+            {% csrf_token %}
+            <input type="hidden" name="entry_id" id="metric-entry-id">
+            <input type="hidden" name="action" id="metric-action-field" value="update">
+
+            <div class="session-modal-body">
+                <div class="form-field">
+                    <label for="metric-date">Date</label>
+                    <input type="date" id="metric-date" name="date" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="metric-bodyweight">Bodyweight (kg)</label>
+                        <input type="number" step="0.1" min="0" id="metric-bodyweight" name="bodyweight_kg">
+                    </div>
+                    <div class="form-field">
+                        <label for="metric-waist">Waist (cm)</label>
+                        <input type="number" step="0.1" min="0" id="metric-waist" name="waist_cm">
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="metric-bench">Bench top set (kg)</label>
+                        <input type="number" step="0.5" min="0" id="metric-bench" name="bench_top_set_kg">
+                    </div>
+                    <div class="form-field">
+                        <label for="metric-sleep">Sleep (h)</label>
+                        <input type="number" step="0.1" min="0" id="metric-sleep" name="sleep_hours">
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="metric-notes">Notes</label>
+                    <textarea id="metric-notes" name="notes" rows="4"></textarea>
+                </div>
+            </div>
+
+            <footer class="session-modal-footer">
+                <button type="button" class="btn-secondary js-close-metric">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    class="btn-danger"
+                    name="action"
+                    value="delete"
+                    onclick="return confirm('Delete this check-in?');"
+                >
+                    Delete
+                </button>
+                <button type="submit" class="btn-primary">
+                    Save changes
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_scripts %}
@@ -173,4 +258,5 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
   }
 </script>
 <script src="{% static 'js/client_detail_charts.js' %}"></script>
+<script defer src="{% static 'js/body_metrics_modal.js' %}"></script>
 {% endblock %}
