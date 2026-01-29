@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Contact us | Precision Performance PT{% endblock %}
+
+{% block content %}
+<section class="page-section consultation-page">
+    <div class="page-section-inner">
+        <header class="page-section-header">
+            <h1>Contact us</h1>
+            <p>
+                Have a question about coaching, billing, or your dashboard?
+                Send us a message and a coach will reply as soon as possible.
+            </p>
+        </header>
+
+        {% if messages %}
+            <div class="form-error-summary">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+            <div class="form-error-summary">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form class="consultation-form" method="post">
+            {% csrf_token %}
+
+            <!-- Contact details -->
+            <section class="consultation-section">
+                <h2 class="consultation-section-title">
+                    <span class="consultation-step-label">Step 1</span>
+                    Contact details
+                </h2>
+
+                <div class="consultation-grid">
+                    <div class="form-field">
+                        <label for="{{ form.first_name.id_for_label }}">
+                            First name <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <p class="form-error">{{ form.first_name.errors|first }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.last_name.id_for_label }}">
+                            Last name <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <p class="form-error">{{ form.last_name.errors|first }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.email.id_for_label }}">
+                            Email <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <p class="form-error">{{ form.email.errors|first }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-field">
+                        <label for="{{ form.phone.id_for_label }}">
+                            Phone <span class="field-optional">(optional)</span>
+                        </label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <p class="form-error">{{ form.phone.errors|first }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Query details -->
+            <section class="consultation-section">
+                <h2 class="consultation-section-title">
+                    <span class="consultation-step-label">Step 2</span>
+                    What is your query about?
+                </h2>
+
+                <div class="consultation-grid">
+                    <div class="form-field">
+                        <label for="{{ form.topic.id_for_label }}">
+                            Topic <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.topic }}
+                        {% if form.topic.errors %}
+                            <p class="form-error">{{ form.topic.errors|first }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label for="{{ form.subject.id_for_label }}">
+                            Subject <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.subject }}
+                        {% if form.subject.errors %}
+                            <p class="form-error">{{ form.subject.errors|first }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="consultation-grid">
+                    <div class="form-field form-field--full">
+                        <label for="{{ form.message.id_for_label }}">
+                            Message <span aria-hidden="true">*</span>
+                        </label>
+                        {{ form.message }}
+                        {% if form.message.errors %}
+                            <p class="form-error">{{ form.message.errors|first }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- Follow-up -->
+            <section class="consultation-section">
+                <h2 class="consultation-section-title">
+                    <span class="consultation-step-label">Step 3</span>
+                    Follow-up
+                </h2>
+
+                <div class="consultation-grid">
+                    <div class="form-field form-field--full">
+                        <label>Preferred contact method <span aria-hidden="true">*</span></label>
+                        {{ form.preferred_contact_method }}
+                        {% if form.preferred_contact_method.errors %}
+                            <p class="form-error">
+                                {{ form.preferred_contact_method.errors|first }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-field form-field--full">
+                        <label>Urgency <span aria-hidden="true">*</span></label>
+                        {{ form.urgency }}
+                        {% if form.urgency.errors %}
+                            <p class="form-error">
+                                {{ form.urgency.errors|first }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="consultation-footer">
+                    <div class="form-field form-field--checkbox">
+                        <label>
+                            {{ form.contact_consent }}
+                            <span>I agree to be contacted about this query.</span>
+                        </label>
+                        {% if form.contact_consent.errors %}
+                            <p class="form-error">
+                                {{ form.contact_consent.errors|first }}
+                            </p>
+                        {% endif %}
+                    </div>
+                    <div class="consultation-actions">
+                        <button type="submit" class="btn-primary">
+                            Submit query
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </form>
+    </div>
+</section>
+{% endblock %}
