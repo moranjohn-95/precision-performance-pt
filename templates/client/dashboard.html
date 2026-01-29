@@ -54,7 +54,15 @@ Hello, {{ request.user.first_name|default:"Client" }}
     <div class="stats-grid">
         {% with s=stats.sessions %}
         <div class="stat-card">
-            <p class="stat-label">Sessions completed</p>
+            <div class="stat-head">
+                <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" role="presentation">
+                        <path d="M11 2V1h1v1h2v2H2V2h2V1h1v1h5zM2 5h12v9H2V5z"></path>
+                        <path d="M4 0h1v3H4V0zm7 0h1v3h-1V0z"></path>
+                    </svg>
+                </span>
+                <p class="stat-label">Sessions completed</p>
+            </div>
             <p class="stat-value">
                 {{ s.value|default:"—" }}
             </p>
@@ -67,7 +75,14 @@ Hello, {{ request.user.first_name|default:"Client" }}
 
         {% with s=stats.sleep %}
         <div class="stat-card">
-            <p class="stat-label">Avg sleep</p>
+            <div class="stat-head">
+                <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" role="presentation">
+                        <path d="M6.354 1.146A6.5 6.5 0 1 0 14.854 9.64 7 7 0 0 1 6.354 1.146z"></path>
+                    </svg>
+                </span>
+                <p class="stat-label">Avg sleep</p>
+            </div>
             <p class="stat-value">
                 {% if s.value %}
                     {{ s.value|floatformat:1 }} h
@@ -86,7 +101,14 @@ Hello, {{ request.user.first_name|default:"Client" }}
 
         {% with s=stats.bodyweight %}
         <div class="stat-card">
-            <p class="stat-label">Latest bodyweight</p>
+            <div class="stat-head">
+                <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" role="presentation">
+                        <path d="M3 2h10l2 8.5H1L3 2zm1.5 1L2.7 9.5h10.6L11.5 3h-7zM6 13h4v1H6v-1z"></path>
+                    </svg>
+                </span>
+                <p class="stat-label">Latest bodyweight</p>
+            </div>
             <p class="stat-value">
                 {% if s.value %}
                     {{ s.value }} kg
@@ -105,7 +127,14 @@ Hello, {{ request.user.first_name|default:"Client" }}
 
         {% with s=stats.bench %}
         <div class="stat-card">
-            <p class="stat-label">Latest bench top set</p>
+            <div class="stat-head">
+                <span class="stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 16 16" role="presentation">
+                        <path d="M3 7h2V5h2v2h2V5h2v2h2v2h-2v2h-2V9H7v2H5V9H3V7z"></path>
+                    </svg>
+                </span>
+                <p class="stat-label">Latest bench top set</p>
+            </div>
             <p class="stat-value">
                 {% if s.value %}
                     {{ s.value }} kg
