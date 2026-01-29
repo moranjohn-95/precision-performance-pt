@@ -1518,3 +1518,31 @@ html {
     padding-left: 0.25rem;
 }
 
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid transparent;
+}
+
+.status-pill--open {
+    color: #0f5132;
+    background: #d1e7dd;
+    border-color: #badbcc;
+}
+
+.status-pill--waiting {
+    color: #664d03;
+    background: #fff3cd;
+    border-color: #ffecb5;
+}
+
+.status-pill--closed {
+    color: #842029;
+    background: #f8d7da;
+    border-color: #f5c2c7;
+}
+
