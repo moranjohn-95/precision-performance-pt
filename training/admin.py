@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (
     ConsultationRequest,
+    ContactQuery,
     WorkoutSession,
     WorkoutSet,
     BodyMetricEntry,
@@ -38,6 +39,22 @@ class ConsultationRequestAdmin(admin.ModelAdmin):
     )
     ordering = ("-created_at",)
     readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(ContactQuery)
+class ContactQueryAdmin(admin.ModelAdmin):
+    list_display = (
+        "first_name",
+        "last_name",
+        "email",
+        "topic",
+        "status",
+        "urgency",
+        "created_at",
+    )
+    search_fields = ("first_name", "last_name", "email", "subject")
+    list_filter = ("topic", "status", "urgency")
+    ordering = ("-created_at",)
 
 
 @admin.register(WorkoutSession)

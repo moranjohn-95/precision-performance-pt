@@ -94,6 +94,81 @@ class ConsultationRequest(models.Model):
         return f"{self.first_name} {self.last_name} - {self.email}"
 
 
+class ContactQuery(models.Model):
+    TOPIC_COACHING = "coaching"
+    TOPIC_BILLING = "billing"
+    TOPIC_DASHBOARD = "dashboard"
+    TOPIC_OTHER = "other"
+
+    TOPIC_CHOICES = [
+        (TOPIC_COACHING, "Coaching"),
+        (TOPIC_BILLING, "Billing"),
+        (TOPIC_DASHBOARD, "Dashboard"),
+        (TOPIC_OTHER, "Other"),
+    ]
+
+    CONTACT_EMAIL = "email"
+    CONTACT_PHONE = "phone"
+    CONTACT_METHOD_CHOICES = [
+        (CONTACT_EMAIL, "Email"),
+        (CONTACT_PHONE, "Phone"),
+    ]
+
+    URGENCY_NOT_URGENT = "not_urgent"
+    URGENCY_FEW_DAYS = "few_days"
+    URGENCY_ASAP = "asap"
+    URGENCY_CHOICES = [
+        (URGENCY_NOT_URGENT, "Not urgent"),
+        (URGENCY_FEW_DAYS, "Next few days"),
+        (URGENCY_ASAP, "As soon as possible"),
+    ]
+
+    STATUS_NEW = "new"
+    STATUS_IN_PROGRESS = "in_progress"
+    STATUS_CLOSED = "closed"
+    STATUS_CHOICES = [
+        (STATUS_NEW, "New"),
+        (STATUS_IN_PROGRESS, "In progress"),
+        (STATUS_CLOSED, "Closed"),
+    ]
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30, blank=True)
+    topic = models.CharField(max_length=20, choices=TOPIC_CHOICES)
+    subject = models.CharField(max_length=120)
+    message = models.TextField()
+    preferred_contact_method = models.CharField(
+        max_length=10,
+        choices=CONTACT_METHOD_CHOICES,
+    )
+    urgency = models.CharField(
+        max_length=15,
+        choices=URGENCY_CHOICES,
+        default=URGENCY_NOT_URGENT,
+    )
+    contact_consent = models.BooleanField(default=False)
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW,
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        created = (
+            self.created_at.date().isoformat()
+            if self.created_at
+            else ""
+        )
+        return f"{self.first_name} {self.last_name} - {self.topic} - {created}"
+
+
 class WorkoutSession(models.Model):
     """
     One workout completed by a client on a given date.
