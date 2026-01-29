@@ -353,9 +353,9 @@ def client_workout_log(request):
 
     if programme_day and selected_week_param and selected_week_param.isdigit():
         selected_week = int(selected_week_param)
-    max_weeks = (
-        programme_day.block.weeks if programme_day and programme_day.block else 6
-    )
+    max_weeks = 6
+    if programme_day and programme_day.block:
+        max_weeks = programme_day.block.weeks
     if selected_week < 1:
         selected_week = 1
     if selected_week > max_weeks:
@@ -978,7 +978,6 @@ def trainer_programme_detail(request, block_id):
         Q(block__parent_template=template_block) | Q(block=template_block)
     ).select_related("client", "block", "block__parent_template")
 
-    has_assignments = base_assignments.exists()
     owns_assignments = base_assignments.filter(trainer=request.user).exists()
 
     if not request.user.is_superuser:
