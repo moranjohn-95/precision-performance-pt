@@ -2,7 +2,12 @@
 from django import forms
 from django.utils import timezone
 
-from .models import ConsultationRequest, WorkoutSession, BodyMetricEntry
+from .models import (
+    BodyMetricEntry,
+    ConsultationRequest,
+    ContactQuery,
+    WorkoutSession,
+)
 
 
 class ConsultationRequestForm(forms.ModelForm):
@@ -182,3 +187,51 @@ class BodyMetricEntryForm(forms.ModelForm):
             "sleep_hours": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
+
+
+class ContactQueryForm(forms.ModelForm):
+    """
+    Form for the public 'Contact us' submissions.
+    """
+
+    class Meta:
+        model = ContactQuery
+        fields = [
+            "first_name",
+            "last_name",
+            "email",
+            "phone",
+            "topic",
+            "subject",
+            "message",
+            "preferred_contact_method",
+            "urgency",
+            "contact_consent",
+        ]
+        widgets = {
+            "message": forms.Textarea(attrs={"rows": 5}),
+            "preferred_contact_method": forms.RadioSelect(),
+            "urgency": forms.RadioSelect(),
+        }
+
+    def clean_contact_consent(self):
+        consent = self.cleaned_data.get("contact_consent")
+        if not consent:
+            raise forms.ValidationError(
+                "Please agree to be contacted about this query."
+            )
+        return consent
+
+    def clean_message(self):
+        msg = (self.cleaned_data.get("message") or "").strip()
+        if len(msg) < 10:
+            raise forms.ValidationError(
+                "Please provide a bit more detail (at least 10 characters)."
+            )
+        return msg
+
+    def clean_subject(self):
+        subj = (self.cleaned_data.get("subject") or "").strip()
+        if not subj:
+            raise forms.ValidationError("Subject cannot be blank.")
+        return subj
