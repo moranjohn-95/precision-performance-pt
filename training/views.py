@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from .forms import ConsultationRequestForm
+from .forms import ConsultationRequestForm, ContactQueryForm
 
 
 # Create views here.
@@ -42,3 +42,32 @@ def consultation(request):
         "training/consultation.html",
         {"form": form},
     )
+
+
+def contact_us(request):
+    """
+    Handles the 'Contact us' page.
+
+    - GET  -> empty ContactQueryForm
+    - POST -> validate and save, then redirect (PRG)
+    """
+    if request.method == "POST":
+        form = ContactQueryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                (
+                    "Thanks — your message has been sent. A coach will "
+                    "get back to you shortly."
+                ),
+            )
+            return redirect("contact_us")
+        messages.error(
+            request,
+            "Please fix the errors below and submit again.",
+        )
+    else:
+        form = ContactQueryForm()
+
+    return render(request, "training/contact.html", {"form": form})

@@ -57,6 +57,11 @@ urlpatterns = [
         training_views.consultation,
         name="consultation_request",
     ),
+    path(
+        "contact/",
+        training_views.contact_us,
+        name="contact_us",
+    ),
 
     # Accounts (login routes)
     path("accounts/", include("accounts.urls", namespace="accounts")),
