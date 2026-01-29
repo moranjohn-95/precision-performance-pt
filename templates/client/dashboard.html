@@ -52,52 +52,75 @@ Hello, {{ request.user.first_name|default:"Client" }}
 <div class="dashboard-card">
     <h2 class="dashboard-card__title">This week</h2>
     <div class="stats-grid">
+        {% with s=stats.sessions %}
         <div class="stat-card">
             <p class="stat-label">Sessions completed</p>
             <p class="stat-value">
-                {{ stats.sessions_completed|default:"—" }}
+                {{ s.value|default:"—" }}
             </p>
-            <p class="stat-hint">Last 7 days</p>
+            <p class="stat-hint">{{ s.hint }}</p>
+            <p class="stat-delta stat-delta--{{ s.delta_class }}">
+                {{ s.delta_text }}
+            </p>
         </div>
+        {% endwith %}
+
+        {% with s=stats.sleep %}
         <div class="stat-card">
             <p class="stat-label">Avg sleep</p>
             <p class="stat-value">
-                {% if stats.sleep_avg %}
-                    {{ stats.sleep_avg|floatformat:1 }} h
+                {% if s.value %}
+                    {{ s.value|floatformat:1 }} h
                 {% else %}
                     —
                 {% endif %}
             </p>
             <p class="stat-hint">
-                {% if stats.sleep_avg %}Last 7 days{% else %}Not logged yet{% endif %}
+                {% if s.value %}{{ s.hint }}{% else %}Not logged yet{% endif %}
+            </p>
+            <p class="stat-delta stat-delta--{{ s.delta_class }}">
+                {{ s.delta_text }}
             </p>
         </div>
+        {% endwith %}
+
+        {% with s=stats.bodyweight %}
         <div class="stat-card">
             <p class="stat-label">Latest bodyweight</p>
             <p class="stat-value">
-                {% if stats.latest_bodyweight %}
-                    {{ stats.latest_bodyweight }} kg
+                {% if s.value %}
+                    {{ s.value }} kg
                 {% else %}
                     —
                 {% endif %}
             </p>
             <p class="stat-hint">
-                {% if stats.latest_bodyweight %}Most recent entry{% else %}Not logged yet{% endif %}
+                {% if s.value %}{{ s.hint }}{% else %}Not logged yet{% endif %}
+            </p>
+            <p class="stat-delta stat-delta--{{ s.delta_class }}">
+                {{ s.delta_text }}
             </p>
         </div>
+        {% endwith %}
+
+        {% with s=stats.bench %}
         <div class="stat-card">
             <p class="stat-label">Latest bench top set</p>
             <p class="stat-value">
-                {% if stats.latest_bench %}
-                    {{ stats.latest_bench }} kg
+                {% if s.value %}
+                    {{ s.value }} kg
                 {% else %}
                     —
                 {% endif %}
             </p>
             <p class="stat-hint">
-                {% if stats.latest_bench %}Most recent entry{% else %}Not logged yet{% endif %}
+                {% if s.value %}{{ s.hint }}{% else %}Not logged yet{% endif %}
+            </p>
+            <p class="stat-delta stat-delta--{{ s.delta_class }}">
+                {{ s.delta_text }}
             </p>
         </div>
+        {% endwith %}
     </div>
 </div>
 

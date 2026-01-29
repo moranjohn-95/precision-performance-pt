@@ -1388,3 +1388,26 @@ html {
     color: #94a3b8;
 }
 
+
+.stat-delta {
+    margin: 2px 0 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.stat-delta--up {
+    color: #15803d;
+}
+
+.stat-delta--down {
+    color: #b91c1c;
+}
+
+.stat-delta--neutral {
+    color: #475569;
+}
+
+.stat-delta--na {
+    color: #94a3b8;
+}
+

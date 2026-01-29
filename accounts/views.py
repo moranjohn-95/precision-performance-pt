@@ -170,10 +170,16 @@ def client_dashboard(request):
     }
 
     since_date = timezone.localdate() - datetime.timedelta(days=7)
+    prev_start = since_date - datetime.timedelta(days=7)
 
     sessions_completed = WorkoutSession.objects.filter(
         client=request.user,
         date__gte=since_date,
+    ).count()
+    sessions_prev = WorkoutSession.objects.filter(
+        client=request.user,
+        date__gte=prev_start,
+        date__lt=since_date,
     ).count()
 
     metrics_qs = BodyMetricEntry.objects.filter(
@@ -181,6 +187,13 @@ def client_dashboard(request):
         date__gte=since_date,
     )
     sleep_avg = metrics_qs.aggregate(avg=Avg("sleep_hours")).get("avg")
+    sleep_prev = (
+        BodyMetricEntry.objects.filter(
+            client=request.user,
+            date__gte=prev_start,
+            date__lt=since_date,
+        ).aggregate(avg=Avg("sleep_hours")).get("avg")
+    )
 
     latest_metric = (
         BodyMetricEntry.objects.filter(client=request.user)
@@ -195,11 +208,92 @@ def client_dashboard(request):
         latest_metric.bench_top_set_kg if latest_metric else None
     )
 
+    prev_metric = (
+        BodyMetricEntry.objects.filter(
+            client=request.user,
+            date__gte=prev_start,
+            date__lt=since_date,
+        )
+        .order_by("-date", "-created_at")
+        .first()
+    )
+    prev_bodyweight = (
+        prev_metric.bodyweight_kg if prev_metric else None
+    )
+    prev_bench = prev_metric.bench_top_set_kg if prev_metric else None
+
+    def format_delta(delta, is_float=False, suffix=""):
+        if delta is None:
+            return "No comparison", "na"
+        if abs(delta) < 1e-9:
+            return "No change", "neutral"
+        direction = "Up" if delta > 0 else "Down"
+        magnitude = abs(delta)
+        if is_float:
+            mag_str = f"{magnitude:.1f}"
+        else:
+            mag_str = f"{int(magnitude)}"
+        return f"{direction} {mag_str}{suffix}", (
+            "up" if delta > 0 else "down"
+        )
+
+    sessions_delta_text, sessions_delta_class = format_delta(
+        sessions_completed - sessions_prev,
+        is_float=False,
+    )
+
+    sleep_delta = None
+    if sleep_avg is not None and sleep_prev is not None:
+        sleep_delta = sleep_avg - sleep_prev
+    sleep_delta_text, sleep_delta_class = format_delta(
+        sleep_delta,
+        is_float=True,
+        suffix=" h",
+    )
+
+    bw_delta = None
+    if latest_bodyweight is not None and prev_bodyweight is not None:
+        bw_delta = latest_bodyweight - prev_bodyweight
+    bw_delta_text, bw_delta_class = format_delta(
+        bw_delta,
+        is_float=True,
+        suffix=" kg",
+    )
+
+    bench_delta = None
+    if latest_bench is not None and prev_bench is not None:
+        bench_delta = latest_bench - prev_bench
+    bench_delta_text, bench_delta_class = format_delta(
+        bench_delta,
+        is_float=True,
+        suffix=" kg",
+    )
+
     context["stats"] = {
-        "sessions_completed": sessions_completed,
-        "sleep_avg": sleep_avg,
-        "latest_bodyweight": latest_bodyweight,
-        "latest_bench": latest_bench,
+        "sessions": {
+            "value": sessions_completed,
+            "delta_text": sessions_delta_text,
+            "delta_class": sessions_delta_class,
+            "hint": "Last 7 days",
+        },
+        "sleep": {
+            "value": sleep_avg,
+            "delta_text": sleep_delta_text,
+            "delta_class": sleep_delta_class,
+            "hint": "Last 7 days",
+        },
+        "bodyweight": {
+            "value": latest_bodyweight,
+            "delta_text": bw_delta_text,
+            "delta_class": bw_delta_class,
+            "hint": "Most recent entry",
+        },
+        "bench": {
+            "value": latest_bench,
+            "delta_text": bench_delta_text,
+            "delta_class": bench_delta_class,
+            "hint": "Most recent entry",
+        },
     }
     return render(request, "client/dashboard.html", context)
 
