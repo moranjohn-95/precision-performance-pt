@@ -1448,6 +1448,15 @@ html {
     color: #f97316;
 }
 
+.today-workout-footer {
+    margin-top: 24px;
+    padding-top: 16px;
+    display: flex;
+    justify-content: flex-start;
+    border-top: 1px solid #e2e8f0;
+    padding-left: 0.25rem;
+}
+
 
 .this-week-footer {
     margin-top: 24px;

@@ -28,9 +28,11 @@ Hello, {{ request.user.first_name|default:"Client" }}
         <p class="text-muted">
             {{ plan.exercise_count }} exercises planned.
         </p>
-        <a href="{{ plan.start_url }}" class="btn-primary btn-primary--sm">
-            Start session
-        </a>
+        <div class="today-workout-footer">
+            <a href="{{ plan.start_url }}" class="btn-primary btn-primary--sm">
+                Start session
+            </a>
+        </div>
     {% elif assignment %}
         <p class="text-muted">
             Programme: {{ assignment.block.name }} ({{ assignment.block.weeks }} weeks)
