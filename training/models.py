@@ -132,7 +132,6 @@ class ContactQuery(models.Model):
     coaching_option = models.CharField(
         max_length=20,
         choices=COACHING_CHOICES,
-        default=COACHING_OTHER,
     )
     message = models.TextField()
     preferred_contact_method = models.CharField(

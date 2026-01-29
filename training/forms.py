@@ -219,6 +219,20 @@ class ContactQueryForm(forms.ModelForm):
             )
         return consent
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Prepend empty/placeholder options for selects.
+        if "coaching_option" in self.fields:
+            self.fields["coaching_option"].required = True
+            self.fields["coaching_option"].choices = [
+                ("", "Select a coaching option")
+            ] + list(self.fields["coaching_option"].choices)
+        if "preferred_contact_method" in self.fields:
+            self.fields["preferred_contact_method"].required = True
+            self.fields["preferred_contact_method"].choices = [
+                ("", "Select a method")
+            ] + list(self.fields["preferred_contact_method"].choices)
+
     def clean_message(self):
         msg = (self.cleaned_data.get("message") or "").strip()
         if len(msg) < 10:

@@ -94,7 +94,30 @@
                         <label for="{{ form.coaching_option.id_for_label }}">
                             Coaching option <span aria-hidden="true">*</span>
                         </label>
-                        {{ form.coaching_option }}
+                        <select
+                            name="{{ form.coaching_option.name }}"
+                            id="{{ form.coaching_option.id_for_label }}"
+                            required
+                        >
+                            <option
+                                value=""
+                                disabled
+                                {% if not form.coaching_option.value %}selected{% endif %}
+                                hidden
+                            >
+                                Select a coaching option
+                            </option>
+                            {% for value, label in form.coaching_option.field.choices %}
+                                {% if value %}
+                                    <option
+                                        value="{{ value }}"
+                                        {% if form.coaching_option.value == value %}selected{% endif %}
+                                    >
+                                        {{ label }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                         {% if form.coaching_option.errors %}
                             <p class="form-error">{{ form.coaching_option.errors|first }}</p>
                         {% endif %}
@@ -129,7 +152,30 @@
                         <label for="{{ form.preferred_contact_method.id_for_label }}">
                             Preferred contact method <span aria-hidden="true">*</span>
                         </label>
-                        {{ form.preferred_contact_method }}
+                        <select
+                            name="{{ form.preferred_contact_method.name }}"
+                            id="{{ form.preferred_contact_method.id_for_label }}"
+                            required
+                        >
+                            <option
+                                value=""
+                                disabled
+                                {% if not form.preferred_contact_method.value %}selected{% endif %}
+                                hidden
+                            >
+                                Select a method
+                            </option>
+                            {% for value, label in form.preferred_contact_method.field.choices %}
+                                {% if value %}
+                                    <option
+                                        value="{{ value }}"
+                                        {% if form.preferred_contact_method.value == value %}selected{% endif %}
+                                    >
+                                        {{ label }}
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                         {% if form.preferred_contact_method.errors %}
                             <p class="form-error">
                                 {{ form.preferred_contact_method.errors|first }}
