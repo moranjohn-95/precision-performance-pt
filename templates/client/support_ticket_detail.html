@@ -26,33 +26,36 @@
             </a>
         </p>
         <h2 class="card-title">{{ ticket.subject }}</h2>
-        <p class="card-subtitle">
-            <span class="status-pill status-pill--{{ ticket.status }}">
-                {{ ticket.get_status_display }}
-            </span>
-        </p>
     </header>
 
     <div class="support-thread">
         {% for message in thread %}
-            <article class="support-message">
-                <header class="support-message__meta">
-                    <span class="support-message__author">
-                        {% if message.sender_id == request.user.id %}
-                            You
-                        {% else %}
-                            Coach
-                        {% endif %}
-                    </span>
-                    <span class="support-message__time">
-                        {{ message.created_at|date:"d M Y H:i" }}
-                    </span>
-                </header>
-                <p class="support-message__body">{{ message.body|linebreaksbr }}</p>
-            </article>
+            <div class="support-message-row {% if message.sender_id == request.user.id %}support-message-row--you{% else %}support-message-row--coach{% endif %}">
+                <div class="support-message">
+                    <div class="support-message-meta">
+                        <span>
+                            {% if message.sender_id == request.user.id %}
+                                You
+                            {% else %}
+                                Coach
+                            {% endif %}
+                        </span>
+                        ·
+                        <span>
+                            {{ message.created_at|date:"d M Y H:i" }}
+                        </span>
+                    </div>
+                    <div class="support-message-bubble">
+                        {{ message.body|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
         {% empty %}
             <p class="text-muted">No messages yet.</p>
         {% endfor %}
+        <p class="support-thread-status">
+            Status: {{ ticket.get_status_display }}
+        </p>
     </div>
 
     {% if ticket.status != ticket.STATUS_CLOSED %}
