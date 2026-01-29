@@ -23,6 +23,8 @@ from .views import (
     client_check_ins,
     client_documents,
     client_support,
+    client_support_tickets,
+    client_support_ticket_detail,
 )
 
 app_name = "accounts"
@@ -81,6 +83,16 @@ urlpatterns = [
     path("client/check-ins/", client_check_ins, name="client_check_ins"),
     path("client/documents/", client_documents, name="client_documents"),
     path("client/support/", client_support, name="client_support"),
+    path(
+        "client/support/tickets/",
+        client_support_tickets,
+        name="client_support_tickets",
+    ),
+    path(
+        "client/support/tickets/<int:ticket_id>/",
+        client_support_ticket_detail,
+        name="client_support_ticket_detail",
+    ),
 
     # Logout (back to home page)
     path("logout/", LogoutView.as_view(next_page="/"), name="logout"),

@@ -857,6 +857,70 @@ def client_support(request):
     return render(request, "client/support.html")
 
 
+@login_required
+def client_support_tickets(request):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+
+    tickets = SupportTicket.objects.filter(
+        client=request.user,
+    ).order_by("-updated_at", "-created_at")
+
+    return render(
+        request,
+        "client/support_tickets.html",
+        {"tickets": tickets},
+    )
+
+
+@login_required
+def client_support_ticket_detail(request, ticket_id):
+    if request.user.is_staff:
+        return redirect("accounts:trainer_dashboard")
+
+    ticket = get_object_or_404(
+        SupportTicket,
+        id=ticket_id,
+        client=request.user,
+    )
+
+    thread = SupportMessage.objects.filter(
+        ticket=ticket,
+    ).order_by("created_at")
+
+    if request.method == "POST":
+        body = request.POST.get("body", "").strip()
+        if not body:
+            messages.error(request, "Message cannot be empty.")
+            return redirect(
+                "accounts:client_support_ticket_detail",
+                ticket_id=ticket.id,
+            )
+
+        SupportMessage.objects.create(
+            ticket=ticket,
+            sender=request.user,
+            body=body,
+        )
+        ticket.status = SupportTicket.STATUS_WAITING
+        ticket.save(update_fields=["status", "updated_at"])
+
+        messages.success(request, "Reply sent.")
+        return redirect(
+            "accounts:client_support_ticket_detail",
+            ticket_id=ticket.id,
+        )
+
+    return render(
+        request,
+        "client/support_ticket_detail.html",
+        {
+            "ticket": ticket,
+            "thread": thread,
+        },
+    )
+
+
 def is_trainer(user):
     """
     For now we'll treat Django's is_staff flag as 'trainer / owner'.
