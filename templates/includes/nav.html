@@ -12,7 +12,7 @@
 
         <li><a href="{% url 'home' %}#coaching">Coaching</a></li>
         <li><a href="#">About us</a></li>
-        <li><a href="#">Contact us</a></li>
+        <li><a href="{% url 'contact_us' %}">Contact us</a></li>
 
         {% if user.is_authenticated %}
             {% if user.is_staff %}

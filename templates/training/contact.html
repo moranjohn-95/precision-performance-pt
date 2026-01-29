@@ -91,21 +91,12 @@
 
                 <div class="consultation-grid">
                     <div class="form-field">
-                        <label for="{{ form.topic.id_for_label }}">
-                            Topic <span aria-hidden="true">*</span>
+                        <label for="{{ form.coaching_option.id_for_label }}">
+                            Coaching option <span aria-hidden="true">*</span>
                         </label>
-                        {{ form.topic }}
-                        {% if form.topic.errors %}
-                            <p class="form-error">{{ form.topic.errors|first }}</p>
-                        {% endif %}
-                    </div>
-                    <div class="form-field">
-                        <label for="{{ form.subject.id_for_label }}">
-                            Subject <span aria-hidden="true">*</span>
-                        </label>
-                        {{ form.subject }}
-                        {% if form.subject.errors %}
-                            <p class="form-error">{{ form.subject.errors|first }}</p>
+                        {{ form.coaching_option }}
+                        {% if form.coaching_option.errors %}
+                            <p class="form-error">{{ form.coaching_option.errors|first }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -116,6 +107,9 @@
                             Message <span aria-hidden="true">*</span>
                         </label>
                         {{ form.message }}
+                        <p class="form-hint">
+                            If you selected "Other", please describe your query here.
+                        </p>
                         {% if form.message.errors %}
                             <p class="form-error">{{ form.message.errors|first }}</p>
                         {% endif %}
@@ -132,21 +126,13 @@
 
                 <div class="consultation-grid">
                     <div class="form-field form-field--full">
-                        <label>Preferred contact method <span aria-hidden="true">*</span></label>
+                        <label for="{{ form.preferred_contact_method.id_for_label }}">
+                            Preferred contact method <span aria-hidden="true">*</span>
+                        </label>
                         {{ form.preferred_contact_method }}
                         {% if form.preferred_contact_method.errors %}
                             <p class="form-error">
                                 {{ form.preferred_contact_method.errors|first }}
-                            </p>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-field form-field--full">
-                        <label>Urgency <span aria-hidden="true">*</span></label>
-                        {{ form.urgency }}
-                        {% if form.urgency.errors %}
-                            <p class="form-error">
-                                {{ form.urgency.errors|first }}
                             </p>
                         {% endif %}
                     </div>

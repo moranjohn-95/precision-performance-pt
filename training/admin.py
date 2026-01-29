@@ -47,13 +47,12 @@ class ContactQueryAdmin(admin.ModelAdmin):
         "first_name",
         "last_name",
         "email",
-        "topic",
+        "coaching_option",
         "status",
-        "urgency",
         "created_at",
     )
-    search_fields = ("first_name", "last_name", "email", "subject")
-    list_filter = ("topic", "status", "urgency")
+    search_fields = ("first_name", "last_name", "email")
+    list_filter = ("coaching_option", "status")
     ordering = ("-created_at",)
 
 

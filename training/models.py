@@ -95,16 +95,18 @@ class ConsultationRequest(models.Model):
 
 
 class ContactQuery(models.Model):
-    TOPIC_COACHING = "coaching"
-    TOPIC_BILLING = "billing"
-    TOPIC_DASHBOARD = "dashboard"
-    TOPIC_OTHER = "other"
+    COACHING_1TO1 = "1to1"
+    COACHING_SMALL = "small_group"
+    COACHING_LARGE = "large_group"
+    COACHING_ONLINE = "online"
+    COACHING_OTHER = "other"
 
-    TOPIC_CHOICES = [
-        (TOPIC_COACHING, "Coaching"),
-        (TOPIC_BILLING, "Billing"),
-        (TOPIC_DASHBOARD, "Dashboard"),
-        (TOPIC_OTHER, "Other"),
+    COACHING_CHOICES = [
+        (COACHING_1TO1, "1:1 Personal Training"),
+        (COACHING_SMALL, "Small Group Coaching"),
+        (COACHING_LARGE, "Larger Group Classes"),
+        (COACHING_ONLINE, "Online Coaching"),
+        (COACHING_OTHER, "Other – please specify"),
     ]
 
     CONTACT_EMAIL = "email"
@@ -112,15 +114,6 @@ class ContactQuery(models.Model):
     CONTACT_METHOD_CHOICES = [
         (CONTACT_EMAIL, "Email"),
         (CONTACT_PHONE, "Phone"),
-    ]
-
-    URGENCY_NOT_URGENT = "not_urgent"
-    URGENCY_FEW_DAYS = "few_days"
-    URGENCY_ASAP = "asap"
-    URGENCY_CHOICES = [
-        (URGENCY_NOT_URGENT, "Not urgent"),
-        (URGENCY_FEW_DAYS, "Next few days"),
-        (URGENCY_ASAP, "As soon as possible"),
     ]
 
     STATUS_NEW = "new"
@@ -136,17 +129,15 @@ class ContactQuery(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
     phone = models.CharField(max_length=30, blank=True)
-    topic = models.CharField(max_length=20, choices=TOPIC_CHOICES)
-    subject = models.CharField(max_length=120)
+    coaching_option = models.CharField(
+        max_length=20,
+        choices=COACHING_CHOICES,
+        default=COACHING_OTHER,
+    )
     message = models.TextField()
     preferred_contact_method = models.CharField(
         max_length=10,
         choices=CONTACT_METHOD_CHOICES,
-    )
-    urgency = models.CharField(
-        max_length=15,
-        choices=URGENCY_CHOICES,
-        default=URGENCY_NOT_URGENT,
     )
     contact_consent = models.BooleanField(default=False)
     status = models.CharField(
@@ -166,7 +157,8 @@ class ContactQuery(models.Model):
             if self.created_at
             else ""
         )
-        return f"{self.first_name} {self.last_name} - {self.topic} - {created}"
+        label = self.get_coaching_option_display()
+        return f"{self.first_name} {self.last_name} - {label} - {created}"
 
 
 class WorkoutSession(models.Model):

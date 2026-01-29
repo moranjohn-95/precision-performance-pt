@@ -201,17 +201,14 @@ class ContactQueryForm(forms.ModelForm):
             "last_name",
             "email",
             "phone",
-            "topic",
-            "subject",
+            "coaching_option",
             "message",
             "preferred_contact_method",
-            "urgency",
             "contact_consent",
         ]
         widgets = {
             "message": forms.Textarea(attrs={"rows": 5}),
-            "preferred_contact_method": forms.RadioSelect(),
-            "urgency": forms.RadioSelect(),
+            "preferred_contact_method": forms.Select(),
         }
 
     def clean_contact_consent(self):
@@ -229,9 +226,3 @@ class ContactQueryForm(forms.ModelForm):
                 "Please provide a bit more detail (at least 10 characters)."
             )
         return msg
-
-    def clean_subject(self):
-        subj = (self.cleaned_data.get("subject") or "").strip()
-        if not subj:
-            raise forms.ValidationError("Subject cannot be blank.")
-        return subj
