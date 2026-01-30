@@ -26,6 +26,7 @@ html,
 body {
     margin: 0;
     padding: 0;
+    height: 100%;
 }
 
 /* Typography */
@@ -51,6 +52,16 @@ h3
 .site-header {
     background-color: var(--color-header-bg);
     color: var(--color-header-text);
+}
+
+.site-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.site-main {
+    flex: 1;
 }
 
 .main-nav {
