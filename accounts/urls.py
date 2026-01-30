@@ -14,6 +14,7 @@ from .views import (
     trainer_client_detail,
     trainer_session_edit,
     add_to_current_classes,
+    owner_dashboard,
     client_dashboard,
     client_programme_library,
     client_today,
@@ -64,6 +65,7 @@ urlpatterns = [
         trainer_session_edit,
         name="trainer_session_edit",
     ),
+    path("owner/dashboard/", owner_dashboard, name="owner_dashboard"),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
     # Keep legacy name/path for programme library
