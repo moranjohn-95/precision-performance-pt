@@ -1,0 +1,270 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Trainer Menu{% endblock %}
+{% block sidebar_menu %}
+{% include "trainer/_sidebar.html" %}
+{% endblock %}
+
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Trainer overview{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Consultation requests</h2>
+    <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
+        Total requests: {{ total_requests }}
+    </p>
+
+    <form method="get" class="table-filter" style="margin: 0 0 1rem;">
+        {% if request.GET.classes %}
+            <input type="hidden" name="classes" value="{{ request.GET.classes }}">
+        {% endif %}
+        {% if request.GET.classes_page %}
+            <input
+                type="hidden"
+                name="classes_page"
+                value="{{ request.GET.classes_page }}"
+            >
+        {% endif %}
+        <label for="status-filter" class="form-label">Show:</label>
+        <select
+            id="status-filter"
+            name="status"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="open" {% if status_filter == "open" %}selected{% endif %}>
+                Open
+            </option>
+            <option value="dealt" {% if status_filter == "dealt" %}selected{% endif %}>
+                Dealt with
+            </option>
+            <option value="all" {% if status_filter == "all" %}selected{% endif %}>
+                All
+            </option>
+        </select>
+    </form>
+
+    {% if latest_requests %}
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Submitted</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Goal</th>
+                    <th>Coaching option</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in latest_requests %}
+                <tr>
+                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td>{{ req.email }}</td>
+                    <td>{{ req.get_training_goal_display|default:"" }}</td>
+                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td>
+                        {% if req.status == req.STATUS_ADDED_CLASSES %}
+                            <span class="badge badge--classes">
+                                Added to classes
+                            </span>
+                        {% elif req.status == req.STATUS_ASSIGNED %}
+                            <span class="badge badge--assigned">
+                                Assigned to client
+                            </span>
+                        {% else %}
+                            <span class="badge badge--open">Open</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a
+                            href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                            class="btn-link"
+                        >
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if latest_requests.has_other_pages %}
+        <nav class="pagination-nav" aria-label="Consultation pagination">
+            <ul class="pagination">
+                {% if latest_requests.has_previous %}
+                <li class="pagination-item">
+                    <a
+                        href="?status={{ status_filter }}&page={{ latest_requests.previous_page_number }}"
+                        class="pagination-link"
+                    >
+                        â€¹ Prev
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in latest_requests.paginator.page_range %}
+                    {% if num == latest_requests.number %}
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">{{ num }}</span>
+                    </li>
+                    {% else %}
+                    <li class="pagination-item">
+                        <a
+                            href="?status={{ status_filter }}&page={{ num }}"
+                            class="pagination-link"
+                        >
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if latest_requests.has_next %}
+                <li class="pagination-item">
+                    <a
+                        href="?status={{ status_filter }}&page={{ latest_requests.next_page_number }}"
+                        class="pagination-link"
+                    >
+                        Next â€º
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    {% else %}
+        <p>No consultation requests yet.</p>
+    {% endif %}
+
+</div>
+
+<section class="dashboard-card dashboard-card--wide">
+    <h2 class="dashboard-card__title">Current Classes</h2>
+    <p class="dashboard-subtitle">
+        Group coaching requests that have been added to current classes.
+    </p>
+
+    <form method="get" class="classes-filter" style="margin: 0 0 1rem;">
+        {% if request.GET.page %}
+            <input type="hidden" name="page" value="{{ request.GET.page }}">
+        {% endif %}
+        <label for="classes-filter-select" class="form-label">
+            Show:
+        </label>
+        <select
+            id="classes-filter-select"
+            name="classes"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if classes_filter == "all" %}selected{% endif %}>
+                All ({{ total_classes_count }})
+            </option>
+            <option
+                value="small"
+                {% if classes_filter == "small" %}selected{% endif %}
+            >
+                Small Group Coaching ({{ small_classes_count }})
+            </option>
+            <option
+                value="large"
+                {% if classes_filter == "large" %}selected{% endif %}
+            >
+                Larger Group Classes ({{ large_classes_count }})
+            </option>
+        </select>
+    </form>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th>Submitted</th>
+                    <th>Name</th>
+                    <th>Preferred date</th>
+                    <th>Coaching option</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in current_classes %}
+                <tr>
+                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td>{{ req.preferred_date|default:"â€”" }}</td>
+                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td>
+                        <a
+                            class="btn-link"
+                            href="{% url 'accounts:trainer_consultation_detail' req.id %}"
+                        >
+                            View
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="muted">
+                        No current classes to show.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if current_classes.has_other_pages %}
+    <nav class="pagination-nav" aria-label="Current classes pagination">
+        <ul class="pagination">
+            {% if current_classes.has_previous %}
+            <li class="pagination-item">
+                <a
+                    href="?classes={{ classes_filter }}&classes_page={{ current_classes.previous_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                    class="pagination-link"
+                >
+                    â€¹ Prev
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in current_classes.paginator.page_range %}
+                {% if num == current_classes.number %}
+                <li class="pagination-item is-active">
+                    <span class="pagination-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="pagination-item">
+                    <a
+                        href="?classes={{ classes_filter }}&classes_page={{ num }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                        class="pagination-link"
+                    >
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_classes.has_next %}
+            <li class="pagination-item">
+                <a
+                    href="?classes={{ classes_filter }}&classes_page={{ current_classes.next_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
+                    class="pagination-link"
+                >
+                    Next â€º
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</section>
+
+{% endblock %}
