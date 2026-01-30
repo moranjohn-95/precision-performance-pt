@@ -197,30 +197,6 @@ Hello, {{ request.user.first_name|default:"Client" }}
                 <p class="quick-link-hint">Check-ins & charts</p>
             </div>
         </a>
-        <a href="{% url 'accounts:client_check_ins' %}" class="quick-link-card">
-            <span class="quick-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 16 16" role="presentation">
-                    <path d="M8 1l7 4v6l-7 4-7-4V5z"></path>
-                    <path d="M8 9l-3-2 3-2 3 2z"></path>
-                </svg>
-            </span>
-            <div>
-                <p class="quick-link-label">Check-ins</p>
-                <p class="quick-link-hint">Send updates</p>
-            </div>
-        </a>
-        <a href="{% url 'accounts:client_documents' %}" class="quick-link-card">
-            <span class="quick-link-icon" aria-hidden="true">
-                <svg viewBox="0 0 16 16" role="presentation">
-                    <path d="M3 1h7l3 3v11H3z"></path>
-                    <path d="M10 1v4h4"></path>
-                </svg>
-            </span>
-            <div>
-                <p class="quick-link-label">Documents</p>
-                <p class="quick-link-hint">Files & resources</p>
-            </div>
-        </a>
         <a href="{% url 'accounts:client_support' %}" class="quick-link-card">
             <span class="quick-link-icon" aria-hidden="true">
                 <svg viewBox="0 0 16 16" role="presentation">

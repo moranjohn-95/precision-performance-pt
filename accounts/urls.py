@@ -20,8 +20,6 @@ from .views import (
     client_workout_log,
     client_workout_edit,
     client_metrics,
-    client_check_ins,
-    client_documents,
     client_support,
     client_support_tickets,
     client_support_ticket_detail,
@@ -82,8 +80,6 @@ urlpatterns = [
         name="client_workout_edit",
     ),
     path("client/metrics/", client_metrics, name="client_metrics"),
-    path("client/check-ins/", client_check_ins, name="client_check_ins"),
-    path("client/documents/", client_documents, name="client_documents"),
     path("client/support/", client_support, name="client_support"),
     path(
         "client/support/tickets/",

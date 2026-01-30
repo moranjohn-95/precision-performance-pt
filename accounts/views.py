@@ -801,20 +801,6 @@ def client_metrics(request):
 
 
 @login_required
-def client_check_ins(request):
-    if request.user.is_staff:
-        return redirect("accounts:trainer_dashboard")
-    return render(request, "client/check_ins.html")
-
-
-@login_required
-def client_documents(request):
-    if request.user.is_staff:
-        return redirect("accounts:trainer_dashboard")
-    return render(request, "client/documents.html")
-
-
-@login_required
 def client_support(request):
     if request.user.is_staff:
         return redirect("accounts:trainer_dashboard")
