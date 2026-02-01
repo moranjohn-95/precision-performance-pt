@@ -86,4 +86,56 @@
         {% endif %}
     </div>
 </section>
+
+{# Second section: queries assigned to the current owner #}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">My Queries</h2>
+        <p class="card-subtitle">Queries assigned to you.</p>
+    </header>
+
+    <div class="card-body">
+        {% if my_queries %}
+            <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Submitted</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Assigned</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for query in my_queries %}
+                            <tr>
+                                <td>{{ query.created_at|date:"d M Y" }}</td>
+                                <td>{{ query.first_name }} {{ query.last_name }}</td>
+                                <td>{{ query.email }}</td>
+                                <td>
+                                    <span class="status-pill">
+                                        {{ query.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {{ query.assigned_trainer.get_full_name|default:query.assigned_trainer|default:"—" }}
+                                </td>
+                                <td>
+                                    <a class="btn-link"
+                                       href="{% url 'accounts:owner_query_detail' query.id %}">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No queries assigned to you yet.</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

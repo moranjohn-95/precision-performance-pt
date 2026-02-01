@@ -1080,10 +1080,16 @@ def owner_queries(request):
     if selected_status and selected_status != "all":
         queries = queries.filter(status=selected_status)
 
+    # Queries specifically assigned to the current owner for quick access.
+    my_queries = ContactQuery.objects.filter(
+        assigned_trainer=request.user
+    ).order_by("-created_at")
+
     context = {
         "queries": queries,
         "selected_status": selected_status,
         "total_count": ContactQuery.objects.count(),
+        "my_queries": my_queries,
         "current": "owner_queries",
     }
     return render(request, "owner/queries_inbox.html", context)
