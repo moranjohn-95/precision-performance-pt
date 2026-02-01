@@ -30,4 +30,10 @@
         Support
     </a>
 </li>
+<li>
+    <a href="{% url 'accounts:owner_queries' %}"
+       class="{% if current == 'owner_queries' %}is-active{% endif %}">
+        Queries
+    </a>
+</li>
 {% endwith %}

@@ -1,0 +1,30 @@
+{% extends "dashboard_base.html" %}
+{% load static %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+
+{% block sidebar_menu %}
+    {# Owner-branded sidebar for query detail #}
+    {% include "owner/_sidebar.html" %}
+{% endblock %}
+
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Query detail{% endblock %}
+{% block page_subtitle %}Contact query from the Contact us form.{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">{{ query.first_name }} {{ query.last_name }}</h2>
+        <p class="card-subtitle">{{ query.email }}</p>
+    </header>
+
+    <div class="card-body">
+        <p><strong>Coaching option:</strong> {{ query.get_coaching_option_display }}</p>
+        <p><strong>Status:</strong> {{ query.get_status_display }}</p>
+        <p><strong>Preferred contact:</strong> {{ query.get_preferred_contact_method_display }}</p>
+        <p><strong>Message:</strong></p>
+        <p>{{ query.message|linebreaksbr }}</p>
+    </div>
+</section>
+{% endblock %}

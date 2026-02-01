@@ -5,6 +5,8 @@ from django.contrib.auth.views import LogoutView
 from .views import (
     TrainerLoginView,
     ClientLoginView,
+    owner_queries,
+    owner_query_detail,
     trainer_dashboard,
     trainer_clients,
     trainer_programmes,
@@ -66,6 +68,12 @@ urlpatterns = [
         name="trainer_session_edit",
     ),
     path("owner/dashboard/", owner_dashboard, name="owner_dashboard"),
+    path("owner/queries/", owner_queries, name="owner_queries"),
+    path(
+        "owner/queries/<int:pk>/",
+        owner_query_detail,
+        name="owner_query_detail",
+    ),
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
     # Keep legacy name/path for programme library

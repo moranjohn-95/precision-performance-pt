@@ -43,6 +43,7 @@ from training.models import (
     BodyMetricEntry,
     ClientProgramme,
     ConsultationRequest,
+    ContactQuery,
     ProgrammeBlock,
     ProgrammeDay,
     ProgrammeExercise,
@@ -1063,6 +1064,44 @@ def owner_dashboard(request):
         return redirect("accounts:trainer_dashboard")
 
     return render(request, "owner/dashboard.html", {"current": "owner_dashboard"})
+
+
+def owner_queries(request):
+    """
+    Owner-only list of incoming contact queries.
+    Shows newest first with optional status filter.
+    """
+    if not request.user.is_superuser:
+        return redirect("accounts:trainer_dashboard")
+
+    selected_status = request.GET.get("status", "new")
+    queries = ContactQuery.objects.all().order_by("-created_at")
+
+    if selected_status and selected_status != "all":
+        queries = queries.filter(status=selected_status)
+
+    context = {
+        "queries": queries,
+        "selected_status": selected_status,
+        "total_count": ContactQuery.objects.count(),
+        "current": "owner_queries",
+    }
+    return render(request, "owner/queries_inbox.html", context)
+
+
+def owner_query_detail(request, pk):
+    """
+    Placeholder detail page for a single contact query.
+    """
+    if not request.user.is_superuser:
+        return redirect("accounts:trainer_dashboard")
+
+    query = get_object_or_404(ContactQuery, pk=pk)
+    return render(
+        request,
+        "owner/query_detail.html",
+        {"query": query, "current": "owner_queries"},
+    )
 
 
 def is_trainer(user):
