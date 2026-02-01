@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -17,7 +18,22 @@ from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
-from django.contrib.auth.forms import PasswordResetForm
+
+from training.forms import BodyMetricEntryForm, WorkoutSessionForm
+from training.models import (
+    BodyMetricEntry,
+    ClientProgramme,
+    ConsultationRequest,
+    ContactQuery,
+    ProgrammeBlock,
+    ProgrammeDay,
+    ProgrammeExercise,
+    SupportMessage,
+    SupportTicket,
+    WorkoutSession,
+)
+
+from .models import ClientProfile
 
 
 def is_trainer(user):
@@ -38,22 +54,6 @@ def staff_required(view_func):
     )(view_func)
 
 
-from training.forms import BodyMetricEntryForm, WorkoutSessionForm
-from training.models import (
-    BodyMetricEntry,
-    ClientProgramme,
-    ConsultationRequest,
-    ContactQuery,
-    ProgrammeBlock,
-    ProgrammeDay,
-    ProgrammeExercise,
-    SupportMessage,
-    SupportTicket,
-    WorkoutSession,
-)
-
-from .models import ClientProfile
-
 User = get_user_model()
 
 
@@ -71,7 +71,8 @@ class TrainerLoginView(LoginView):
     template_name = "accounts/trainer_login.html"
 
     def get_success_url(self):
-        # Superusers (owners) land on the owner dashboard; trainers go to theirs.
+        # Superusers (owners) land on the owner dashboard;
+        # trainers go to theirs.
         if self.request.user.is_superuser:
             return reverse_lazy("accounts:owner_dashboard")
         return reverse_lazy("accounts:trainer_dashboard")
@@ -972,7 +973,9 @@ def trainer_support(request):
         "waiting": tickets_qs.filter(
             status=SupportTicket.STATUS_WAITING
         ).count(),
-        "closed": tickets_qs.filter(status=SupportTicket.STATUS_CLOSED).count(),
+        "closed": tickets_qs.filter(
+            status=SupportTicket.STATUS_CLOSED
+        ).count(),
     }
 
     # Owners see owner-branded template; trainers see trainer template.
@@ -1065,12 +1068,17 @@ def trainer_support_ticket(request, ticket_id):
 def owner_dashboard(request):
     """
     Owner dashboard:
-    - Only superusers can access; other staff are redirected to trainer dashboard.
+    - Only superusers can access; other staff are redirected to the
+      trainer dashboard.
     """
     if not request.user.is_superuser:
         return redirect("accounts:trainer_dashboard")
 
-    return render(request, "owner/dashboard.html", {"current": "owner_dashboard"})
+    return render(
+        request,
+        "owner/dashboard.html",
+        {"current": "owner_dashboard"},
+    )
 
 
 def owner_queries(request):
@@ -1140,9 +1148,10 @@ def owner_query_detail(request, pk):
     # Build trainer list (staff users) so owners can assign queries.
     trainers = (
         User.objects.filter(is_staff=True)
-        .exclude(pk=request.user.pk)  # Exclude owner; covered by 'Assign to me'.
+        .exclude(pk=request.user.pk)
         .order_by("last_name", "first_name", "username")
     )
+    # Exclude owner; the dropdown has a dedicated "Assign to me" option.
 
     # Default selection: assigned trainer if present, otherwise "me".
     selected_assign = (
@@ -1245,24 +1254,6 @@ def trainer_query_detail(request, pk):
         "current": "trainer_queries",
     }
     return render(request, "trainer/query_detail.html", context)
-
-
-def is_trainer(user):
-    """
-    For now we'll treat Django's is_staff flag as 'trainer / owner'.
-
-    Later we can upgrade this to Groups or custom roles
-    without changing the rest of the code.
-    """
-    return user.is_staff
-
-
-def staff_required(view_func):
-    # Must be defined before decorators are evaluated.
-    return user_passes_test(
-        lambda u: u.is_staff,
-        login_url="accounts:trainer_login",
-    )(view_func)
 
 
 @login_required(login_url="accounts:trainer_login")
