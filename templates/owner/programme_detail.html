@@ -1,0 +1,231 @@
+{% extends "dashboard_base.html" %}
+
+{% block title %}Programme detail | Precision Performance PT{% endblock %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+{% block sidebar_menu %}{% include "owner/_sidebar.html" %}{% endblock %}
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Programme detail{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+<div style="margin-top: 0.5rem;">
+    <a class="btn-secondary" href="{% url 'accounts:owner_programmes' %}">
+        Back to programmes
+    </a>
+</div>
+{% endblock %}
+
+{% block dashboard_content %}
+
+{# Client selection #}
+{% if assignments %}
+<form method="get" class="form" style="margin-bottom: 1rem;">
+    <label for="cp" class="form-label">Select client</label>
+    <select
+        id="cp"
+        name="cp"
+        class="form-control"
+        onchange="this.form.submit()"
+    >
+        {% for cp in assignments %}
+            <option
+                value="{{ cp.id }}"
+                {% if selected_cp_id == cp.id %}selected{% endif %}
+                {% if not cp.block.parent_template_id %}disabled{% endif %}
+            >
+                {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
+                {% if not cp.block.parent_template_id %} (Template){% endif %}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+{% endif %}
+
+{# Day filter only when tailored #}
+{% if tailored_days %}
+<form method="get" class="form" style="margin-bottom: 1rem;">
+    <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+    <label for="day" class="form-label">Filter by day</label>
+    <select
+        id="day"
+        name="day"
+        class="form-control"
+        onchange="this.form.submit()"
+    >
+        {% for d in tailored_days %}
+            <option
+                value="{{ d.id }}"
+                {% if selected_day_id == d.id %}selected{% endif %}
+            >
+                {{ d.name }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+{% endif %}
+
+{# Template preview #}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Programme days (template)</h2>
+        <p class="card-subtitle">
+            Read-only view of the template. Edits are applied to tailored copies only.
+        </p>
+    </header>
+    <div class="card-body">
+        {% if preview_days %}
+            {% for item in preview_days %}
+                <div class="programme-day">
+                    <h3 class="programme-day__title">{{ item.day.name }}</h3>
+                    {% if item.exercises %}
+                        <div class="dashboard-table-wrapper">
+                            <table class="dashboard-table">
+                                <thead>
+                                    <tr>
+                                        <th>Exercise</th>
+                                        <th>Sets</th>
+                                        <th>Reps</th>
+                                        <th>Weight (kg)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for ex in item.exercises %}
+                                        <tr>
+                                            <td>{{ ex.exercise_name }}</td>
+                                            <td>{{ ex.target_sets }}</td>
+                                            <td>{{ ex.target_reps }}</td>
+                                            <td>{{ ex.target_weight_kg|default:"—" }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="muted">No exercises yet.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="muted">No days have been added to this template.</p>
+        {% endif %}
+    </div>
+</section>
+
+{% if tailored_days %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Tailored copy</h2>
+        <p class="card-subtitle">
+            Tailored days and exercises for the selected client.
+        </p>
+    </header>
+
+    <div class="card-body">
+        {% if exercises_qs %}
+            {% if can_edit and exercise_formset %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+                    <input type="hidden" name="day" value="{{ selected_day_id }}">
+                    <div class="formset">
+                        {{ exercise_formset.management_form }}
+                        {% for form in exercise_formset %}
+                            <div class="formset-row">
+                                {{ form.id }}
+                                <div class="formset-field">{{ form.instance.exercise_name }}</div>
+                                <div class="formset-field">{{ form.target_sets }}</div>
+                                <div class="formset-field">{{ form.target_reps }}</div>
+                                <div class="formset-field">{{ form.target_weight_kg }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <button type="submit" name="save_exercises" class="btn-primary">
+                        Save changes
+                    </button>
+                </form>
+            {% else %}
+                <div class="dashboard-table-wrapper">
+                    <table class="dashboard-table">
+                        <thead>
+                            <tr>
+                                <th>Exercise</th>
+                                <th>Sets</th>
+                                <th>Reps</th>
+                                <th>Weight (kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ex in exercises_qs %}
+                                <tr>
+                                    <td>{{ ex.exercise_name }}</td>
+                                    <td>{{ ex.target_sets }}</td>
+                                    <td>{{ ex.target_reps }}</td>
+                                    <td>{{ ex.target_weight_kg|default:"—" }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        {% else %}
+            <p class="muted">No tailored exercises for this day.</p>
+        {% endif %}
+    </div>
+</section>
+{% endif %}
+
+{% if assignment %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Manage assignment</h2>
+        <p class="card-subtitle">
+            Convert templates to tailored copies or assign to clients.
+        </p>
+    </header>
+    <div class="card-body">
+        <form method="post" class="form">
+            {% csrf_token %}
+            <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+            {% if not is_tailored %}
+                <button
+                    type="submit"
+                    name="convert_to_tailored"
+                    class="btn-primary"
+                >
+                    Convert to tailored copy
+                </button>
+            {% endif %}
+        </form>
+    </div>
+</section>
+{% endif %}
+
+{% if not is_tailored %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Assign to a client</h2>
+        <p class="card-subtitle">
+            Creates a tailored copy before enabling edits.
+        </p>
+    </header>
+
+    <div class="card-body">
+        <form method="post" class="form">
+            {% csrf_token %}
+            <label for="client_id" class="form-label">Client</label>
+            <select id="client_id" name="client_id" class="form-control">
+                {% for user in assignable_clients %}
+                    <option value="{{ user.id }}">
+                        {{ user.get_full_name|default:user.username }} ({{ user.email }})
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" name="assign_programme" class="btn-primary" style="margin-top: 0.5rem;">
+                Assign programme
+            </button>
+        </form>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

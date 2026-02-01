@@ -1580,14 +1580,11 @@ def trainer_programme_detail(request, block_id):
 
     owns_assignments = base_assignments.filter(trainer=request.user).exists()
 
-    if not request.user.is_superuser:
-        if not block.is_template and not owns_assignments:
-            raise Http404("Programme not found")
+    # Trainer route must only show programmes assigned to this trainer.
+    if not block.is_template and not owns_assignments:
+        raise Http404("Programme not found")
 
-    if request.user.is_superuser:
-        assignments_qs = base_assignments
-    else:
-        assignments_qs = base_assignments.filter(trainer=request.user)
+    assignments_qs = base_assignments.filter(trainer=request.user)
 
     cp_param = request.GET.get("cp")
     assignment = None
@@ -1652,26 +1649,15 @@ def trainer_programme_detail(request, block_id):
 
     exercise_formset = None
 
-    if request.user.is_superuser:
-        assignable_clients = list(
-            User.objects.filter(is_staff=False).order_by("username")
-        )
-        allowed_email_set = {
-            u.email.lower()
-            for u in assignable_clients
-            if u.email
-        }
-    else:
-        assigned_emails = ConsultationRequest.objects.filter(
-            assigned_trainer=request.user
-        ).values_list("email", flat=True)
+    # Only list clients that are assigned to this trainer for safety.
+    assigned_emails = ConsultationRequest.objects.filter(
+        assigned_trainer=request.user
+    ).values_list("email", flat=True)
 
-        allowed_email_set = {e.lower() for e in assigned_emails if e}
-        assignable_clients = list(
-            User.objects.filter(email__in=allowed_email_set).order_by(
-                "username"
-            )
-        )
+    allowed_email_set = {e.lower() for e in assigned_emails if e}
+    assignable_clients = list(
+        User.objects.filter(email__in=allowed_email_set).order_by("username")
+    )
 
     if request.method == "POST" and "save_exercises" in request.POST:
         if not is_tailored:
@@ -1884,6 +1870,366 @@ def trainer_programme_detail(request, block_id):
         "exercise_formset": exercise_formset,
     }
     return render(request, "trainer/programme_detail.html", context)
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def owner_programme_detail(request, block_id):
+    """
+    Owner view: show any programme block across all trainers/clients.
+    Only superusers should access this route.
+    """
+    if not request.user.is_superuser:
+        raise Http404("Owner view only")
+
+    block = get_object_or_404(
+        ProgrammeBlock.objects.prefetch_related(
+            "days__exercises",
+            "assignments",
+        ),
+        id=block_id,
+    )
+
+    template_block = block.parent_template if block.parent_template else block
+    template_days_qs = (
+        template_block.days.all()
+        .order_by("order")
+        .prefetch_related("exercises")
+    )
+
+    ExerciseFormSet = modelformset_factory(
+        ProgrammeExercise,
+        fields=("target_sets", "target_reps", "target_weight_kg"),
+        extra=0,
+    )
+
+    def clone_programme_block(template_block_obj, trainer_user, client_user):
+        """
+        Deep clone ProgrammeBlock -> days -> exercises,
+        so templates stay untouched.
+        """
+        cloned_block = ProgrammeBlock.objects.create(
+            name=(
+                f"{template_block_obj.name} "
+                f"(Tailored for "
+                f"{client_user.get_full_name() or client_user.username})"
+            ),
+            description=template_block_obj.description,
+            weeks=template_block_obj.weeks,
+            created_by=trainer_user,
+            is_template=False,
+            parent_template=template_block_obj,
+        )
+
+        for day in template_block_obj.days.all().order_by("order"):
+            cloned_day = ProgrammeDay.objects.create(
+                block=cloned_block,
+                name=day.name,
+                order=day.order,
+            )
+
+            for ex in day.exercises.all().order_by("order"):
+                ProgrammeExercise.objects.create(
+                    day=cloned_day,
+                    exercise_name=ex.exercise_name,
+                    target_sets=ex.target_sets,
+                    target_reps=ex.target_reps,
+                    target_weight_kg=ex.target_weight_kg,
+                    order=ex.order,
+                )
+
+        return cloned_block
+
+    base_assignments = ClientProgramme.objects.filter(
+        Q(block__parent_template=template_block) | Q(block=template_block)
+    ).select_related("client", "block", "block__parent_template")
+
+    assignments_qs = base_assignments
+
+    cp_param = request.GET.get("cp")
+    assignment = None
+
+    if cp_param and cp_param.isdigit():
+        assignment = get_object_or_404(assignments_qs, id=int(cp_param))
+    elif assignments_qs.exists():
+        assignment = assignments_qs.order_by("-start_date", "-id").first()
+        redirect_base = reverse_lazy(
+            "accounts:owner_programme_detail",
+            kwargs={"block_id": template_block.id},
+        )
+        return redirect(f"{redirect_base}?cp={assignment.id}")
+
+    if assignment and not assignment.block.parent_template_id:
+        cloned_block = clone_programme_block(
+            template_block,
+            request.user,
+            assignment.client,
+        )
+        assignment.block = cloned_block
+        assignment.status = "active"
+        if not assignment.start_date:
+            assignment.start_date = timezone.now().date()
+        assignment.save()
+
+        redirect_base = reverse_lazy(
+            "accounts:owner_programme_detail",
+            kwargs={"block_id": template_block.id},
+        )
+        return redirect(f"{redirect_base}?cp={assignment.id}")
+
+    is_tailored = bool(
+        assignment and assignment.block.parent_template_id == template_block.id
+    )
+    can_edit = is_tailored
+    assignment_client = assignment.client if assignment else None
+
+    tailored_block = assignment.block if assignment else None
+    if tailored_block:
+        tailored_days = tailored_block.days.all().order_by("order")
+    else:
+        tailored_days = ProgrammeDay.objects.none()
+
+    day_param = request.GET.get("day")
+    selected_day = None
+
+    if tailored_days:
+        if day_param and day_param.isdigit():
+            selected_day = tailored_days.filter(id=int(day_param)).first()
+        if selected_day is None:
+            selected_day = tailored_days.first()
+
+    if selected_day:
+        exercises_qs = (
+            ProgrammeExercise.objects.filter(day=selected_day)
+            .select_related("day")
+            .order_by("order")
+        )
+    else:
+        exercises_qs = ProgrammeExercise.objects.none()
+
+    exercise_formset = None
+
+    # Owner dropdown should list all clients that have this programme assigned.
+    assignment_clients = assignments_qs.values_list("client", flat=True)
+    assignable_clients = list(
+        User.objects.filter(id__in=assignment_clients)
+        .order_by("username")
+        .distinct()
+    )
+    allowed_email_set = {
+        u.email.lower() for u in assignable_clients if u.email
+    }
+
+    if request.method == "POST" and "save_exercises" in request.POST:
+        if not is_tailored:
+            return HttpResponseForbidden(
+                "Template programmes cannot be edited. Assign to a "
+                "client first."
+            )
+
+        exercise_formset = ExerciseFormSet(
+            request.POST,
+            queryset=exercises_qs,
+            prefix="ex",
+        )
+
+        if exercise_formset.is_valid():
+            exercise_formset.save()
+            messages.success(request, "Tailored programme updated.")
+
+            redirect_url = reverse_lazy(
+                "accounts:owner_programme_detail",
+                kwargs={"block_id": template_block.id},
+            )
+            query_bits = []
+            if assignment:
+                query_bits.append(f"cp={assignment.id}")
+            if selected_day:
+                query_bits.append(f"day={selected_day.id}")
+            if query_bits:
+                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}"
+            return redirect(redirect_url)
+
+        messages.error(request, "Please correct the errors below.")
+
+    elif (
+        request.method == "POST"
+        and not is_tailored
+        and "convert_to_tailored" not in request.POST
+    ):
+        client_id = request.POST.get("assign_client_id") or request.POST.get(
+            "client_id"
+        )
+        assign_clicked = (
+            "assign_to_client" in request.POST
+            or "assign_programme" in request.POST
+            or bool(client_id)
+        )
+
+        if assign_clicked and client_id:
+            client_user = get_object_or_404(User, id=client_id)
+
+            allowed = client_user.email and (
+                client_user.email.lower() in allowed_email_set
+            )
+
+            if not allowed:
+                messages.error(
+                    request,
+                    "You are not allowed to assign this client.",
+                )
+                return redirect(
+                    "accounts:owner_programme_detail",
+                    block_id=template_block.id,
+                )
+
+            existing_cp = ClientProgramme.objects.filter(
+                client=client_user,
+                block__parent_template=template_block,
+            ).select_related("block").first()
+
+            if existing_cp:
+                messages.info(
+                    request,
+                    "Client already has a tailored copy. Opening it.",
+                )
+                redirect_base = reverse_lazy(
+                    "accounts:owner_programme_detail",
+                    kwargs={"block_id": template_block.id},
+                )
+                return redirect(f"{redirect_base}?cp={existing_cp.id}")
+
+            legacy_cp = ClientProgramme.objects.filter(
+                client=client_user,
+                block=template_block,
+            ).select_related("block").first()
+
+            if legacy_cp:
+                cloned_block = clone_programme_block(
+                    template_block,
+                    request.user,
+                    client_user,
+                )
+                legacy_cp.block = cloned_block
+                legacy_cp.trainer = request.user
+                legacy_cp.status = "active"
+                if not legacy_cp.start_date:
+                    legacy_cp.start_date = timezone.now().date()
+                legacy_cp.save()
+                messages.info(
+                    request,
+                    (
+                        "Existing template assignment converted to a "
+                        "tailored copy."
+                    ),
+                )
+                redirect_base = reverse_lazy(
+                    "accounts:owner_programme_detail",
+                    kwargs={"block_id": template_block.id},
+                )
+                return redirect(f"{redirect_base}?cp={legacy_cp.id}")
+
+            cloned_block = clone_programme_block(
+                template_block,
+                request.user,
+                client_user,
+            )
+
+            cp, created = ClientProgramme.objects.get_or_create(
+                client=client_user,
+                block=cloned_block,
+                defaults={
+                    "trainer": request.user,
+                    "status": "active",
+                    "start_date": timezone.now().date(),
+                },
+            )
+
+            if not created:
+                cp.trainer = request.user
+                cp.status = "active"
+                if not cp.start_date:
+                    cp.start_date = timezone.now().date()
+                cp.save()
+
+            messages.success(
+                request,
+                "Tailored programme copy created and assigned to client.",
+            )
+            redirect_base = reverse_lazy(
+                "accounts:owner_programme_detail",
+                kwargs={"block_id": template_block.id},
+            )
+            return redirect(f"{redirect_base}?cp={cp.id}")
+
+    elif request.method == "POST" and "convert_to_tailored" in request.POST:
+        if not assignment:
+            return HttpResponseForbidden("No assignment selected.")
+
+        if assignment.block.parent_template_id:
+            messages.info(request, "This client already has a tailored copy.")
+            redirect_base = reverse_lazy(
+                "accounts:owner_programme_detail",
+                kwargs={"block_id": template_block.id},
+            )
+            return redirect(f"{redirect_base}?cp={assignment.id}")
+
+        cloned_block = clone_programme_block(
+            template_block,
+            request.user,
+            assignment.client,
+        )
+        assignment.block = cloned_block
+        assignment.status = "active"
+        if not assignment.start_date:
+            assignment.start_date = timezone.now().date()
+        assignment.save()
+
+        messages.success(
+            request,
+            "Converted to tailored copy. You can now edit safely.",
+        )
+
+        redirect_base = reverse_lazy(
+            "accounts:owner_programme_detail",
+            kwargs={"block_id": template_block.id},
+        )
+        return redirect(f"{redirect_base}?cp={assignment.id}")
+
+    if request.method == "GET" and is_tailored:
+        exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
+
+    filtered_template_days = template_days_qs
+    if selected_day:
+        filtered_template_days = template_days_qs.filter(
+            order=selected_day.order
+        )
+
+    preview_days = []
+    for day_obj in filtered_template_days:
+        preview_days.append(
+            {
+                "day": day_obj,
+                "exercises": day_obj.exercises.all().order_by("order"),
+            }
+        )
+
+    context = {
+        "block": template_block,
+        "days": template_days_qs,
+        "preview_days": preview_days,
+        "assignable_clients": assignable_clients,
+        "is_tailored": is_tailored,
+        "can_edit": can_edit,
+        "assignment_client": assignment_client,
+        "assignment": assignment,
+        "selected_day_id": selected_day.id if selected_day else None,
+        "assignments": list(assignments_qs.order_by("client__username")),
+        "selected_cp_id": assignment.id if assignment else None,
+        "tailored_days": tailored_days,
+        "exercise_formset": exercise_formset,
+    }
+    return render(request, "owner/programme_detail.html", context)
 
 
 @login_required
