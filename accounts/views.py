@@ -962,10 +962,8 @@ def trainer_support(request):
     if not request.user.is_staff:
         return redirect("accounts:client_dashboard")
 
-    if request.user.is_superuser:
-        tickets_qs = SupportTicket.objects.all()
-    else:
-        tickets_qs = SupportTicket.objects.filter(trainer=request.user)
+    # Use SupportTicket.trainer as the assignment link to enforce privacy.
+    tickets_qs = SupportTicket.objects.filter(trainer=request.user)
 
     tickets = tickets_qs.order_by("-updated_at", "-created_at")
     status_counts = {
@@ -1001,14 +999,13 @@ def trainer_support_ticket(request, ticket_id):
     if not request.user.is_staff:
         return redirect("accounts:client_dashboard")
 
-    if request.user.is_superuser:
-        ticket = get_object_or_404(SupportTicket, id=ticket_id)
-    else:
-        ticket = get_object_or_404(
-            SupportTicket,
-            id=ticket_id,
-            trainer=request.user,
-        )
+    # Same privacy rule: only the assigned trainer (owner counts as trainer)
+    # can view a ticket; others get 404 to avoid leaking existence.
+    ticket = get_object_or_404(
+        SupportTicket,
+        id=ticket_id,
+        trainer=request.user,
+    )
 
     thread = SupportMessage.objects.filter(ticket=ticket).order_by("created_at")
 
