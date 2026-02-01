@@ -1,10 +1,12 @@
 {% extends "dashboard_base.html" %}
 
-{% block sidebar_title %}Trainer Menu{% endblock %}
+{% block sidebar_title %}Owner Menu{% endblock %}
 {% block sidebar_menu %}
-{% include "trainer/_sidebar.html" %}
+{# Owner uses its own sidebar include for branding; links mirror trainer for now #}
+{% include "owner/_sidebar.html" %}
 {% endblock %}
 
+{# This mirrors the trainer layout but uses owner branding #}
 {% block page_eyebrow %}Owner dashboard{% endblock %}
 {% block page_title %}Trainer overview{% endblock %}
 {% block page_subtitle %}
