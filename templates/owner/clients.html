@@ -92,32 +92,23 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     <nav class="pagination-nav" aria-label="Clients pagination">
         <ul class="pagination">
             {% if clients_page.has_previous %}
+            {% if clients_page.has_previous %}
             <li class="pagination-item">
                 <a
                     href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
                     class="pagination-link"
                 >
-                    ‹ Prev
+                    &lt; Prev
                 </a>
             </li>
             {% endif %}
 
-            {% for num in clients_page.paginator.page_range %}
-                {% if num == clients_page.number %}
-                <li class="pagination-item is-active">
-                    <span class="pagination-link">{{ num }}</span>
-                </li>
-                {% else %}
-                <li class="pagination-item">
-                    <a
-                        href="?type={{ client_type }}&page={{ num }}"
-                        class="pagination-link"
-                    >
-                        {{ num }}
-                    </a>
-                </li>
-                {% endif %}
-            {% endfor %}
+            {# Standard paginator: Prev / Page X of Y / Next #}
+            <li class="pagination-item is-active">
+                <span class="pagination-link">
+                    Page {{ clients_page.number }} of {{ clients_page.paginator.num_pages }}
+                </span>
+            </li>
 
             {% if clients_page.has_next %}
             <li class="pagination-item">
@@ -125,7 +116,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
                     class="pagination-link"
                 >
-                    Next ›
+                    Next &gt;
                 </a>
             </li>
             {% endif %}

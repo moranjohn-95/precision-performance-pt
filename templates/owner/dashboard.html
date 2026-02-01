@@ -99,6 +99,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         </table>
 
         {% if latest_requests.has_other_pages %}
+        {# Standard paginator: Prev / Page X of Y / Next #}
         <nav class="pagination-nav" aria-label="Consultation pagination">
             <ul class="pagination">
                 {% if latest_requests.has_previous %}
@@ -107,27 +108,16 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         href="?status={{ status_filter }}&page={{ latest_requests.previous_page_number }}"
                         class="pagination-link"
                     >
-                        â€¹ Prev
+                        &lt; Prev
                     </a>
                 </li>
                 {% endif %}
 
-                {% for num in latest_requests.paginator.page_range %}
-                    {% if num == latest_requests.number %}
-                    <li class="pagination-item is-active">
-                        <span class="pagination-link">{{ num }}</span>
-                    </li>
-                    {% else %}
-                    <li class="pagination-item">
-                        <a
-                            href="?status={{ status_filter }}&page={{ num }}"
-                            class="pagination-link"
-                        >
-                            {{ num }}
-                        </a>
-                    </li>
-                    {% endif %}
-                {% endfor %}
+                <li class="pagination-item is-active">
+                    <span class="pagination-link">
+                        Page {{ latest_requests.number }} of {{ latest_requests.paginator.num_pages }}
+                    </span>
+                </li>
 
                 {% if latest_requests.has_next %}
                 <li class="pagination-item">
@@ -135,7 +125,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         href="?status={{ status_filter }}&page={{ latest_requests.next_page_number }}"
                         class="pagination-link"
                     >
-                        Next â€º
+                        Next &gt;
                     </a>
                 </li>
                 {% endif %}
@@ -201,7 +191,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 <tr>
                     <td>{{ req.created_at|date:"d M Y" }}</td>
                     <td>{{ req.first_name }} {{ req.last_name }}</td>
-                    <td>{{ req.preferred_date|default:"â€”" }}</td>
+                    <td>{{ req.preferred_date|default:"-" }}</td>
                     <td>{{ req.get_coaching_option_display|default:"" }}</td>
                     <td>
                         <a
@@ -224,6 +214,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     </div>
 
     {% if current_classes.has_other_pages %}
+    {# Standard paginator: Prev / Page X of Y / Next #}
     <nav class="pagination-nav" aria-label="Current classes pagination">
         <ul class="pagination">
             {% if current_classes.has_previous %}
@@ -232,27 +223,16 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     href="?classes={{ classes_filter }}&classes_page={{ current_classes.previous_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
                     class="pagination-link"
                 >
-                    â€¹ Prev
+                    &lt; Prev
                 </a>
             </li>
             {% endif %}
 
-            {% for num in current_classes.paginator.page_range %}
-                {% if num == current_classes.number %}
-                <li class="pagination-item is-active">
-                    <span class="pagination-link">{{ num }}</span>
-                </li>
-                {% else %}
-                <li class="pagination-item">
-                    <a
-                        href="?classes={{ classes_filter }}&classes_page={{ num }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
-                        class="pagination-link"
-                    >
-                        {{ num }}
-                    </a>
-                </li>
-                {% endif %}
-            {% endfor %}
+            <li class="pagination-item is-active">
+                <span class="pagination-link">
+                    Page {{ current_classes.number }} of {{ current_classes.paginator.num_pages }}
+                </span>
+            </li>
 
             {% if current_classes.has_next %}
             <li class="pagination-item">
@@ -260,7 +240,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     href="?classes={{ classes_filter }}&classes_page={{ current_classes.next_page_number }}{% if request.GET.page %}&page={{ request.GET.page }}{% endif %}"
                     class="pagination-link"
                 >
-                    Next â€º
+                    Next &gt;
                 </a>
             </li>
             {% endif %}
@@ -270,3 +250,4 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 </section>
 
 {% endblock %}
+
