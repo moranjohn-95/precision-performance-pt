@@ -29,4 +29,11 @@
         Support
     </a>
 </li>
+{# Trainer query inbox: shows Contact queries assigned to this trainer #}
+<li>
+    <a href="{% url 'accounts:trainer_queries' %}"
+       class="{% if current == 'trainer_queries' %}is-active{% endif %}">
+        Queries
+    </a>
+</li>
 {% endwith %}

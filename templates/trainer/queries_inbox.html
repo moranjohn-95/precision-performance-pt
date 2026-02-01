@@ -1,0 +1,84 @@
+{% extends "dashboard_base.html" %}
+{% load static %}
+
+{% block sidebar_title %}Trainer Menu{% endblock %}
+
+{% block sidebar_menu %}
+    {# Trainer query inbox: only queries assigned to this trainer #}
+    {% include "trainer/_sidebar.html" %}
+{% endblock %}
+
+{% block page_eyebrow %}Trainer dashboard{% endblock %}
+{% block page_title %}Queries{% endblock %}
+{% block page_subtitle %}Queries assigned to you.{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">Queries</h2>
+        <p class="card-subtitle">
+            Contact queries assigned to you.
+        </p>
+    </header>
+
+    <div class="card-body">
+        {# Simple status filter for trainer inbox #}
+        <form method="get" class="table-filter">
+            <label for="status">Status</label>
+            <select id="status" name="status" onchange="this.form.submit()">
+                <option value="all" {% if selected_status == "all" %}selected{% endif %}>
+                    All
+                </option>
+                <option value="new" {% if selected_status == "new" %}selected{% endif %}>
+                    New
+                </option>
+                <option value="in_progress"
+                    {% if selected_status == "in_progress" %}selected{% endif %}>
+                    In progress
+                </option>
+                <option value="closed" {% if selected_status == "closed" %}selected{% endif %}>
+                    Closed
+                </option>
+            </select>
+        </form>
+
+        {% if queries %}
+            <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Submitted</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for query in queries %}
+                            <tr>
+                                <td>{{ query.created_at|date:"d M Y" }}</td>
+                                <td>{{ query.first_name }} {{ query.last_name }}</td>
+                                <td>{{ query.email }}</td>
+                                <td>
+                                    <span class="status-pill">
+                                        {{ query.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a class="btn-link"
+                                       href="{% url 'accounts:trainer_query_detail' query.id %}">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No queries assigned to you yet.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

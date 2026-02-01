@@ -1148,6 +1148,60 @@ def owner_query_detail(request, pk):
     return render(request, "owner/query_detail.html", context)
 
 
+def trainer_queries(request):
+    """
+    Trainer-only list of contact queries assigned to them.
+    """
+    if not request.user.is_staff:
+        return redirect("accounts:client_dashboard")
+
+    selected_status = request.GET.get("status", "all")
+    queries = ContactQuery.objects.filter(
+        assigned_trainer=request.user
+    ).order_by("-created_at")
+
+    if selected_status and selected_status != "all":
+        queries = queries.filter(status=selected_status)
+
+    context = {
+        "queries": queries,
+        "selected_status": selected_status,
+        "current": "trainer_queries",
+    }
+    return render(request, "trainer/queries_inbox.html", context)
+
+
+def trainer_query_detail(request, pk):
+    """
+    Trainer-only view of a single query assigned to them.
+    Trainers can update status but cannot reassign.
+    """
+    if not request.user.is_staff:
+        return redirect("accounts:client_dashboard")
+
+    query = get_object_or_404(
+        ContactQuery,
+        pk=pk,
+        assigned_trainer=request.user,
+    )
+
+    if request.method == "POST":
+        new_status = request.POST.get("status", "").strip()
+        valid_statuses = [choice[0] for choice in ContactQuery.STATUS_CHOICES]
+        if new_status in valid_statuses:
+            query.status = new_status
+            query.save()
+            messages.success(request, "Query updated.")
+        return redirect("accounts:trainer_query_detail", pk=pk)
+
+    context = {
+        "query": query,
+        "status_choices": ContactQuery.STATUS_CHOICES,
+        "current": "trainer_queries",
+    }
+    return render(request, "trainer/query_detail.html", context)
+
+
 def is_trainer(user):
     """
     For now we'll treat Django's is_staff flag as 'trainer / owner'.
