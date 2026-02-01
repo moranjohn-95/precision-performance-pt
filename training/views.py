@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
-from django.contrib import messages
+﻿from django.contrib import messages
+from django.shortcuts import redirect, render
 
 from .forms import ConsultationRequestForm, ContactQueryForm
+from .models import ContactQuery
 
 
 # Create views here.
@@ -28,12 +29,11 @@ def consultation(request):
             # PRG pattern to avoid form re-submissions.
             return redirect("consultation_request")
 
-        else:
-            messages.error(
-                request,
-                "Please fix the errors highlighted below "
-                "and submit the form again.",
-            )
+        messages.error(
+            request,
+            "Please fix the errors highlighted below "
+            "and submit the form again.",
+        )
     else:
         form = ConsultationRequestForm()
 
@@ -54,12 +54,14 @@ def contact_us(request):
     if request.method == "POST":
         form = ContactQueryForm(request.POST)
         if form.is_valid():
+            # Store the contact so owners/trainers can follow up later.
             form.save()
+
             messages.success(
                 request,
                 (
-                    "Thanks — your message has been sent. A coach will "
-                    "get back to you shortly."
+                    "Thanks - your message has been sent. A coach will get "
+                    "back to you shortly."
                 ),
             )
             return redirect("contact_us")

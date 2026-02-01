@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import (
     ConsultationRequest,
     ContactQuery,
-    CustomerQuery,
     WorkoutSession,
     WorkoutSet,
     BodyMetricEntry,
@@ -52,26 +51,11 @@ class ContactQueryAdmin(admin.ModelAdmin):
         "email",
         "coaching_option",
         "status",
+        "assigned_trainer",
         "created_at",
     )
     search_fields = ("first_name", "last_name", "email")
-    list_filter = ("coaching_option", "status")
-    ordering = ("-created_at",)
-
-
-@admin.register(CustomerQuery)
-class CustomerQueryAdmin(admin.ModelAdmin):
-    # Owner-facing view of contact submissions.
-    list_display = (
-        "created_at",
-        "full_name",
-        "email",
-        "subject",
-        "status",
-        "assigned_trainer",
-    )
-    list_filter = ("status", "assigned_trainer", "created_at")
-    search_fields = ("full_name", "email", "subject", "message")
+    list_filter = ("coaching_option", "status", "assigned_trainer")
     ordering = ("-created_at",)
 
 

@@ -139,6 +139,14 @@ class ContactQuery(models.Model):
         choices=CONTACT_METHOD_CHOICES,
     )
     contact_consent = models.BooleanField(default=False)
+    # Optional assignment so an owner can allocate follow-up to a trainer.
+    assigned_trainer = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="assigned_contact_queries",
+    )
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -149,6 +157,7 @@ class ContactQuery(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name_plural = "Contact queries"
 
     def __str__(self) -> str:
         created = (
@@ -223,47 +232,6 @@ class SupportMessage(models.Model):
             else ""
         )
         return f"Message on {self.ticket} by {self.sender} at {created}"
-
-
-class CustomerQuery(models.Model):
-    """
-    Store contact form submissions so owners can review/respond later.
-    """
-
-    STATUS_OPEN = "open"
-    STATUS_IN_PROGRESS = "in_progress"
-    STATUS_CLOSED = "closed"
-
-    STATUS_CHOICES = [
-        (STATUS_OPEN, "Open"),
-        (STATUS_IN_PROGRESS, "In progress"),
-        (STATUS_CLOSED, "Closed"),
-    ]
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    full_name = models.CharField(max_length=120)
-    email = models.EmailField()
-    subject = models.CharField(max_length=200)
-    message = models.TextField()
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default=STATUS_OPEN,
-    )
-    assigned_trainer = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name="customer_queries",
-    )
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"{self.full_name} - {self.subject}"
 
 
 class WorkoutSession(models.Model):

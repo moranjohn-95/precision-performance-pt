@@ -1,10 +1,10 @@
+"""Create CustomerQuery (applied previously)."""
+
 from django.conf import settings
 from django.db import migrations, models
-import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("training", "0013_supportticket_supportmessage"),
     ]
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         blank=True,
                         null=True,
-                        on_delete=django.db.models.deletion.SET_NULL,
+                        on_delete=models.deletion.SET_NULL,
                         related_name="customer_queries",
                         to=settings.AUTH_USER_MODEL,
                     ),
