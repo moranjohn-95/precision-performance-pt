@@ -1391,16 +1391,37 @@ def trainer_clients(request):
     trainer = request.user
 
     client_type = request.GET.get("type", "all")
+    trainer_filter = request.GET.get("trainer", "all")
 
     user_id_sq = User.objects.filter(
         email__iexact=OuterRef("email")
     ).values("id")[:1]
 
-    base_qs = ConsultationRequest.objects.filter(
-        assigned_trainer=trainer,
-        status=ConsultationRequest.STATUS_ASSIGNED,
-        coaching_option__in=["1to1", "online"],
-    ).annotate(portal_user_id=Subquery(user_id_sq)).order_by("-created_at")
+    if request.user.is_superuser:
+        # Owners can view all trainers; start with all assigned clients.
+        base_qs = ConsultationRequest.objects.filter(
+            status=ConsultationRequest.STATUS_ASSIGNED,
+            coaching_option__in=["1to1", "online"],
+        )
+
+        # Apply trainer filter before type filter.
+        if trainer_filter == "me":
+            base_qs = base_qs.filter(assigned_trainer=request.user)
+        elif trainer_filter.isdigit():
+            base_qs = base_qs.filter(assigned_trainer_id=int(trainer_filter))
+        else:
+            # "all" keeps the queryset untouched.
+            pass
+    else:
+        base_qs = ConsultationRequest.objects.filter(
+            assigned_trainer=trainer,
+            status=ConsultationRequest.STATUS_ASSIGNED,
+            coaching_option__in=["1to1", "online"],
+        )
+
+    base_qs = base_qs.annotate(
+        portal_user_id=Subquery(user_id_sq)
+    ).order_by("-created_at")
 
     if client_type == "online":
         qs = base_qs.filter(coaching_option="online")
@@ -1419,10 +1440,19 @@ def trainer_clients(request):
     clients_base_qs = client_params.urlencode()
     clients_base_qs = f"&{clients_base_qs}" if clients_base_qs else ""
 
+    # Owner already appears as "Me (...)", so exclude them to avoid duplicates.
+    trainer_options = (
+        User.objects.filter(is_active=True, is_staff=True)
+        .exclude(id=request.user.id)
+        .order_by("first_name", "last_name", "username")
+    )
+
     context = {
         "trainer": trainer,
         "clients_page": clients_page,
         "client_type": client_type,
+        "trainer_filter": trainer_filter,
+        "trainer_options": trainer_options,
         "clients_base_qs": clients_base_qs,
         "section": "clients",
     }

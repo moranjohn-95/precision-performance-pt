@@ -19,6 +19,32 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
 
     <form method="get" class="table-filter" style="margin: 0 0 1rem;">
+        {# Owner can filter clients by trainer before programme filter #}
+        <label for="trainer-filter" class="form-label">Trainer:</label>
+        <select
+            id="trainer-filter"
+            name="trainer"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if trainer_filter == "all" %}selected{% endif %}>
+                All trainers
+            </option>
+            <option value="me" {% if trainer_filter == "me" %}selected{% endif %}>
+                Me ({{ request.user.username }})
+            </option>
+            {% for trainer in trainer_options %}
+            <option
+                value="{{ trainer.id }}"
+                {% if trainer_filter|add:""|stringformat:"s" == trainer.id|stringformat:"s" %}selected{% endif %}
+            >
+                {{ trainer.get_full_name|default:trainer.username }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <br />
+
         <label for="client-type-filter" class="form-label">Show:</label>
         <select
             id="client-type-filter"
@@ -95,12 +121,15 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
             {% if clients_page.has_previous %}
             <li class="pagination-item">
                 <a
-                    href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
+                    href="?type={{ client_type }}&trainer={{ trainer_filter }}&page={{ clients_page.previous_page_number }}"
                     class="pagination-link"
                 >
                     &lt; Prev
                 </a>
             </li>
+            {% endif %}
+
+            {# Close duplicate previous-page check to avoid template error #}
             {% endif %}
 
             {# Standard paginator: Prev / Page X of Y / Next #}
@@ -113,7 +142,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
             {% if clients_page.has_next %}
             <li class="pagination-item">
                 <a
-                    href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
+                    href="?type={{ client_type }}&trainer={{ trainer_filter }}&page={{ clients_page.next_page_number }}"
                     class="pagination-link"
                 >
                     Next &gt;
