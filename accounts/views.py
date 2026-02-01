@@ -1091,17 +1091,55 @@ def owner_queries(request):
 
 def owner_query_detail(request, pk):
     """
-    Placeholder detail page for a single contact query.
+    Owner-only detail page for a single contact query with assignment/status.
     """
     if not request.user.is_superuser:
         return redirect("accounts:trainer_dashboard")
 
     query = get_object_or_404(ContactQuery, pk=pk)
-    return render(
-        request,
-        "owner/query_detail.html",
-        {"query": query, "current": "owner_queries"},
+
+    # Build trainer list (staff users) so owners can assign queries.
+    trainers = (
+        User.objects.filter(is_staff=True)
+        .exclude(pk=request.user.pk)  # Exclude owner; covered by 'Assign to me'.
+        .order_by("last_name", "first_name", "username")
     )
+
+    # Default selection: assigned trainer if present, otherwise "me".
+    selected_assign = (
+        query.assigned_trainer.pk if query.assigned_trainer else "me"
+    )
+
+    if request.method == "POST":
+        # Assign trainer: "me", user id, or blank to unassign.
+        assign_value = request.POST.get("assign_trainer", "").strip()
+        if assign_value == "me":
+            query.assigned_trainer = request.user
+        elif assign_value:
+            # Only allow ids in the trainer list.
+            trainer = trainers.filter(pk=assign_value).first()
+            query.assigned_trainer = trainer
+        else:
+            query.assigned_trainer = None
+
+        # Update status if provided and valid.
+        new_status = request.POST.get("status", "").strip()
+        valid_statuses = [choice[0] for choice in ContactQuery.STATUS_CHOICES]
+        if new_status in valid_statuses:
+            query.status = new_status
+
+        query.save()
+        messages.success(request, "Query updated.")
+        return redirect("accounts:owner_query_detail", pk=pk)
+
+    context = {
+        "query": query,
+        "trainers": trainers,
+        "status_choices": ContactQuery.STATUS_CHOICES,
+        "selected_assign": selected_assign,
+        "current": "owner_queries",
+    }
+    return render(request, "owner/query_detail.html", context)
 
 
 def is_trainer(user):

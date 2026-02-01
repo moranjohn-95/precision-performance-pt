@@ -15,16 +15,101 @@
 {% block dashboard_content %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h2 class="card-title">{{ query.first_name }} {{ query.last_name }}</h2>
-        <p class="card-subtitle">{{ query.email }}</p>
+        <h2 class="card-title">Query summary</h2>
+        <p class="card-subtitle">
+            Manage assignment and status for this contact query.
+        </p>
     </header>
 
     <div class="card-body">
-        <p><strong>Coaching option:</strong> {{ query.get_coaching_option_display }}</p>
-        <p><strong>Status:</strong> {{ query.get_status_display }}</p>
-        <p><strong>Preferred contact:</strong> {{ query.get_preferred_contact_method_display }}</p>
-        <p><strong>Message:</strong></p>
-        <p>{{ query.message|linebreaksbr }}</p>
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <tbody>
+                    <tr>
+                        <th scope="row">Submitted</th>
+                        <td>{{ query.created_at|date:"d M Y, H:i" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Name</th>
+                        <td>{{ query.first_name }} {{ query.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Email</th>
+                        <td>{{ query.email }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Phone</th>
+                        <td>{{ query.phone|default:"—" }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Coaching option</th>
+                        <td>{{ query.get_coaching_option_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Preferred contact</th>
+                        <td>{{ query.get_preferred_contact_method_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Consent</th>
+                        <td>{% if query.contact_consent %}Yes{% else %}No{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Status</th>
+                        <td>{{ query.get_status_display }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Assigned</th>
+                        <td>
+                            {{ query.assigned_trainer.get_full_name|default:query.assigned_trainer|default:"—" }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card-section">
+            <h3>Message</h3>
+            <p>{{ query.message|linebreaksbr }}</p>
+        </div>
+
+        <form method="post" class="form">
+            {% csrf_token %}
+            <div class="form-row">
+                <label for="assign_trainer">Assign to</label>
+                <select name="assign_trainer" id="assign_trainer">
+                    <option value="me"
+                        {% if selected_assign == "me" %}selected{% endif %}>
+                        Assign to me
+                    </option>
+                    {# Current user excluded; covered by 'Assign to me'. #}
+                    {% for trainer in trainers %}
+                        <option value="{{ trainer.id }}"
+                            {% if selected_assign == trainer.id %}selected{% endif %}>
+                            {{ trainer.get_full_name|default:trainer.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-row">
+                <label for="status">Status</label>
+                <select name="status" id="status">
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}"
+                            {% if query.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-actions form-actions--spaced">
+                <button type="submit" class="btn-primary">Save</button>
+                <a class="btn-secondary" href="{% url 'accounts:owner_queries' %}">
+                    Back to queries
+                </a>
+            </div>
+        </form>
     </div>
 </section>
 {% endblock %}
