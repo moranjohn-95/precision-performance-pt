@@ -523,6 +523,12 @@ def client_workout_log(request):
     page_number = request.GET.get("page")
     recent_sessions = paginator.get_page(page_number)
 
+    # Keep filters when paging (currently no extra filters on sessions list).
+    sessions_qs = request.GET.copy()
+    sessions_qs.pop("page", None)
+    sessions_base_qs = sessions_qs.urlencode()
+    sessions_base_qs = f"&{sessions_base_qs}" if sessions_base_qs else ""
+
     if request.method == "POST":
         post_data = request.POST.copy()
 
@@ -631,6 +637,7 @@ def client_workout_log(request):
 
     context = {
         "sessions": recent_sessions,
+        "sessions_base_qs": sessions_base_qs,
         "session_form": form,
         "programme_day": programme_day,
         "programme_exercises": programme_exercises,
@@ -1085,6 +1092,19 @@ def owner_queries(request):
         assigned_trainer=request.user
     ).order_by("-created_at")
 
+    # Build base querystrings for each paginator (exclude page params).
+    qs_params = request.GET.copy()
+    qs_params.pop("inbox_page", None)
+    qs_params.pop("my_page", None)
+    inbox_base = qs_params.urlencode()
+    inbox_base = f"&{inbox_base}" if inbox_base else ""
+
+    my_qs_params = request.GET.copy()
+    my_qs_params.pop("my_page", None)
+    my_qs_params.pop("inbox_page", None)
+    my_base = my_qs_params.urlencode()
+    my_base = f"&{my_base}" if my_base else ""
+
     # Paginate inbox and my-queries independently to avoid param clashes.
     inbox_page_number = request.GET.get("inbox_page")
     my_page_number = request.GET.get("my_page")
@@ -1101,6 +1121,8 @@ def owner_queries(request):
         "selected_status": selected_status,
         "total_count": ContactQuery.objects.count(),
         "my_page_obj": my_page_obj,
+        "inbox_base_qs": inbox_base,
+        "my_base_qs": my_base,
         "current": "owner_queries",
     }
     return render(request, "owner/queries_inbox.html", context)
@@ -1174,15 +1196,21 @@ def trainer_queries(request):
     if selected_status and selected_status != "all":
         queries = queries.filter(status=selected_status)
 
-    # Paginate trainer inbox (10 per page).
+    # Paginate trainer inbox (5 per page).
     page_number = request.GET.get("page")
-    # Show 5 queries per page in trainer inbox.
     paginator = Paginator(queries, 5)
     page_obj = paginator.get_page(page_number)
+
+    # Base qs for pagination links (exclude page param).
+    qs_params = request.GET.copy()
+    qs_params.pop("page", None)
+    base_qs = qs_params.urlencode()
+    base_qs = f"&{base_qs}" if base_qs else ""
 
     context = {
         "page_obj": page_obj,
         "selected_status": selected_status,
+        "base_qs": base_qs,
         "current": "trainer_queries",
     }
     return render(request, "trainer/queries_inbox.html", context)
@@ -1262,6 +1290,12 @@ def trainer_dashboard(request):
     paginator = Paginator(requests_qs, 5)
     page_number = request.GET.get("page")
     latest_requests = paginator.get_page(page_number)
+
+    # Keep filters when paging consultation requests.
+    req_params = request.GET.copy()
+    req_params.pop("page", None)
+    requests_base_qs = req_params.urlencode()
+    requests_base_qs = f"&{requests_base_qs}" if requests_base_qs else ""
     total_requests = ConsultationRequest.objects.count()
 
     coaching_breakdown = (
@@ -1297,6 +1331,12 @@ def trainer_dashboard(request):
     classes_page_number = request.GET.get("classes_page")
     current_classes = classes_paginator.get_page(classes_page_number)
 
+    # Keep filters when paging current classes.
+    class_params = request.GET.copy()
+    class_params.pop("classes_page", None)
+    classes_base_qs = class_params.urlencode()
+    classes_base_qs = f"&{classes_base_qs}" if classes_base_qs else ""
+
     total_classes_count = base_classes_qs.count()
     small_count = base_classes_qs.filter(
         coaching_option="small_group"
@@ -1315,6 +1355,8 @@ def trainer_dashboard(request):
         "small_classes_count": small_count,
         "large_classes_count": large_count,
         "total_classes_count": total_classes_count,
+        "requests_base_qs": requests_base_qs,
+        "classes_base_qs": classes_base_qs,
     }
     # Owners see owner-branded template; trainers see trainer template.
     template = (
@@ -1380,10 +1422,17 @@ def trainer_clients(request):
     page_number = request.GET.get("page")
     clients_page = paginator.get_page(page_number)
 
+    # Keep filters when paging clients list.
+    client_params = request.GET.copy()
+    client_params.pop("page", None)
+    clients_base_qs = client_params.urlencode()
+    clients_base_qs = f"&{clients_base_qs}" if clients_base_qs else ""
+
     context = {
         "trainer": trainer,
         "clients_page": clients_page,
         "client_type": client_type,
+        "clients_base_qs": clients_base_qs,
         "section": "clients",
     }
     # Use owner template for superusers so branding stays consistent.
