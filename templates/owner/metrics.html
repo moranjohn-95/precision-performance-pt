@@ -1,0 +1,90 @@
+{% extends "dashboard_base.html" %}
+{% load static %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+{% block sidebar_menu %}
+{# Owner-branded sidebar; links mirror trainer for now #}
+{% include "owner/_sidebar.html" %}
+{% endblock %}
+
+{# Owner view mirrors trainer layout but with owner branding #}
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Client metrics{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card card-table">
+    <header class="card-header">
+        <h2 class="card-title">Latest check-ins</h2>
+        <p class="card-subtitle">
+            One row per client, based on the most recent body metrics entry.
+        </p>
+    </header>
+
+    <div class="card-body">
+        {% if client_rows %}
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Bodyweight</th>
+                        <th>Waist</th>
+                        <th>Bench top set</th>
+                        <th>Sleep (h)</th>
+                        <th>Last check-in</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in client_rows %}
+                        <tr>
+                            <td>
+                                <div class="table-primary-text">{{ row.client_name }}</div>
+                                <div class="table-secondary-text">{{ row.email }}</div>
+                            </td>
+                            <td>
+                                {% if row.bodyweight %}
+                                    {{ row.bodyweight }} kg
+                                {% else %}
+                                    &mdash;
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.waist %}
+                                    {{ row.waist }} cm
+                                {% else %}
+                                    &mdash;
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.bench_topset %}
+                                    {{ row.bench_topset }} kg
+                                {% else %}
+                                    &mdash;
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if row.sleep_hours %}
+                                    {{ row.sleep_hours }} h
+                                {% else %}
+                                    &mdash;
+                                {% endif %}
+                            </td>
+                            <td>{{ row.date|date:"d M Y" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="empty-state">
+                No body metrics check-ins are available yet.
+            </p>
+        {% endif %}
+    </div>
+
+    <footer class="card-footer text-muted">
+        When client–trainer assignment is introduced, this table can be filtered to clients assigned to the signed-in trainer.
+    </footer>
+</section>
+{% endblock %}

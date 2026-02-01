@@ -1,0 +1,137 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+{% block sidebar_menu %}
+{# Owner-branded sidebar; links mirror trainer for now #}
+{% include "owner/_sidebar.html" %}
+{% endblock %}
+
+{# Owner view mirrors trainer layout but with owner branding #}
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}My clients{% endblock %}
+{% block page_subtitle %}
+Logged in: {{ request.user.get_full_name|default:request.user.username }}
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
+
+    <form method="get" class="table-filter" style="margin: 0 0 1rem;">
+        <label for="client-type-filter" class="form-label">Show:</label>
+        <select
+            id="client-type-filter"
+            name="type"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if client_type == "all" %}selected{% endif %}>
+                All
+            </option>
+            <option
+                value="online"
+                {% if client_type == "online" %}selected{% endif %}
+            >
+                Online
+            </option>
+            <option
+                value="1to1"
+                {% if client_type == "1to1" %}selected{% endif %}
+            >
+                1:1
+            </option>
+        </select>
+    </form>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Goal</th>
+                    <th scope="col">Coaching option</th>
+                    <th scope="col">Last request</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in clients_page %}
+                <tr>
+                    <td>
+                        {% with full_name=req.first_name|add:" "|add:req.last_name %}
+                        {% if req.portal_user_id %}
+                            <a
+                                class="text-link"
+                                href="{% url 'accounts:trainer_client_detail' req.portal_user_id %}"
+                            >
+                                {{ full_name|default:req.email }}
+                            </a>
+                        {% else %}
+                            {{ full_name|default:req.email }}
+                        {% endif %}
+                        {% endwith %}
+                    </td>
+                    <td>{{ req.email }}</td>
+                    <td>{{ req.get_training_goal_display|default:req.training_goal }}</td>
+                    <td>{{ req.get_coaching_option_display|default:req.coaching_option }}</td>
+                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="muted-text">
+                        No clients are currently assigned to this trainer.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if clients_page.has_other_pages %}
+    <nav class="pagination-nav" aria-label="Clients pagination">
+        <ul class="pagination">
+            {% if clients_page.has_previous %}
+            <li class="pagination-item">
+                <a
+                    href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
+                    class="pagination-link"
+                >
+                    ‹ Prev
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in clients_page.paginator.page_range %}
+                {% if num == clients_page.number %}
+                <li class="pagination-item is-active">
+                    <span class="pagination-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="pagination-item">
+                    <a
+                        href="?type={{ client_type }}&page={{ num }}"
+                        class="pagination-link"
+                    >
+                        {{ num }}
+                    </a>
+                </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if clients_page.has_next %}
+            <li class="pagination-item">
+                <a
+                    href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
+                    class="pagination-link"
+                >
+                    Next ›
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% endblock %}

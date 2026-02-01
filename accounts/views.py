@@ -967,9 +967,16 @@ def trainer_support(request):
         "closed": tickets_qs.filter(status=SupportTicket.STATUS_CLOSED).count(),
     }
 
+    # Owners see owner-branded template; trainers see trainer template.
+    template = (
+        "owner/support_inbox.html"
+        if request.user.is_superuser
+        else "trainer/support_inbox.html"
+    )
+
     return render(
         request,
-        "trainer/support_inbox.html",
+        template,
         {
             "tickets": tickets,
             "status_counts": status_counts,
@@ -1032,7 +1039,11 @@ def trainer_support_ticket(request, ticket_id):
 
     return render(
         request,
-        "trainer/support_ticket_detail.html",
+        (
+            "owner/support_ticket_detail.html"
+            if request.user.is_superuser
+            else "trainer/support_ticket_detail.html"
+        ),
         {
             "ticket": ticket,
             "thread": thread,
@@ -1151,7 +1162,13 @@ def trainer_dashboard(request):
         "large_classes_count": large_count,
         "total_classes_count": total_classes_count,
     }
-    return render(request, "trainer/dashboard.html", context)
+    # Owners see owner-branded template; trainers see trainer template.
+    template = (
+        "owner/dashboard.html"
+        if request.user.is_superuser
+        else "trainer/dashboard.html"
+    )
+    return render(request, template, context)
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -1215,7 +1232,13 @@ def trainer_clients(request):
         "client_type": client_type,
         "section": "clients",
     }
-    return render(request, "trainer/clients.html", context)
+    # Use owner template for superusers so branding stays consistent.
+    template = (
+        "owner/clients.html"
+        if request.user.is_superuser
+        else "trainer/clients.html"
+    )
+    return render(request, template, context)
 
 
 @login_required(login_url="accounts:trainer_login")
@@ -1251,9 +1274,15 @@ def trainer_metrics(request):
 
     client_rows.sort(key=lambda row: row["client_name"].lower())
 
+    # Owners see owner-branded template; trainers see trainer template.
+    template = (
+        "owner/metrics.html"
+        if request.user.is_superuser
+        else "trainer/metrics.html"
+    )
     return render(
         request,
-        "trainer/metrics.html",
+        template,
         {"client_rows": client_rows},
     )
 
@@ -1696,7 +1725,13 @@ def trainer_programmes(request):
         "programme_blocks": programme_blocks,
         "programme_templates": programme_templates,
     }
-    return render(request, "trainer/programmes.html", context)
+    # Owners see owner-branded template; trainers see trainer template.
+    template = (
+        "owner/programmes.html"
+        if request.user.is_superuser
+        else "trainer/programmes.html"
+    )
+    return render(request, template, context)
 
 
 @login_required(login_url="accounts:trainer_login")

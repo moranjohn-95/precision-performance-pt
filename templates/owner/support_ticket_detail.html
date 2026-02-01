@@ -1,0 +1,94 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+{% block sidebar_menu %}
+{# Owner-branded sidebar; links mirror trainer for now #}
+{% include "owner/_sidebar.html" %}
+{% endblock %}
+
+{# Owner view mirrors trainer layout but with owner branding #}
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Support{% endblock %}
+
+{% block dashboard_content %}
+
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <p class="card-kicker">
+            <a href="{% url 'accounts:trainer_support' %}" class="text-link">
+                ← Back to inbox
+            </a>
+        </p>
+        <h2 class="card-title">{{ ticket.subject }}</h2>
+    </header>
+
+    <div class="support-thread">
+        {% for message in thread %}
+            <div class="support-message-row {% if message.sender_id == ticket.trainer_id or message.sender_id == request.user.id %}support-message-row--you{% else %}support-message-row--coach{% endif %}">
+                <div class="support-message">
+                    <div class="support-message-meta">
+                        <span>
+                            {% if message.sender_id == ticket.trainer_id or message.sender_id == request.user.id %}
+                                You
+                            {% else %}
+                                Client
+                            {% endif %}
+                        </span>
+                        ·
+                        <span>
+                            {{ message.created_at|date:"d M Y H:i" }}
+                        </span>
+                    </div>
+                    <div class="support-message-bubble">
+                        {{ message.body|linebreaksbr }}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-muted">No messages yet.</p>
+        {% endfor %}
+        <p class="support-thread-status">
+            Status: {{ ticket.get_status_display }}
+        </p>
+    </div>
+
+    <footer class="card-footer">
+        {% if ticket.status != ticket.STATUS_CLOSED %}
+            <form method="post" class="support-reply-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reply">
+                <div class="form-field">
+                    <label for="id_body">Reply</label>
+                    <textarea
+                        id="id_body"
+                        name="body"
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">
+                        Send reply
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+
+        <form method="post" class="support-status-form">
+            {% csrf_token %}
+            {% if ticket.status == ticket.STATUS_CLOSED %}
+                <input type="hidden" name="action" value="reopen">
+                <button type="submit" class="btn-secondary">
+                    Reopen ticket
+                </button>
+            {% else %}
+                <input type="hidden" name="action" value="close">
+                <button type="submit" class="btn-secondary">
+                    Close ticket
+                </button>
+            {% endif %}
+        </form>
+    </footer>
+</section>
+
+{% endblock %}
