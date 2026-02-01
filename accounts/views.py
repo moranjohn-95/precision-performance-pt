@@ -1085,11 +1085,22 @@ def owner_queries(request):
         assigned_trainer=request.user
     ).order_by("-created_at")
 
+    # Paginate inbox and my-queries independently to avoid param clashes.
+    inbox_page_number = request.GET.get("inbox_page")
+    my_page_number = request.GET.get("my_page")
+
+    # Show 5 queries per page to keep lists compact.
+    inbox_paginator = Paginator(queries, 5)
+    my_paginator = Paginator(my_queries, 5)
+
+    inbox_page_obj = inbox_paginator.get_page(inbox_page_number)
+    my_page_obj = my_paginator.get_page(my_page_number)
+
     context = {
-        "queries": queries,
+        "inbox_page_obj": inbox_page_obj,
         "selected_status": selected_status,
         "total_count": ContactQuery.objects.count(),
-        "my_queries": my_queries,
+        "my_page_obj": my_page_obj,
         "current": "owner_queries",
     }
     return render(request, "owner/queries_inbox.html", context)
@@ -1163,8 +1174,14 @@ def trainer_queries(request):
     if selected_status and selected_status != "all":
         queries = queries.filter(status=selected_status)
 
+    # Paginate trainer inbox (10 per page).
+    page_number = request.GET.get("page")
+    # Show 5 queries per page in trainer inbox.
+    paginator = Paginator(queries, 5)
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        "queries": queries,
+        "page_obj": page_obj,
         "selected_status": selected_status,
         "current": "trainer_queries",
     }

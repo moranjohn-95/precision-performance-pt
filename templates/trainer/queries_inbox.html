@@ -42,7 +42,7 @@
             </select>
         </form>
 
-        {% if queries %}
+        {% if page_obj %}
             <div class="dashboard-table-wrapper">
                 <table class="dashboard-table">
                     <thead>
@@ -55,7 +55,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for query in queries %}
+                        {% for query in page_obj %}
                             <tr>
                                 <td>{{ query.created_at|date:"d M Y" }}</td>
                                 <td>{{ query.first_name }} {{ query.last_name }}</td>
@@ -78,6 +78,35 @@
             </div>
         {% else %}
             <p>No queries assigned to you yet.</p>
+        {% endif %}
+
+        {# Pagination: preserve status in links #}
+        {% if page_obj and page_obj.has_other_pages %}
+            <nav class="pagination-nav">
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&page={{ page_obj.previous_page_number }}">
+                                ‹ Prev
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">
+                            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    {% if page_obj.has_next %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&page={{ page_obj.next_page_number }}">
+                                Next ›
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         {% endif %}
     </div>
 </section>

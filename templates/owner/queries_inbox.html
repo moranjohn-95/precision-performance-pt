@@ -43,7 +43,7 @@
             </select>
         </form>
 
-        {% if queries %}
+        {% if inbox_page_obj %}
             <div class="dashboard-table-wrapper">
                 <table class="dashboard-table">
                     <thead>
@@ -57,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for query in queries %}
+                        {% for query in inbox_page_obj %}
                             <tr>
                                 <td>{{ query.created_at|date:"d M Y" }}</td>
                                 <td>{{ query.first_name }} {{ query.last_name }}</td>
@@ -84,6 +84,35 @@
         {% else %}
             <p>No queries to display.</p>
         {% endif %}
+
+        {# Inbox pagination - preserve status and my-page in links #}
+        {% if inbox_page_obj and inbox_page_obj.has_other_pages %}
+            <nav class="pagination-nav">
+                <ul class="pagination">
+                    {% if inbox_page_obj.has_previous %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&inbox_page={{ inbox_page_obj.previous_page_number }}&my_page={{ my_page_obj.number|default:1 }}">
+                                ‹ Prev
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">
+                            Page {{ inbox_page_obj.number }} of {{ inbox_page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    {% if inbox_page_obj.has_next %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&inbox_page={{ inbox_page_obj.next_page_number }}&my_page={{ my_page_obj.number|default:1 }}">
+                                Next ›
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 </section>
 
@@ -95,7 +124,7 @@
     </header>
 
     <div class="card-body">
-        {% if my_queries %}
+        {% if my_page_obj %}
             <div class="dashboard-table-wrapper">
                 <table class="dashboard-table">
                     <thead>
@@ -109,7 +138,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for query in my_queries %}
+                        {% for query in my_page_obj %}
                             <tr>
                                 <td>{{ query.created_at|date:"d M Y" }}</td>
                                 <td>{{ query.first_name }} {{ query.last_name }}</td>
@@ -135,6 +164,35 @@
             </div>
         {% else %}
             <p>No queries assigned to you yet.</p>
+        {% endif %}
+
+        {# My-queries pagination - preserve inbox page/status in links #}
+        {% if my_page_obj and my_page_obj.has_other_pages %}
+            <nav class="pagination-nav">
+                <ul class="pagination">
+                    {% if my_page_obj.has_previous %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&my_page={{ my_page_obj.previous_page_number }}&inbox_page={{ inbox_page_obj.number|default:1 }}">
+                                ‹ Prev
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">
+                            Page {{ my_page_obj.number }} of {{ my_page_obj.paginator.num_pages }}
+                        </span>
+                    </li>
+                    {% if my_page_obj.has_next %}
+                        <li class="pagination-item">
+                            <a class="pagination-link"
+                               href="?status={{ selected_status }}&my_page={{ my_page_obj.next_page_number }}&inbox_page={{ inbox_page_obj.number|default:1 }}">
+                                Next ›
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         {% endif %}
     </div>
 </section>
