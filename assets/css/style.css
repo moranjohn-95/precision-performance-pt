@@ -1878,6 +1878,21 @@ html {
         margin-right: auto;
     }
 
+    /* Home page section headings: keep to one line on phones */
+    .home-section-title {
+        font-size: clamp(1.35rem, 6vw, 1.7rem);
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+        max-width: 100%;
+        text-align: center;
+    }
+
+    /* Home page why-us lead: tighter spacing on phones */
+    .home-section-lead {
+        line-height: 1.5;
+        margin-top: 0.35rem;
+    }
+
     /* Why Us: single column and softer padding */
     .why-us {
         padding: 48px 0;
