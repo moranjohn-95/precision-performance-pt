@@ -8,17 +8,30 @@
 {% block page_title %}Programme detail{% endblock %}
 {% block page_subtitle %}
 Logged in: {{ request.user.get_full_name|default:request.user.username }}
-<div style="margin-top: 0.5rem;">
+<div style="display:flex; align-items:center; gap:0.75rem; margin:0.5rem 0 1rem;">
     <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">
         Back to programmes
     </a>
+    {% if not is_template_block %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="delete">
+        <button
+            type="submit"
+            class="btn-secondary"
+            onclick="return confirm('Delete this tailored programme?');"
+        >
+            Delete tailored programme
+        </button>
+    </form>
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block dashboard_content %}
 
 {# Client selection #}
-{% if assignments %}
+{% if is_template_block and assignments %}
 <form method="get" class="form" style="margin-bottom: 1rem;">
     <label for="cp" class="form-label">Select client</label>
     <select
@@ -39,6 +52,14 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         {% endfor %}
     </select>
 </form>
+{% endif %}
+
+{% if not is_template_block and tailored_client %}
+<div style="margin-bottom: 1rem;">
+    Client:
+    {{ tailored_client.get_full_name|default:tailored_client.username }}
+    ({{ tailored_client.email }})
+</div>
 {% endif %}
 
 {# Day filter only when tailored #}
