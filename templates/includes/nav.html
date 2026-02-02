@@ -51,34 +51,20 @@
                             Logout
                         </button>
                     </form>
-                </li>
+            </li>
 
-            {% else %}
-                <!-- Login dropdown (only for logged-out users) -->
-                <li class="nav-item nav-item-has-submenu">
-                    <button
-                        type="button"
-                        class="nav-link nav-link-toggle"
-                        aria-expanded="false"
-                    >
-                        Login
-                        <span class="nav-link-caret">▼</span>
-                    </button>
-
-                    <ul class="nav-submenu">
-                        <li>
-                            <a href="{% url 'accounts:trainer_login' %}">
-                                Trainer login
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{% url 'accounts:client_login' %}">
-                                Client login
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+        {% else %}
+            <li>
+                <a href="{% url 'accounts:trainer_login' %}">
+                    Trainer login
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'accounts:client_login' %}">
+                    Client login
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
 </nav>
