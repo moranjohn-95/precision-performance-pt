@@ -48,7 +48,7 @@ h3
     margin-top: 0;
 }
 
-/* Header/Nav section*/
+/* Header/Nav section: default header stays solid elsewhere */
 .site-header {
     background-color: var(--color-header-bg);
     color: var(--color-header-text);
@@ -64,13 +64,15 @@ h3
     flex: 1;
 }
 
+/* Nav bar layout: full width so brand left, links right */
 .main-nav {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 1.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 1rem 3rem;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .nav-brand a {
@@ -78,13 +80,15 @@ h3
     font-weight: 600;
     font-size: 1.25rem;
     text-decoration: none;
+    margin-left: 0;
+    padding-left: 0;
 }
 
 .nav-links {
     list-style: none;
     display: flex;
     gap: 1.25rem;
-    margin: 0;
+    margin: 0 0 0 auto;
     padding: 0;
 }
 
@@ -188,7 +192,7 @@ h3
 
 /* Hero section */
 .home-hero {
-    padding: 4rem 1.5rem;
+    padding: 6rem 1.5rem 4rem; /* room under overlay header */
     color: #ffffff;
 
     /* Dark overlay with hero image */
