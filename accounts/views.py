@@ -1524,6 +1524,12 @@ def trainer_programme_detail(request, block_id):
         id=block_id,
     )
 
+    is_template_block = block.is_template
+    tailored_client = None
+    assignable_clients = []
+    assignment = None
+    is_template_block = block.is_template
+
     template_block = block.parent_template if block.parent_template else block
     template_days_qs = (
         template_block.days.all()
@@ -1580,24 +1586,24 @@ def trainer_programme_detail(request, block_id):
 
     owns_assignments = base_assignments.filter(trainer=request.user).exists()
 
-    # Trainer route must only show programmes assigned to this trainer.
-    if not block.is_template and not owns_assignments:
-        raise Http404("Programme not found")
-
     assignments_qs = base_assignments.filter(trainer=request.user)
 
     cp_param = request.GET.get("cp")
-    assignment = None
+    if is_template_block:
+        assignment = None
+    else:
+        if not owns_assignments:
+            raise Http404("Programme not found")
 
-    if cp_param and cp_param.isdigit():
-        assignment = get_object_or_404(assignments_qs, id=int(cp_param))
-    elif assignments_qs.exists():
-        assignment = assignments_qs.order_by("-start_date", "-id").first()
-        redirect_base = reverse_lazy(
-            "accounts:trainer_programme_detail",
-            kwargs={"block_id": template_block.id},
-        )
-        return redirect(f"{redirect_base}?cp={assignment.id}")
+        if cp_param and cp_param.isdigit():
+            assignment = assignments_qs.filter(id=int(cp_param)).first()
+        elif assignments_qs.exists():
+            assignment = assignments_qs.order_by("-start_date", "-id").first()
+            redirect_base = reverse_lazy(
+                "accounts:trainer_programme_detail",
+                kwargs={"block_id": template_block.id},
+            )
+            return redirect(f"{redirect_base}?cp={assignment.id}")
 
     if assignment and not assignment.block.parent_template_id:
         cloned_block = clone_programme_block(
@@ -1622,6 +1628,10 @@ def trainer_programme_detail(request, block_id):
     )
     can_edit = is_tailored
     assignment_client = assignment.client if assignment else None
+    if not is_template_block:
+        tailored_client = assignment_client
+    if not is_template_block:
+        tailored_client = assignment_client
 
     tailored_block = assignment.block if assignment else None
     if tailored_block:
@@ -1650,14 +1660,30 @@ def trainer_programme_detail(request, block_id):
     exercise_formset = None
 
     # Only list clients that are assigned to this trainer for safety.
-    assigned_emails = ConsultationRequest.objects.filter(
-        assigned_trainer=request.user
-    ).values_list("email", flat=True)
+    if is_template_block:
+        assigned_emails = ConsultationRequest.objects.filter(
+            assigned_trainer=request.user,
+            status=ConsultationRequest.STATUS_ASSIGNED,
+        ).values_list("email", flat=True)
 
-    allowed_email_set = {e.lower() for e in assigned_emails if e}
-    assignable_clients = list(
-        User.objects.filter(email__in=allowed_email_set).order_by("username")
-    )
+        allowed_email_set = {e.lower() for e in assigned_emails if e}
+        assignable_clients = list(
+            User.objects.filter(
+                email__in=allowed_email_set,
+                is_staff=False,
+            ).order_by("first_name", "last_name", "username")
+        )
+
+    if (
+        not is_template_block
+        and request.method == "POST"
+        and request.POST.get("action") == "delete"
+    ):
+        if not assignment or assignment.trainer != request.user:
+            raise Http404("Programme not found")
+        block.delete()
+        messages.success(request, "Tailored programme deleted.")
+        return redirect("accounts:trainer_programmes")
 
     if request.method == "POST" and "save_exercises" in request.POST:
         if not is_tailored:
@@ -1859,6 +1885,8 @@ def trainer_programme_detail(request, block_id):
         "days": template_days_qs,
         "preview_days": preview_days,
         "assignable_clients": assignable_clients,
+        "is_template_block": is_template_block,
+        "tailored_client": tailored_client,
         "is_tailored": is_tailored,
         "can_edit": can_edit,
         "assignment_client": assignment_client,
