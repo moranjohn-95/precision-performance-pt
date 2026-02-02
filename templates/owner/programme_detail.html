@@ -17,9 +17,39 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 
 {% block dashboard_content %}
 
+{# Trainer filter (owner only) #}
+<form method="get" class="form" style="margin-bottom: 0.5rem;">
+    <label for="trainer" class="form-label">Trainer</label>
+    <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+    <input type="hidden" name="day" value="{{ selected_day_id }}">
+    <select
+        id="trainer"
+        name="trainer"
+        class="form-control"
+        onchange="this.form.submit()"
+    >
+        <option value="all" {% if trainer_filter == "all" %}selected{% endif %}>
+            All trainers
+        </option>
+        <option value="me" {% if trainer_filter == "me" %}selected{% endif %}>
+            Me ({{ request.user.username }})
+        </option>
+        {% for trainer in trainer_options %}
+        <option
+            value="{{ trainer.id }}"
+            {% if trainer_filter|stringformat:"s" == trainer.id|stringformat:"s" %}selected{% endif %}
+        >
+            {{ trainer.get_full_name|default:trainer.username }}
+        </option>
+        {% endfor %}
+    </select>
+</form>
+
 {# Client selection #}
 {% if assignments %}
 <form method="get" class="form" style="margin-bottom: 1rem;">
+    <input type="hidden" name="trainer" value="{{ trainer_filter }}">
+    <input type="hidden" name="day" value="{{ selected_day_id }}">
     <label for="cp" class="form-label">Select client</label>
     <select
         id="cp"
@@ -33,7 +63,8 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                 {% if selected_cp_id == cp.id %}selected{% endif %}
                 {% if not cp.block.parent_template_id %}disabled{% endif %}
             >
-                {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
+                {{ cp.client.get_full_name|default:cp.client.username }}
+                ({{ cp.client.email }})
                 {% if not cp.block.parent_template_id %} (Template){% endif %}
             </option>
         {% endfor %}
@@ -45,6 +76,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 {% if tailored_days %}
 <form method="get" class="form" style="margin-bottom: 1rem;">
     <input type="hidden" name="cp" value="{{ selected_cp_id }}">
+    <input type="hidden" name="trainer" value="{{ trainer_filter }}">
     <label for="day" class="form-label">Filter by day</label>
     <select
         id="day"

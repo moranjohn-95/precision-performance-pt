@@ -1940,24 +1940,39 @@ def owner_programme_detail(request, block_id):
 
         return cloned_block
 
+    trainer_filter = request.GET.get("trainer", "all")
+
     base_assignments = ClientProgramme.objects.filter(
         Q(block__parent_template=template_block) | Q(block=template_block)
     ).select_related("client", "block", "block__parent_template")
 
+    trainer_options = (
+        User.objects.filter(is_active=True, is_staff=True)
+        .order_by("first_name", "last_name", "username")
+    )
+
+    # Filter assignments by trainer when requested to keep owner views scoped.
     assignments_qs = base_assignments
+    if trainer_filter == "me":
+        assignments_qs = assignments_qs.filter(trainer=request.user)
+    elif trainer_filter.isdigit():
+        assignments_qs = assignments_qs.filter(trainer_id=int(trainer_filter))
 
     cp_param = request.GET.get("cp")
     assignment = None
 
     if cp_param and cp_param.isdigit():
-        assignment = get_object_or_404(assignments_qs, id=int(cp_param))
-    elif assignments_qs.exists():
+        # If selected client no longer matches trainer filter, fall back.
+        assignment = assignments_qs.filter(id=int(cp_param)).first()
+
+    if assignment is None and assignments_qs.exists():
         assignment = assignments_qs.order_by("-start_date", "-id").first()
         redirect_base = reverse_lazy(
             "accounts:owner_programme_detail",
             kwargs={"block_id": template_block.id},
         )
-        return redirect(f"{redirect_base}?cp={assignment.id}")
+        query_bits = [f"trainer={trainer_filter}", f"cp={assignment.id}"]
+        return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
     if assignment and not assignment.block.parent_template_id:
         cloned_block = clone_programme_block(
@@ -1975,7 +1990,8 @@ def owner_programme_detail(request, block_id):
             "accounts:owner_programme_detail",
             kwargs={"block_id": template_block.id},
         )
-        return redirect(f"{redirect_base}?cp={assignment.id}")
+        query_bits = [f"trainer={trainer_filter}", f"cp={assignment.id}"]
+        return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
     is_tailored = bool(
         assignment and assignment.block.parent_template_id == template_block.id
@@ -2009,7 +2025,7 @@ def owner_programme_detail(request, block_id):
 
     exercise_formset = None
 
-    # Owner dropdown should list all clients that have this programme assigned.
+    # Owner dropdown should list clients in the filtered assignment set.
     assignment_clients = assignments_qs.values_list("client", flat=True)
     assignable_clients = list(
         User.objects.filter(id__in=assignment_clients)
@@ -2041,7 +2057,7 @@ def owner_programme_detail(request, block_id):
                 "accounts:owner_programme_detail",
                 kwargs={"block_id": template_block.id},
             )
-            query_bits = []
+            query_bits = [f"trainer={trainer_filter}"]
             if assignment:
                 query_bits.append(f"cp={assignment.id}")
             if selected_day:
@@ -2097,7 +2113,8 @@ def owner_programme_detail(request, block_id):
                     "accounts:owner_programme_detail",
                     kwargs={"block_id": template_block.id},
                 )
-                return redirect(f"{redirect_base}?cp={existing_cp.id}")
+                query_bits = [f"trainer={trainer_filter}", f"cp={existing_cp.id}"]
+                return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
             legacy_cp = ClientProgramme.objects.filter(
                 client=client_user,
@@ -2127,7 +2144,8 @@ def owner_programme_detail(request, block_id):
                     "accounts:owner_programme_detail",
                     kwargs={"block_id": template_block.id},
                 )
-                return redirect(f"{redirect_base}?cp={legacy_cp.id}")
+                query_bits = [f"trainer={trainer_filter}", f"cp={legacy_cp.id}"]
+                return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
             cloned_block = clone_programme_block(
                 template_block,
@@ -2160,7 +2178,8 @@ def owner_programme_detail(request, block_id):
                 "accounts:owner_programme_detail",
                 kwargs={"block_id": template_block.id},
             )
-            return redirect(f"{redirect_base}?cp={cp.id}")
+            query_bits = [f"trainer={trainer_filter}", f"cp={cp.id}"]
+            return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
     elif request.method == "POST" and "convert_to_tailored" in request.POST:
         if not assignment:
@@ -2172,7 +2191,8 @@ def owner_programme_detail(request, block_id):
                 "accounts:owner_programme_detail",
                 kwargs={"block_id": template_block.id},
             )
-            return redirect(f"{redirect_base}?cp={assignment.id}")
+            query_bits = [f"trainer={trainer_filter}", f"cp={assignment.id}"]
+            return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
         cloned_block = clone_programme_block(
             template_block,
@@ -2194,7 +2214,8 @@ def owner_programme_detail(request, block_id):
             "accounts:owner_programme_detail",
             kwargs={"block_id": template_block.id},
         )
-        return redirect(f"{redirect_base}?cp={assignment.id}")
+        query_bits = [f"trainer={trainer_filter}", f"cp={assignment.id}"]
+        return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
     if request.method == "GET" and is_tailored:
         exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
@@ -2219,6 +2240,8 @@ def owner_programme_detail(request, block_id):
         "days": template_days_qs,
         "preview_days": preview_days,
         "assignable_clients": assignable_clients,
+        "trainer_filter": trainer_filter,
+        "trainer_options": trainer_options,
         "is_tailored": is_tailored,
         "can_edit": can_edit,
         "assignment_client": assignment_client,
