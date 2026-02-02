@@ -1627,8 +1627,7 @@ html {
 }
 
 .why-us__inner {
-    width: min(1200px, 92vw);
-    margin: 0 auto;
+    width: 100%;
 }
 
 .why-us__header {
@@ -1653,6 +1652,7 @@ html {
     grid-template-columns: repeat(4, minmax(220px, 1fr));
     gap: 22px;
     margin-top: 28px;
+    align-items: stretch;
 }
 
 .why-us__card {
@@ -1660,11 +1660,11 @@ html {
     border-radius: 18px;
     border: 1px solid #e6edf5;
     box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
-    padding: 24px;
+    padding: 20px;
     transition: transform 160ms ease, box-shadow 160ms ease;
     display: flex;
     flex-direction: column;
-    min-height: 320px;
+    min-height: 300px;
     text-align: center;
     align-items: center;
 }
@@ -1704,7 +1704,7 @@ html {
 }
 
 .why-us__card-text {
-    margin: 8px 0 0 0;
+    margin: 6px 0 0 0;
     color: #4a5568;
     line-height: 1.6;
     width: 100%;
@@ -1718,30 +1718,25 @@ html {
     display: none;
 }
 
-.why-us__panel {
-    margin-top: 16px;
-    flex: 1;
+.why-us__icon-slot {
+    margin-top: auto;
+    padding: 16px 0 12px;
     display: flex;
-    align-items: center;
     justify-content: center;
-    min-height: 140px;
-    margin-bottom: 0;
 }
 
-.why-us__panel .why-us__icon {
-    width: 72px;
-    height: 72px;
+.why-us__icon-slot .why-us__icon {
+    width: 68px;
+    height: 68px;
     border-radius: 999px;
     background: #b6ff00;
     display: grid;
     place-items: center;
     color: #10210b;
-    margin: 0 auto;
-    margin-top: auto;
 }
 
-.why-us__panel .why-us__icon i {
-    font-size: 26px;
+.why-us__icon-slot .why-us__icon i {
+    font-size: 24px;
 }
 
 @media (max-width: 640px) {
