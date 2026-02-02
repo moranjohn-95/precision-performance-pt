@@ -222,77 +222,6 @@ h3
     opacity: 0.95;
 }
 
-/* Show the burger on tablet/mobile */
-@media (max-width: 992px) {
-    .nav-toggle {
-        display: inline-flex;        /* show burger on smaller screens */
-    }
-}
-
-/* Responsive nav: collapse links under a dropdown panel */
-@media (max-width: 992px) {
-    .main-nav {
-        padding: 0.9rem 1.25rem;
-        flex-wrap: wrap; /* let menu sit on a new line */
-    }
-
-    /* Keep burger on the top row, right aligned */
-    .nav-toggle {
-        display: inline-flex; /* show burger on smaller screens */
-        margin-left: auto;    /* keep it pushed right */
-    }
-
-    /* Mobile menu is part of header and pushes content down */
-    .nav-menu {
-        width: 100%;
-        margin-top: 0.75rem;            /* space below top row */
-        padding: 0.75rem;
-        border-radius: 14px;
-        background: rgba(11, 31, 59, 0.96);
-        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-        display: none;                   /* closed by default */
-    }
-
-    /* When JS adds .is-open, show the menu */
-    .nav-menu.is-open {
-        display: block;
-    }
-
-    /* Stack links neatly */
-    .nav-links {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.25rem;
-    }
-
-    /* Make links easy to tap */
-    .nav-links a {
-        display: block;
-        width: 100%;
-        text-align: left;
-        padding: 0.75rem 0.9rem;
-        border-radius: 10px;
-    }
-
-    /* Subtle hover/focus for accessibility */
-    .nav-links a:hover,
-    .nav-links a:focus {
-        background: rgba(255, 255, 255, 0.06);
-        outline: none;
-    }
-}
-
-@media (max-width: 600px) {
-    .main-nav {
-        padding: 0.85rem 1.25rem;
-    }
-
-    .nav-menu {
-        left: 1.25rem;
-        right: 1.25rem;
-    }
-}
-
 
 /* Hero section */
 .home-hero {
@@ -1859,7 +1788,97 @@ html {
     );
 }
 
-@media (max-width: 640px) {
+/* Media Queries */
+/* ============
+   Tablet and below (<= 992px)
+   Mobile (<= 576px)
+   ============ */
+
+/* Tablet and below (<= 992px) */
+@media (max-width: 992px) {
+    /* Navbar: allow wrap so menu drops below */
+    .main-nav {
+        padding: 0.9rem 1.25rem;
+        flex-wrap: wrap;
+    }
+
+    /* Navbar: show burger and keep it on the right */
+    .nav-toggle {
+        display: inline-flex;
+        margin-left: auto;
+    }
+
+    /* Navbar: dropdown sits inside header and pushes content */
+    .nav-menu {
+        width: 100%;
+        margin-top: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 14px;
+        background: rgba(11, 31, 59, 0.96);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+        display: none;
+    }
+
+    .nav-menu.is-open {
+        display: block;
+    }
+
+    /* Navbar: stack links vertically */
+    .nav-links {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.25rem;
+    }
+
+    /* Navbar: larger tap targets */
+    .nav-links a {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 0.9rem;
+        border-radius: 10px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+        background: rgba(255, 255, 255, 0.06);
+        outline: none;
+    }
+
+    /* Why Us: two-column layout on tablets */
+    .why-us__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile (<= 576px) */
+@media (max-width: 576px) {
+    /* Navbar: tighter padding on small phones */
+    .main-nav {
+        padding: 0.85rem 1.25rem;
+    }
+
+    /* Hero: keep headline to ~2 lines on phones */
+    .home-hero h1,
+    .home-hero__title,
+    .hero-title {
+        font-size: clamp(1.7rem, 6vw, 2.15rem);
+        line-height: 1.12;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+    }
+
+    .home-hero p,
+    .home-hero__subtitle,
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.45;
+        max-width: 34ch;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Why Us: single column and softer padding */
     .why-us {
         padding: 48px 0;
     }
@@ -1870,12 +1889,6 @@ html {
 
     .why-us__grid {
         grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 960px) {
-    .why-us__grid {
-        grid-template-columns: repeat(2, 1fr);
     }
 }
 
