@@ -1607,3 +1607,16 @@ html {
     margin-top: 16px;
 }
 
+/* Add breathing room above programme day headings */
+.programme-day {
+    margin-top: 1.25rem;
+}
+
+.programme-day:first-child {
+    margin-top: 0;
+}
+
+.programme-day__title {
+    margin-top: 0.75rem;
+}
+

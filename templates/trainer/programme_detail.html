@@ -31,29 +31,6 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 {% block dashboard_content %}
 
 {# Client selection #}
-{% if is_template_block and assignments %}
-<form method="get" class="form" style="margin-bottom: 1rem;">
-    <label for="cp" class="form-label">Select client</label>
-    <select
-        id="cp"
-        name="cp"
-        class="form-control"
-        onchange="this.form.submit()"
-    >
-        {% for cp in assignments %}
-            <option
-                value="{{ cp.id }}"
-                {% if selected_cp_id == cp.id %}selected{% endif %}
-                {% if not cp.block.parent_template_id %}disabled{% endif %}
-            >
-                {{ cp.client.get_full_name|default:cp.client.username }} ({{ cp.client.email }})
-                {% if not cp.block.parent_template_id %} (Template){% endif %}
-            </option>
-        {% endfor %}
-    </select>
-</form>
-{% endif %}
-
 {% if not is_template_block and tailored_client %}
 <div style="margin-bottom: 1rem;">
     Client:
