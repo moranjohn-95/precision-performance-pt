@@ -1739,6 +1739,18 @@ html {
     font-size: 24px;
 }
 
+.section-divider {
+    width: min(1120px, 92vw);
+    margin: 48px auto 24px auto;
+    height: 1px;
+    background: linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0),
+        rgba(148, 163, 184, 0.55),
+        rgba(0, 0, 0, 0)
+    );
+}
+
 @media (max-width: 640px) {
     .why-us {
         padding: 48px 0;
