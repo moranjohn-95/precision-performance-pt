@@ -3,66 +3,82 @@
         <a href="{% url 'home' %}">Precision Performance PT</a>
     </div>
 
-    <ul class="nav-links">
-        <li>
-            <a href="{% url 'consultation_request' %}">
-                Book a consultation
-            </a>
-        </li>
+    <!-- Mobile toggle button appears at <= 992px -->
+    <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation"
+        aria-controls="navMenu"
+        aria-expanded="false"
+    >
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+        <span class="nav-toggle__bar"></span>
+    </button>
 
-        <li><a href="{% url 'home' %}#coaching">Coaching</a></li>
-        <li><a href="{% url 'home' %}#why-us">Why us</a></li>
-        <li><a href="{% url 'contact_us' %}">Contact us</a></li>
+    <!-- Nav links wrapper so we can collapse on smaller screens -->
+    <div id="navMenu" class="nav-menu">
+        <ul class="nav-links">
+            <li>
+                <a href="{% url 'consultation_request' %}">
+                    Book a consultation
+                </a>
+            </li>
 
-        {% if user.is_authenticated %}
-            {% if user.is_staff %}
+            <li><a href="{% url 'home' %}#coaching">Coaching</a></li>
+            <li><a href="{% url 'home' %}#why-us">Why us</a></li>
+            <li><a href="{% url 'contact_us' %}">Contact us</a></li>
+
+            {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                    <li>
+                        <a href="{% url 'accounts:trainer_dashboard' %}">
+                            Dashboard
+                        </a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a href="{% url 'accounts:client_dashboard' %}">
+                            Dashboard
+                        </a>
+                    </li>
+                {% endif %}
+
                 <li>
-                    <a href="{% url 'accounts:trainer_dashboard' %}">
-                        Dashboard
-                    </a>
+                    <form method="post" action="{% url 'accounts:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link site-nav-link--button">
+                            Logout
+                        </button>
+                    </form>
                 </li>
+
             {% else %}
-                <li>
-                    <a href="{% url 'accounts:client_dashboard' %}">
-                        Dashboard
-                    </a>
+                <!-- Login dropdown (only for logged-out users) -->
+                <li class="nav-item nav-item-has-submenu">
+                    <button
+                        type="button"
+                        class="nav-link nav-link-toggle"
+                        aria-expanded="false"
+                    >
+                        Login
+                        <span class="nav-link-caret">▼</span>
+                    </button>
+
+                    <ul class="nav-submenu">
+                        <li>
+                            <a href="{% url 'accounts:trainer_login' %}">
+                                Trainer login
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'accounts:client_login' %}">
+                                Client login
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             {% endif %}
-
-            <li>
-                <form method="post" action="{% url 'accounts:logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="nav-link site-nav-link--button">
-                        Logout
-                    </button>
-                </form>
-            </li>
-
-        {% else %}
-            <!-- Login dropdown (only for logged-out users) -->
-            <li class="nav-item nav-item-has-submenu">
-                <button
-                    type="button"
-                    class="nav-link nav-link-toggle"
-                    aria-expanded="false"
-                >
-                    Login
-                    <span class="nav-link-caret">▼</span>
-                </button>
-
-                <ul class="nav-submenu">
-                    <li>
-                        <a href="{% url 'accounts:trainer_login' %}">
-                            Trainer login
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{% url 'accounts:client_login' %}">
-                            Client login
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        {% endif %}
-    </ul>
+        </ul>
+    </div>
 </nav>

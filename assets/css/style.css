@@ -52,6 +52,8 @@ h3
 .site-header {
     background-color: var(--color-header-bg);
     color: var(--color-header-text);
+    position: relative; /* keep header above hero */
+    z-index: 1000;      /* ensure dropdown sits over hero */
 }
 
 .site-wrapper {
@@ -73,6 +75,7 @@ h3
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    position: relative; /* anchors the dropdown panel */
 }
 
 .nav-brand a {
@@ -84,11 +87,16 @@ h3
     padding-left: 0;
 }
 
+/* Nav links sit inside a wrapper so we can collapse it later */
+.nav-menu {
+    margin-left: auto;
+}
+
 .nav-links {
     list-style: none;
     display: flex;
     gap: 1.25rem;
-    margin: 0 0 0 auto;
+    margin: 0;
     padding: 0;
 }
 
@@ -187,6 +195,83 @@ h3
     font: inherit;
     color: inherit;
     cursor: pointer;
+}
+
+/* Burger button hidden on desktop; shown on tablet/mobile */
+.nav-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+}
+
+.nav-toggle__bar {
+    display: block;
+    width: 26px;
+    height: 2px;
+    margin: 5px 0;
+    background: #ffffff;
+    border-radius: 2px;
+}
+
+/* Responsive nav: collapse links under a dropdown panel */
+@media (max-width: 992px) {
+    .main-nav {
+        padding: 0.9rem 1.75rem;
+    }
+
+    .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 0.75rem;
+        background: rgba(11, 31, 59, 0.96);
+        border-radius: 12px;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+        display: none;
+        z-index: 2000; /* ensure above hero */
+    }
+
+    /* JS controls open/close; no focus-open fallback to avoid flicker */
+    .nav-menu.is-open {
+        display: block;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.35rem;
+    }
+
+    .nav-links a,
+    .nav-link-toggle {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.75rem 0.85rem;
+        border-radius: 10px;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-nav {
+        padding: 0.85rem 1.25rem;
+    }
+
+    .nav-menu {
+        left: 1.25rem;
+        right: 1.25rem;
+    }
 }
 
 
