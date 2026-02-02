@@ -1620,3 +1620,121 @@ html {
     margin-top: 0.75rem;
 }
 
+/* Why Us section styles */
+.why-us {
+    padding: 72px 0;
+    background: #f7f9fc;
+}
+
+.why-us__inner {
+    width: min(1120px, 92vw);
+    margin: 0 auto;
+}
+
+.why-us__header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.why-us__title {
+    font-size: 2.15rem;
+    margin: 0 0 10px 0;
+}
+
+.why-us__subtitle {
+    margin: 0;
+    color: #4a5568;
+    max-width: 60ch;
+    margin-inline: auto;
+}
+
+.why-us__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+    margin-top: 28px;
+}
+
+.why-us__card {
+    background: #fff;
+    border-radius: 18px;
+    border: 1px solid #e6edf5;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+    padding: 22px;
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.why-us__card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+}
+
+.why-us__card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.why-us__icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #b6ff00; /* match lime accent */
+    color: #10210b;
+    flex: 0 0 auto;
+}
+
+.why-us__icon i {
+    font-size: 18px;
+}
+
+.why-us__card-title {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #0b1a2f;
+}
+
+.why-us__card-text {
+    margin: 0;
+    color: #4a5568;
+    line-height: 1.6;
+}
+
+.why-us__divider {
+    height: 1px;
+    background: #edf2f7;
+    margin: 16px 0;
+}
+
+.why-us__chips {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.why-us__chip {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #eef2f7;
+    border: 1px solid #dde6f0;
+    color: #253244;
+}
+
+@media (max-width: 640px) {
+    .why-us {
+        padding: 48px 0;
+    }
+
+    .why-us__title {
+        font-size: 1.65rem;
+    }
+}
+
