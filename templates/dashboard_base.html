@@ -1,10 +1,43 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
+<style>
+/* Hide public navbar on client dashboards */
+.site-header {
+    display: none;
+}
+</style>
+
 <div class="dashboard-layout">
     <div class="dashboard-shell">
+
+        <!-- Mobile top bar for client dashboard -->
+        <div class="dashboard-mobilebar">
+            <a class="dashboard-mobilebar__brand" href="{% url 'home' %}">
+                Precision Performance PT
+            </a>
+            <div class="dashboard-mobilebar__actions">
+                <a class="dashboard-mobilebar__logout" href="{% url 'accounts:logout' %}">
+                    Logout
+                </a>
+                <button
+                    type="button"
+                    class="dashboard-mobilebar__toggle"
+                    aria-controls="clientMobileMenu"
+                    aria-expanded="false"
+                    aria-label="Open client menu"
+                    data-dashboard-toggle
+                >
+                    ☰
+                </button>
+            </div>
+        </div>
+
+        <div class="dashboard-overlay" data-dashboard-overlay hidden></div>
+
         <!-- Sidebar -->
-        <aside class="dashboard-sidebar">
+        <aside class="dashboard-sidebar" id="clientMobileMenu" data-dashboard-sidebar>
             <div class="dashboard-sidebar__header">
                 <h2 class="dashboard-sidebar__title">
                     {% block sidebar_title %}Client Menu{% endblock %}
@@ -42,8 +75,10 @@
                 {% endblock %}
             </section>
         </main>
-</div>
+    </div>
 </div>
 {% endblock %}
 
-{% block extra_scripts %}{% endblock %}
+{% block extra_scripts %}
+    <script src="{% static 'js/dashboard_menu.js' %}"></script>
+{% endblock %}
