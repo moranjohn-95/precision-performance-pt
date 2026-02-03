@@ -508,7 +508,7 @@ h3
     min-height: 320px;
 }
 
-/* Left visual panel – will add program-card classes using JS */
+/* Left visual panel ? will add program-card classes using JS */
 .program-modal-visual {
     flex: 0 0 40%;
     background-color: var(--color-header-bg);
@@ -575,7 +575,7 @@ h3
     margin-top: auto;
 }
 
-/* Visible state – will use JS to toggle the class */
+/* Visible state ? will use JS to toggle the class */
 .modal-overlay.is-open {
     opacity: 1;
     pointer-events: auto;
@@ -638,7 +638,7 @@ h3
     border-top: 1px solid rgba(15, 23, 42, 0.12);
 }
 
-/* Step header: “Step 1 · Contact details” etc. */
+/* Step header: ?Step 1 ? Contact details? etc. */
 .consultation-section-heading {
     display: flex;
     align-items: flex-start;
@@ -1856,6 +1856,102 @@ html {
     /* Why Us: two-column layout on tablets */
     .why-us__grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Client dashboard: off-canvas menu (tablet and below) */
+    .dashboard-layout.client-dashboard {
+        padding: 1.25rem 1rem 2rem;
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-shell {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    /* Show the same top bar used on mobile */
+    .dashboard-layout.client-dashboard .dashboard-mobilebar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #0b1f3b;
+        color: #ffffff;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-mobilebar__brand {
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-mobilebar__actions {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-mobilebar__logout {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 0.95rem;
+    }
+
+    /* IMPORTANT: correct toggle class */
+    .dashboard-layout.client-dashboard .dashboard-mobilebar__toggle {
+        background: #0b1f3b;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 0.5rem;
+        padding: 0.35rem 0.6rem;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    /* Off-canvas sidebar defaults closed */
+    .dashboard-layout.client-dashboard .dashboard-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        max-width: 80%;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        z-index: 1100;
+        overflow-y: auto;
+        border-radius: 0;
+        background-color: #ffffff;
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-main {
+        width: 100%;
+    }
+
+    .dashboard-layout.client-dashboard .dashboard-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        z-index: 1090;
+    }
+
+    /* Open state (toggled by existing JS on body) */
+    body.dashboard-menu-open .dashboard-layout.client-dashboard .dashboard-sidebar {
+        transform: translateX(0);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    }
+
+    body.dashboard-menu-open .dashboard-layout.client-dashboard .dashboard-overlay {
+        display: block;
+    }
+
+    body.dashboard-menu-open {
+        overflow: hidden;
     }
 }
 
