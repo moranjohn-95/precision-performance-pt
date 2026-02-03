@@ -1,0 +1,10 @@
+{% if first_name %}Hi {{ first_name }},{% else %}Hi,{% endif %}
+
+You have been invited to access your Precision Performance PT account.
+
+Set your password using the link below:
+{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}
+
+This one-time link is approved by your coaching team and may expire.
+
+If this was not expected, this email can be ignored.

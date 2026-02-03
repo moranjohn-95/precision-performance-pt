@@ -1,6 +1,5 @@
 """Service helpers for consultation assignment."""
 
-from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import PasswordResetForm
 from django.db import transaction
@@ -22,6 +21,27 @@ def _build_response(ok, redirect_name, redirect_kwargs, level, message):
         "message_level": level,
         "message": message,
     }
+
+
+def _send_invite_email(request, user):
+    """Send a set-password invite email; return True on success."""
+    if not user or not user.email:
+        return False
+
+    try:
+        form = PasswordResetForm({"email": user.email})
+        if form.is_valid():
+            form.save(
+                request=request,
+                use_https=request.is_secure(),
+                subject_template_name="emails/client_invite_subject.txt",
+                email_template_name="emails/client_invite.txt",
+                extra_email_context={"first_name": user.first_name or ""},
+            )
+            return True
+    except Exception:
+        return False
+    return False
 
 
 def assign_consultation_to_trainer(*, request, consultation, trainer_user):
@@ -58,7 +78,8 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
         )
 
     user = None
-    needs_reset = False
+    user_created = False
+    invite_needed = False
 
     with transaction.atomic():
         email_val = (consultation.email or "").strip()
@@ -67,7 +88,6 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
 
         # Find or create user by email.
         user = User.objects.filter(email__iexact=email_val).first()
-        user_created = False
         if user is None and email_val:
             base_username = email_val.split("@")[0] or "client"
             username = base_username
@@ -94,7 +114,7 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
             if profile.consultation_request is None:
                 profile.consultation_request = consultation
             profile.save()
-            needs_reset = user_created or (
+            invite_needed = user_created or (
                 user and not user.has_usable_password()
             )
 
@@ -102,33 +122,26 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
         consultation.status = ConsultationRequest.STATUS_ASSIGNED
         consultation.save()
 
-    # Send password reset/setup email if needed.
-    if needs_reset and user and user.email:
-        try:
-            form = PasswordResetForm({"email": user.email})
-            if form.is_valid():
-                form.save(
-                    request=request,
-                    use_https=request.is_secure(),
-                )
+    if invite_needed:
+        sent = _send_invite_email(request, user)
+        if sent:
             return _build_response(
                 ok=True,
                 redirect_name="accounts:trainer_clients",
                 redirect_kwargs=None,
                 level="success",
-                message="Account created and password setup email sent.",
+                message="Account created and invite email sent.",
             )
-        except Exception:
-            return _build_response(
-                ok=True,
-                redirect_name="accounts:trainer_clients",
-                redirect_kwargs=None,
-                level="warning",
-                message=(
-                    "Account created. Client can set password using the "
-                    "Forgot password link."
-                ),
-            )
+        return _build_response(
+            ok=True,
+            redirect_name="accounts:trainer_clients",
+            redirect_kwargs=None,
+            level="warning",
+            message=(
+                "Account created. Client can set a password using the "
+                "Forgot password link."
+            ),
+        )
 
     return _build_response(
         ok=True,
