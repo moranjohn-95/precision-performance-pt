@@ -34,6 +34,7 @@ from training.models import (
 )
 
 from .models import ClientProfile
+from .services.consultation_assignment import assign_consultation_to_trainer
 
 
 def is_trainer(user):
@@ -2361,101 +2362,14 @@ def trainer_consultation_detail(request, pk):
     consultation = get_object_or_404(ConsultationRequest, pk=pk)
 
     if request.method == "POST" and "assign_to_me" in request.POST:
-        if consultation.coaching_option in ["small_group", "large_group"]:
-            messages.error(
-                request,
-                "Group coaching requests must be added to Current Classes, "
-                "not assigned to the client list.",
-            )
-            return redirect("accounts:trainer_consultation_detail", pk=pk)
-
-        already_assigned = (
-            consultation.assigned_trainer
-            and consultation.assigned_trainer != request.user
-            and not request.user.is_superuser
+        result = assign_consultation_to_trainer(
+            request=request,
+            consultation=consultation,
+            trainer_user=request.user,
         )
-
-        if already_assigned:
-            messages.error(
-                request,
-                "This consultation is already assigned to another trainer.",
-            )
-        else:
-            # Create or reuse a portal account for this consultation
-            # and link it to the trainer.
-            user_created = False
-            needs_reset = False
-
-            with transaction.atomic():
-                trainer_user = request.user
-                email_val = (consultation.email or "").strip()
-                first = consultation.first_name or ""
-                last = consultation.last_name or ""
-
-                # Generate or find a User by email (case-insensitive).
-                user = User.objects.filter(email__iexact=email_val).first()
-                if user is None and email_val:
-                    base_username = email_val.split("@")[0] or "client"
-                    username = base_username
-                    suffix = 1
-                    while User.objects.filter(
-                        username__iexact=username
-                    ).exists():
-                        username = f"{base_username}{suffix}"
-                        suffix += 1
-
-                    user = User.objects.create(
-                        username=username,
-                        email=email_val,
-                        first_name=first,
-                        last_name=last,
-                    )
-                    user.set_unusable_password()
-                    user.save()
-                    user_created = True
-
-                # Ensure ClientProfile exists and point to this consultation.
-                if user:
-                    profile, _ = ClientProfile.objects.get_or_create(user=user)
-                    if profile.preferred_trainer is None:
-                        profile.preferred_trainer = trainer_user
-                    if profile.consultation_request is None:
-                        profile.consultation_request = consultation
-                    profile.save()
-                    needs_reset = user_created or (
-                        user and not user.has_usable_password()
-                    )
-
-                consultation.assigned_trainer = trainer_user
-                consultation.status = ConsultationRequest.STATUS_ASSIGNED
-                consultation.save()
-
-            # Send password reset/setup email if needed
-            if needs_reset and user and user.email:
-                try:
-                    form = PasswordResetForm({"email": user.email})
-                    if form.is_valid():
-                        form.save(
-                            request=request,
-                            use_https=request.is_secure(),
-                        )
-                    messages.success(
-                        request,
-                        "Account created and password setup email sent.",
-                    )
-                except Exception:
-                    messages.warning(
-                        request,
-                        "Account created. Client can set password using "
-                        "the Forgot password link.",
-                    )
-            else:
-                messages.success(
-                    request,
-                    "Client has been added to the trainer client list.",
-                )
-
-        return redirect("accounts:trainer_clients")
+        level = getattr(messages, result["message_level"].upper(), messages.INFO)
+        messages.add_message(request, level, result["message"])
+        return redirect(result["redirect"])
 
     return render(
         request,
