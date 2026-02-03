@@ -159,3 +159,28 @@ if DEBUG:
     )
     EMAIL_FILE_PATH = BASE_DIR / "tmp_emails"
     EMAIL_FILE_PATH.mkdir(parents=True, exist_ok=True)
+
+# Email (SMTP)
+# This config lets Django send emails using SMTP credentials from env vars.
+# This avoids hardcoding secrets and works on Heroku Config Vars.
+SMTP_LOGIN = os.environ.get("MAILGUN_SMTP_LOGIN")
+SMTP_PASSWORD = os.environ.get("MAILGUN_SMTP_PASSWORD")
+
+if SMTP_LOGIN and SMTP_PASSWORD:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    EMAIL_HOST = os.environ.get("MAILGUN_SMTP_SERVER", "smtp.mailgun.org")
+    EMAIL_PORT = int(os.environ.get("MAILGUN_SMTP_PORT", "587"))
+    EMAIL_HOST_USER = SMTP_LOGIN
+    EMAIL_HOST_PASSWORD = SMTP_PASSWORD
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = os.environ.get(
+        "DEFAULT_FROM_EMAIL",
+        "Precision Performance PT <no-reply@precision-performance-pt>",
+    )
+else:
+    # Email is not configured when SMTP env vars are missing.
+    # The app should keep working, but emails will not be sent.
+    DEFAULT_FROM_EMAIL = os.environ.get(
+        "DEFAULT_FROM_EMAIL",
+        "Precision Performance PT <no-reply@precision-performance-pt>",
+    )
