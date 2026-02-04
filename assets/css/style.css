@@ -962,6 +962,21 @@ html {
     border-bottom: 1px solid #e2e8f0;
 }
 
+.portal-link {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.portal-link .form-control {
+    flex: 1;
+    min-width: 220px;
+}
+
+.portal-link .btn-secondary {
+    white-space: nowrap;
+}
+
 .dashboard-table th {
     text-align: left;
     font-weight: 600;
@@ -2170,6 +2185,16 @@ html {
 
     body.dashboard-menu-open {
         overflow: hidden;
+    }
+
+    /* Portal link layout: stack on narrow screens */
+    .portal-link {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .portal-link .btn-secondary {
+        width: 100%;
     }
 }
 
