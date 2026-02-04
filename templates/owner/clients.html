@@ -114,10 +114,10 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         </table>
     </div>
 
+    {# Shared paginator for both sections (same clients_page). #}
     {% if clients_page.has_other_pages %}
     <nav class="pagination-nav" aria-label="Clients pagination">
         <ul class="pagination">
-            {% if clients_page.has_previous %}
             {% if clients_page.has_previous %}
             <li class="pagination-item">
                 <a
@@ -129,10 +129,6 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
             </li>
             {% endif %}
 
-            {# Close duplicate previous-page check to avoid template error #}
-            {% endif %}
-
-            {# Standard paginator: Prev / Page X of Y / Next #}
             <li class="pagination-item is-active">
                 <span class="pagination-link">
                     Page {{ clients_page.number }} of {{ clients_page.paginator.num_pages }}
@@ -152,6 +148,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         </ul>
     </nav>
     {% endif %}
+
 </div>
 
 {# Owner portal access links: mirrors trainer view #}
@@ -222,7 +219,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                     </td>
                 </tr>
                 {% endfor %}
-            </tbody>
+                </tbody>
         </table>
     </div>
 </div>
