@@ -2556,6 +2556,38 @@ def trainer_client_detail(request, client_id):
 
 
 @login_required(login_url="accounts:trainer_login")
+def owner_delete_client(request, client_id):
+    """
+    Allow owner (superuser) to hard-delete a client and related records.
+    Trainers must never see this action.
+    """
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("Only owners can delete clients.")
+
+    client_user = get_object_or_404(User, id=client_id)
+
+    # Block deleting staff, other owners, or yourself.
+    if client_user.is_staff or client_user.is_superuser or client_user == request.user:
+        messages.error(request, "You cannot delete this account.")
+        return redirect("accounts:trainer_client_detail", client_id=client_id)
+
+    if request.method != "POST":
+        return HttpResponseForbidden("Invalid request method.")
+
+    with transaction.atomic():
+        # Remove any consultation requests tied to this email to avoid stale rows.
+        if client_user.email:
+            ConsultationRequest.objects.filter(
+                email__iexact=client_user.email
+            ).delete()
+        # Deleting the User will cascade to ClientProfile and related FK data.
+        client_user.delete()
+
+    messages.success(request, "Client account deleted.")
+    return redirect("accounts:trainer_clients")
+
+
+@login_required(login_url="accounts:trainer_login")
 @staff_required
 def trainer_session_edit(request, session_id):
     """Allow a trainer to tweak a client's workout session (notes only)."""

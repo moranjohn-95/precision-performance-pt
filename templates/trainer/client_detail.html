@@ -13,6 +13,23 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 {% endblock %}
 
 {% block dashboard_content %}
+{% if request.user.is_superuser %}
+<form
+    method="post"
+    action="{% url 'accounts:owner_delete_client' client.id %}"
+    style="margin-bottom: 1rem;"
+>
+    {% csrf_token %}
+    {# Owners can hard-delete a client and their portal access. #}
+    <button
+        type="submit"
+        class="btn-danger"
+        onclick="return confirm('Delete this client and all their data? This cannot be undone.');"
+    >
+        Delete client
+    </button>
+</form>
+{% endif %}
 
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">

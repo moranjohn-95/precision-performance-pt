@@ -343,6 +343,29 @@ h3
     outline-offset: 2px;
 }
 
+/* Danger button for destructive owner actions */
+.btn-danger,
+.btn-danger:visited {
+    display: inline-block;
+    padding: 0.65rem 1.35rem;
+    border-radius: 10px;
+    background-color: #dc2626;
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-danger:hover,
+.btn-danger:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+}
+
 /* Coaching section */
 .home-programs {
     background-color: var(--color-bg-page);

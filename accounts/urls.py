@@ -20,6 +20,7 @@ from .views import (
     owner_dashboard,
     trainer_queries,
     trainer_query_detail,
+    owner_delete_client,
     client_dashboard,
     client_programme_library,
     client_today,
@@ -75,6 +76,11 @@ urlpatterns = [
         "trainer/clients/<int:client_id>/",
         trainer_client_detail,
         name="trainer_client_detail",
+    ),
+    path(
+        "owner/clients/<int:client_id>/delete/",
+        owner_delete_client,
+        name="owner_delete_client",
     ),
     path(
         "trainer/sessions/<int:session_id>/edit/",
