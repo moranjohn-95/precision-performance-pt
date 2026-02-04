@@ -128,7 +128,6 @@
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
-                        <th scope="col">Email</th>
                         <th scope="col">Login username</th>
                         <th scope="col">Portal status</th>
                         <th scope="col">Password link</th>
@@ -142,7 +141,6 @@
                                     {{ full_name|default:req.email }}
                                 {% endwith %}
                             </td>
-                            <td>{{ req.email }}</td>
                             <td>{{ req.portal_username|default:req.email }}</td>
                             <td>
                                 {% if req.portal_user %}
