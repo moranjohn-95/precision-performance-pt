@@ -1091,10 +1091,28 @@ def owner_queries(request):
         return redirect("accounts:trainer_dashboard")
 
     selected_status = request.GET.get("status", "new")
+    selected_assigned = request.GET.get("assigned", "all")
     queries = ContactQuery.objects.all().order_by("-created_at")
 
     if selected_status and selected_status != "all":
         queries = queries.filter(status=selected_status)
+
+    # Trainers list for the "Assigned to" filter (non-superuser staff).
+    trainers = (
+        User.objects.filter(is_staff=True, is_superuser=False)
+        .order_by("first_name", "last_name", "username")
+    )
+
+    # Apply assigned filter to inbox queries.
+    if selected_assigned == "unassigned":
+        queries = queries.filter(assigned_trainer__isnull=True)
+    elif selected_assigned == "me":
+        queries = queries.filter(assigned_trainer=request.user)
+    elif selected_assigned.isdigit():
+        trainer_ids = set(trainers.values_list("id", flat=True))
+        if int(selected_assigned) in trainer_ids:
+            queries = queries.filter(assigned_trainer_id=int(selected_assigned))
+        # Else ignore invalid id (fallback to all)
 
     # Queries specifically assigned to the current owner for quick access.
     my_queries = ContactQuery.objects.filter(
@@ -1128,10 +1146,12 @@ def owner_queries(request):
     context = {
         "inbox_page_obj": inbox_page_obj,
         "selected_status": selected_status,
+        "selected_assigned": selected_assigned,
         "total_count": ContactQuery.objects.count(),
         "my_page_obj": my_page_obj,
         "inbox_base_qs": inbox_base,
         "my_base_qs": my_base,
+        "trainers": trainers,
         "current": "owner_queries",
     }
     return render(request, "owner/queries_inbox.html", context)

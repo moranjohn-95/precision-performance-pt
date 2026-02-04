@@ -24,23 +24,41 @@
     </header>
 
     <div class="card-body">
-        <form method="get" class="table-filter">
-            <label for="status">Status</label>
-            <select id="status" name="status" onchange="this.form.submit()">
-                <option value="all" {% if selected_status == "all" %}selected{% endif %}>
-                    All
-                </option>
-                <option value="new" {% if selected_status == "new" %}selected{% endif %}>
-                    New
-                </option>
-                <option value="in_progress"
-                    {% if selected_status == "in_progress" %}selected{% endif %}>
-                    In progress
-                </option>
-                <option value="closed" {% if selected_status == "closed" %}selected{% endif %}>
-                    Closed
-                </option>
-            </select>
+        <form method="get" class="table-filter table-filter--row">
+            <div class="filter-field">
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" class="form-control" onchange="this.form.submit()">
+                    <option value="all" {% if selected_status == "all" %}selected{% endif %}>
+                        All
+                    </option>
+                    <option value="new" {% if selected_status == "new" %}selected{% endif %}>
+                        New
+                    </option>
+                    <option value="in_progress"
+                        {% if selected_status == "in_progress" %}selected{% endif %}>
+                        In progress
+                    </option>
+                    <option value="closed" {% if selected_status == "closed" %}selected{% endif %}>
+                        Closed
+                    </option>
+                </select>
+            </div>
+
+            <div class="filter-field">
+                <label for="assigned" class="form-label">Assigned to</label>
+                <select id="assigned" name="assigned" class="form-control" onchange="this.form.submit()">
+                    <option value="all" {% if selected_assigned == "all" %}selected{% endif %}>All</option>
+                    <option value="unassigned" {% if selected_assigned == "unassigned" %}selected{% endif %}>Unassigned</option>
+                    <option value="me" {% if selected_assigned == "me" %}selected{% endif %}>
+                        Me ({{ request.user.username }})
+                    </option>
+                    {% for trainer in trainers %}
+                        <option value="{{ trainer.id }}" {% if selected_assigned|stringformat:"s" == trainer.id|stringformat:"s" %}selected{% endif %}>
+                            {{ trainer.get_full_name|default:trainer.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
         </form>
 
         {% if inbox_page_obj %}
@@ -68,7 +86,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    {{ query.assigned_trainer.get_full_name|default:query.assigned_trainer|default:"—" }}
+                                    {{ query.assigned_trainer.get_full_name|default:query.assigned_trainer|default:"&mdash;" }}
                                 </td>
                                 <td>
                                     <a class="btn-link"
@@ -93,7 +111,7 @@
                         <li class="pagination-item">
                             <a class="pagination-link"
                                href="?status={{ selected_status }}&inbox_page={{ inbox_page_obj.previous_page_number }}&my_page={{ my_page_obj.number|default:1 }}">
-                                ‹ Prev
+                                &lt; Prev
                             </a>
                         </li>
                     {% endif %}
@@ -106,7 +124,7 @@
                         <li class="pagination-item">
                             <a class="pagination-link"
                                href="?status={{ selected_status }}&inbox_page={{ inbox_page_obj.next_page_number }}&my_page={{ my_page_obj.number|default:1 }}">
-                                Next ›
+                                Next &gt;
                             </a>
                         </li>
                     {% endif %}
@@ -116,84 +134,5 @@
     </div>
 </section>
 
-{# Second section: queries assigned to the current owner #}
-<section class="dashboard-card dashboard-card--wide">
-    <header class="card-header">
-        <h2 class="card-title">My Queries</h2>
-        <p class="card-subtitle">Queries assigned to you.</p>
-    </header>
-
-    <div class="card-body">
-        {% if my_page_obj %}
-            <div class="dashboard-table-wrapper">
-                <table class="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Submitted</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Assigned</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for query in my_page_obj %}
-                            <tr>
-                                <td>{{ query.created_at|date:"d M Y" }}</td>
-                                <td>{{ query.first_name }} {{ query.last_name }}</td>
-                                <td>{{ query.email }}</td>
-                                <td>
-                                    <span class="status-pill">
-                                        {{ query.get_status_display }}
-                                    </span>
-                                </td>
-                                <td>
-                                    {{ query.assigned_trainer.get_full_name|default:query.assigned_trainer|default:"—" }}
-                                </td>
-                                <td>
-                                    <a class="btn-link"
-                                       href="{% url 'accounts:owner_query_detail' query.id %}">
-                                        View
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        {% else %}
-            <p>No queries assigned to you yet.</p>
-        {% endif %}
-
-        {# My-queries pagination - preserve inbox page/status in links #}
-        {% if my_page_obj and my_page_obj.has_other_pages %}
-            <nav class="pagination-nav">
-                <ul class="pagination">
-                    {% if my_page_obj.has_previous %}
-                        <li class="pagination-item">
-                            <a class="pagination-link"
-                               href="?status={{ selected_status }}&my_page={{ my_page_obj.previous_page_number }}&inbox_page={{ inbox_page_obj.number|default:1 }}">
-                                ‹ Prev
-                            </a>
-                        </li>
-                    {% endif %}
-                    <li class="pagination-item is-active">
-                        <span class="pagination-link">
-                            Page {{ my_page_obj.number }} of {{ my_page_obj.paginator.num_pages }}
-                        </span>
-                    </li>
-                    {% if my_page_obj.has_next %}
-                        <li class="pagination-item">
-                            <a class="pagination-link"
-                               href="?status={{ selected_status }}&my_page={{ my_page_obj.next_page_number }}&inbox_page={{ inbox_page_obj.number|default:1 }}">
-                                Next ›
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        {% endif %}
-    </div>
-</section>
+{# My Queries section removed per request; inbox above remains unchanged. #}
 {% endblock %}
