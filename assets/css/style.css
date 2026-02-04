@@ -397,6 +397,58 @@ h3
     margin: 0 0 0.35rem 0;
 }
 
+/* Page subtitle meta (client overview) */
+.page-header-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.page-header-row__action {
+    flex: 0 0 auto;
+}
+
+.panel {
+    background: var(--color-bg-card, #ffffff);
+    border: 1px solid var(--color-border, #e6edf5);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    box-shadow: 0 10px 24px rgba(9, 30, 66, 0.06);
+}
+
+.page-meta {
+    margin: 0;
+    min-width: 280px;
+}
+
+.page-meta__primary {
+    margin: 0;
+    font-weight: 700;
+}
+
+.page-meta__emphasis {
+    font-weight: 800;
+}
+
+.page-meta__secondary {
+    margin: 0.35rem 0 0;
+    color: var(--color-text-muted, #6b7a90);
+    font-size: 0.95rem;
+}
+
+.page-meta__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.page-meta__action {
+    flex: 0 0 auto;
+}
+
 /* Coaching section */
 .home-programs {
     background-color: var(--color-bg-page);
@@ -2269,6 +2321,25 @@ html {
     /* Query filters: stack filters on narrow screens */
     .table-filter--row {
         grid-template-columns: 1fr;
+    }
+
+    /* Page header row: stack meta and actions on narrow screens */
+    .page-header-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .page-header-row__action {
+        margin-top: 0.5rem;
+    }
+
+    .page-meta__row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-meta__action {
+        margin-top: 0.5rem;
     }
 }
 

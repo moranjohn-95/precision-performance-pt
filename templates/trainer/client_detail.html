@@ -9,34 +9,46 @@
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Client overview{% endblock %}
 {% block page_subtitle %}
-Logged in: {{ request.user.get_full_name|default:request.user.username }}
+<div class="page-header-row">
+  <div class="page-meta panel">
+    <div class="page-meta__row">
+      <p class="page-meta__primary">
+        Viewing client:
+        <span class="page-meta__emphasis">{{ client.get_full_name|default:client.username }}</span>
+      </p>
+
+      {# Only owners (superusers) can delete clients #}
+      {% if request.user.is_superuser %}
+        <div class="page-meta__action">
+          <form
+              method="post"
+              action="{% url 'accounts:owner_delete_client' client.id %}"
+              style="margin: 0;"
+          >
+              {% csrf_token %}
+              <button
+                  type="submit"
+                  class="btn-danger"
+                  onclick="return confirm('Delete this client and all their data? This cannot be undone.');"
+              >
+                  Delete client
+              </button>
+          </form>
+        </div>
+      {% endif %}
+    </div>
+
+    <p class="page-meta__secondary">
+      Logged in: {{ request.user.get_full_name|default:request.user.username }}
+    </p>
+  </div>
+</div>
 {% endblock %}
 
 {% block dashboard_content %}
-{% if request.user.is_superuser %}
-<form
-    method="post"
-    action="{% url 'accounts:owner_delete_client' client.id %}"
-    style="margin-bottom: 1rem;"
->
-    {% csrf_token %}
-    {# Owners can hard-delete a client and their portal access. #}
-    <button
-        type="submit"
-        class="btn-danger"
-        onclick="return confirm('Delete this client and all their data? This cannot be undone.');"
-    >
-        Delete client
-    </button>
-</form>
-{% endif %}
-
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Recent sessions</h2>
-        <p class="card-subtitle">
-            {{ client.get_full_name|default:client.username }}
-        </p>
     </header>
 
     <div class="card-body">
