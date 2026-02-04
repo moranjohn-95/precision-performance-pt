@@ -1545,9 +1545,9 @@ html {
     border: 1px solid transparent;
 }
 .badge--open {
-    background: #eef2ff;
-    border-color: #c7d2fe;
-    color: #3730a3;
+    background: #eaf7ef;
+    border-color: #34c759;
+    color: #1f7a3a;
 }
 .badge--assigned {
     background: #ecfdf5;
@@ -1558,6 +1558,18 @@ html {
     background: #eff6ff;
     border-color: #bfdbfe;
     color: #1d4ed8;
+}
+
+.badge--pending {
+    background: #eaf3ff;
+    border-color: #2f80ed;
+    color: #1f5fbf;
+}
+
+.badge--closed {
+    background: #fdecec;
+    border-color: #eb5757;
+    color: #b42318;
 }
 
 
