@@ -1545,14 +1545,14 @@ html {
     border: 1px solid transparent;
 }
 .badge--open {
+    background: #fdecec;
+    border-color: #eb5757;
+    color: #b42318;
+}
+.badge--assigned {
     background: #eaf7ef;
     border-color: #34c759;
     color: #1f7a3a;
-}
-.badge--assigned {
-    background: #ecfdf5;
-    border-color: #a7f3d0;
-    color: #065f46;
 }
 .badge--classes {
     background: #eff6ff;
