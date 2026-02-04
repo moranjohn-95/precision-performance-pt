@@ -127,7 +127,9 @@
                     {% if request.user.is_superuser %}
                         {# Owner assign UI: choose any trainer (including self) then assign #}
                         <div class="form-inline" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                            <label for="trainer_id" class="visually-hidden">Assign to trainer</label>
+                            <p class="consultation-label" style="width: 100%; margin-bottom: 0.4rem;">
+                                Assign to trainer:
+                            </p>
                             <select
                                 name="trainer_id"
                                 id="trainer_id"
