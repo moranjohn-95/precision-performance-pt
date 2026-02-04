@@ -366,6 +366,37 @@ h3
     outline-offset: 2px;
 }
 
+/* Message box for clearer query detail body text */
+.message-box {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-top: 0.35rem;
+    overflow-wrap: anywhere;
+}
+
+/* Align save + back link on one row with spacing */
+.assign-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Extra spacing on back link in actions row */
+.assign-back-link {
+    margin-left: 0.5rem;
+}
+
+/* Message block wrapper for tighter heading spacing */
+.query-message-block {
+    margin-top: 1.1rem;
+}
+
+.query-message-title {
+    margin: 0 0 0.35rem 0;
+}
+
 /* Coaching section */
 .home-programs {
     background-color: var(--color-bg-page);

@@ -67,15 +67,22 @@
             </table>
         </div>
 
-        <div class="card-section">
-            <h3>Message</h3>
-            <p>{{ query.message|linebreaksbr }}</p>
+        {# Message block grouped for tighter heading + box spacing #}
+        <div class="card-section query-message-block">
+            <h3 class="query-message-title">Message:</h3>
+            <div class="message-box">
+                {% if query.message %}
+                    {{ query.message|linebreaksbr }}
+                {% else %}
+                    <span class="text-muted">No message provided.</span>
+                {% endif %}
+            </div>
         </div>
 
         <form method="post" class="form">
             {% csrf_token %}
             <div class="form-row">
-                <label for="assign_trainer">Assign to</label>
+                <label for="assign_trainer"><strong>Assign to:</strong></label>
                 <select name="assign_trainer" id="assign_trainer">
                     <option value="me"
                         {% if selected_assign == "me" %}selected{% endif %}>
@@ -92,7 +99,7 @@
             </div>
 
             <div class="form-row">
-                <label for="status">Status</label>
+                <label for="status"><strong>Status:</strong></label>
                 <select name="status" id="status">
                     {% for value, label in status_choices %}
                         <option value="{{ value }}"
@@ -103,9 +110,9 @@
                 </select>
             </div>
 
-            <div class="form-actions form-actions--spaced">
+            <div class="form-actions form-actions--spaced assign-actions-row">
                 <button type="submit" class="btn-primary">Save</button>
-                <a class="btn-secondary" href="{% url 'accounts:owner_queries' %}">
+                <a class="btn-secondary assign-back-link" href="{% url 'accounts:owner_queries' %}">
                     Back to queries
                 </a>
             </div>
