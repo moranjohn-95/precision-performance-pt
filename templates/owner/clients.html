@@ -154,4 +154,102 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
     {% endif %}
 </div>
 
+{# Owner portal access links: mirrors trainer view #}
+<div class="dashboard-card">
+    <h2 class="dashboard-card__title">Client portal access</h2>
+    <p class="muted-text">
+        Links below let clients set their portal password even if they missed the email.
+    </p>
+
+    <div class="dashboard-table-wrapper">
+        <table class="dashboard-table">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Login username</th>
+                    <th scope="col">Portal access</th>
+                    <th scope="col">Password link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in clients_page %}
+                <tr>
+                    <td>
+                        {% with full_name=req.first_name|add:" "|add:req.last_name %}
+                            {{ full_name|default:req.email }}
+                        {% endwith %}
+                    </td>
+                    <td>{{ req.portal_username|default:req.email }}</td>
+                    <td>
+                        {% if req.portal_access %}
+                            <span class="badge badge--assigned">Yes</span>
+                        {% else %}
+                            <span class="badge badge--open">No</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if req.portal_user and req.portal_link %}
+                            <div class="portal-link">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    value="{{ req.portal_link }}"
+                                    readonly
+                                    onclick="this.select()"
+                                    aria-label="Password reset link"
+                                >
+                                <button
+                                    type="button"
+                                    class="btn-secondary"
+                                    onclick="copyPortalLink(this)"
+                                    data-link="{{ req.portal_link }}"
+                                    aria-label="Copy password link"
+                                >
+                                    Copy
+                                </button>
+                            </div>
+                        {% else %}
+                            <span class="muted-text">
+                                Invite link available after account is created.
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="muted-text">
+                        No clients to show.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+{{ block.super }}
+<script>
+// Copy the generated portal link to the clipboard; fallback if Clipboard API blocked.
+function copyPortalLink(btn) {
+    const link = btn.getAttribute("data-link");
+    if (!link) return;
+
+    navigator.clipboard?.writeText(link).catch(() => {
+        const temp = document.createElement("input");
+        temp.value = link;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+    });
+
+    btn.textContent = "Copied";
+    setTimeout(() => {
+        btn.textContent = "Copy";
+    }, 1200);
+}
+</script>
 {% endblock %}
