@@ -129,7 +129,7 @@
                     <tr>
                         <th scope="col">Name</th>
                         <th scope="col">Login username</th>
-                        <th scope="col">Portal status</th>
+                        <th scope="col">Portal access</th>
                         <th scope="col">Password link</th>
                     </tr>
                 </thead>
@@ -143,10 +143,10 @@
                             </td>
                             <td>{{ req.portal_username|default:req.email }}</td>
                             <td>
-                                {% if req.portal_user %}
-                                    <span class="badge badge--assigned">Portal ready</span>
+                                {% if req.portal_access %}
+                                    <span class="badge badge--assigned">Yes</span>
                                 {% else %}
-                                    <span class="badge badge--open">No portal user</span>
+                                    <span class="badge badge--open">No</span>
                                 {% endif %}
                             </td>
                             <td>

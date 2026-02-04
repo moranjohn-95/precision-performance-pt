@@ -1449,6 +1449,8 @@ def trainer_clients(request):
         req.portal_user = user
         req.portal_link = None
         req.portal_username = None  # Clients log in using this username + their password.
+        # Portal access == account exists and has a usable password set.
+        req.portal_access = bool(user and user.has_usable_password())
         if user:
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
