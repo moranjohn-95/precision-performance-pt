@@ -464,6 +464,15 @@ h3
     flex: 0 0 auto;
 }
 
+/* Consultation action row alignment */
+.consultation-actions {
+    margin-top: 1.25rem; /* add breathing room above the action row */
+    padding-top: 0.5rem; /* keep buttons away from the divider above */
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 /* Coaching section */
 .home-programs {
     background-color: var(--color-bg-page);

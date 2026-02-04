@@ -85,19 +85,27 @@
 
             {# Group coaching branch (small or large group) #}
             {% if consultation.coaching_option == "small_group" or consultation.coaching_option == "large_group" %}
-                {% if consultation.status == consultation.STATUS_ADDED_CLASSES %}
-                    <button type="submit" class="btn-secondary" disabled>
-                        Already added to classes
-                    </button>
-                {% else %}
-                    <button
-                        type="submit"
-                        formaction="{% url 'accounts:trainer_add_to_current_classes' consultation.id %}"
-                        class="btn-primary"
+                <div class="consultation-actions">
+                    {% if consultation.status == consultation.STATUS_ADDED_CLASSES %}
+                        <button type="submit" class="btn-secondary" disabled>
+                            Already added to classes
+                        </button>
+                    {% else %}
+                        <button
+                            type="submit"
+                            formaction="{% url 'accounts:trainer_add_to_current_classes' consultation.id %}"
+                            class="btn-primary"
+                        >
+                            Add to classes
+                        </button>
+                    {% endif %}
+                    <a
+                        href="{% url 'accounts:trainer_dashboard' %}"
+                        class="btn-link"
                     >
-                        Add to classes
-                    </button>
-                {% endif %}
+                        Back to overview
+                    </a>
+                </div>
             {% else %}
                 {# 1:1 or online branch #}
                 {% if consultation.assigned_trainer %}
