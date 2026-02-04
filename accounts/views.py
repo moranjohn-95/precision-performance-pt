@@ -75,10 +75,10 @@ class TrainerLoginView(LoginView):
     template_name = "accounts/trainer_login.html"
 
     def get_success_url(self):
-        # Superusers (owners) land on the owner dashboard;
-        # trainers go to theirs.
+        # Superusers (owners) should land on the populated overview
+        # (same as the sidebar "Overview" link).
         if self.request.user.is_superuser:
-            return reverse_lazy("accounts:owner_dashboard")
+            return reverse_lazy("accounts:trainer_dashboard")
         return reverse_lazy("accounts:trainer_dashboard")
 
 
