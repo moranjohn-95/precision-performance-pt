@@ -2,125 +2,249 @@
 
 {% block sidebar_title %}Trainer Menu{% endblock %}
 {% block sidebar_menu %}
-{% include "trainer/_sidebar.html" %}
+    {% include "trainer/_sidebar.html" %}
 {% endblock %}
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}My clients{% endblock %}
 {% block page_subtitle %}
-Logged in: {{ request.user.get_full_name|default:request.user.username }}
+    Logged in: {{ request.user.get_full_name|default:request.user.username }}
 {% endblock %}
 
 {% block dashboard_content %}
+    {# Section 1: clients added from consultation requests #}
+    <div class="dashboard-card">
+        <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
 
-<div class="dashboard-card">
-    <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
-
-    <form method="get" class="table-filter" style="margin: 0 0 1rem;">
-        <label for="client-type-filter" class="form-label">Show:</label>
-        <select
-            id="client-type-filter"
-            name="type"
-            class="form-control"
-            onchange="this.form.submit()"
-        >
-            <option value="all" {% if client_type == "all" %}selected{% endif %}>
-                All
-            </option>
-            <option
-                value="online"
-                {% if client_type == "online" %}selected{% endif %}
+        <form method="get" class="table-filter" style="margin: 0 0 1rem;">
+            <label for="client-type-filter" class="form-label">Show:</label>
+            <select
+                id="client-type-filter"
+                name="type"
+                class="form-control"
+                onchange="this.form.submit()"
             >
-                Online
-            </option>
-            <option
-                value="1to1"
-                {% if client_type == "1to1" %}selected{% endif %}
-            >
-                1:1
-            </option>
-        </select>
-    </form>
+                <option value="all" {% if client_type == "all" %}selected{% endif %}>
+                    All
+                </option>
+                <option value="online" {% if client_type == "online" %}selected{% endif %}>
+                    Online
+                </option>
+                <option value="1to1" {% if client_type == "1to1" %}selected{% endif %}>
+                    1:1
+                </option>
+            </select>
+        </form>
 
-    <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Goal</th>
-                    <th scope="col">Coaching option</th>
-                    <th scope="col">Last request</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for req in clients_page %}
-                <tr>
-                    <td>
-                        {% with full_name=req.first_name|add:" "|add:req.last_name %}
-                        {% if req.portal_user_id %}
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Goal</th>
+                        <th scope="col">Coaching option</th>
+                        <th scope="col">Last request</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in clients_page %}
+                        <tr>
+                            <td>
+                                {% with full_name=req.first_name|add:" "|add:req.last_name %}
+                                    {% if req.portal_user_id %}
+                                        <a
+                                            class="text-link"
+                                            href="{% url 'accounts:trainer_client_detail' req.portal_user_id %}"
+                                        >
+                                            {{ full_name|default:req.email }}
+                                        </a>
+                                    {% else %}
+                                        {{ full_name|default:req.email }}
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>{{ req.email }}</td>
+                            <td>{{ req.get_training_goal_display|default:req.training_goal }}</td>
+                            <td>{{ req.get_coaching_option_display|default:req.coaching_option }}</td>
+                            <td>{{ req.created_at|date:"d M Y" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="muted-text">
+                                No clients are currently assigned to this trainer.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if clients_page.has_other_pages %}
+            {# Paginator (clients list) #}
+            <nav class="pagination-nav" aria-label="Clients pagination">
+                <ul class="pagination">
+                    {% if clients_page.has_previous %}
+                        <li class="pagination-item">
                             <a
-                                class="text-link"
-                                href="{% url 'accounts:trainer_client_detail' req.portal_user_id %}"
+                                href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
+                                class="pagination-link"
                             >
-                                {{ full_name|default:req.email }}
+                                &lt; Prev
                             </a>
-                        {% else %}
-                            {{ full_name|default:req.email }}
-                        {% endif %}
-                        {% endwith %}
-                    </td>
-                    <td>{{ req.email }}</td>
-                    <td>{{ req.get_training_goal_display|default:req.training_goal }}</td>
-                    <td>{{ req.get_coaching_option_display|default:req.coaching_option }}</td>
-                    <td>{{ req.created_at|date:"d M Y" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="5" class="muted-text">
-                        No clients are currently assigned to this trainer.
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        </li>
+                    {% endif %}
+
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">
+                            Page {{ clients_page.number }} of {{ clients_page.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if clients_page.has_next %}
+                        <li class="pagination-item">
+                            <a
+                                href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
+                                class="pagination-link"
+                            >
+                                Next &gt;
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
     </div>
 
-    {% if clients_page.has_other_pages %}
-{# Standard paginator: Prev / Page X of Y / Next #}
-<nav class="pagination-nav" aria-label="Clients pagination">
-    <ul class="pagination">
-        {% if clients_page.has_previous %}
-        <li class="pagination-item">
-            <a
-                href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
-                class="pagination-link"
-            >
-                &lt; Prev
-            </a>
-        </li>
+    {# Section 2: portal links for client accounts #}
+    <div class="dashboard-card">
+        <h2 class="dashboard-card__title">Client portal access</h2>
+        <p class="muted-text">
+            Links below let clients set their portal password even if they missed the email.
+        </p>
+
+        <div class="dashboard-table-wrapper">
+            <table class="dashboard-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Portal status</th>
+                        <th scope="col">Password link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in clients_page %}
+                        <tr>
+                            <td>
+                                {% with full_name=req.first_name|add:" "|add:req.last_name %}
+                                    {{ full_name|default:req.email }}
+                                {% endwith %}
+                            </td>
+                            <td>{{ req.email }}</td>
+                            <td>
+                                {% if req.portal_user %}
+                                    <span class="badge badge--assigned">Portal ready</span>
+                                {% else %}
+                                    <span class="badge badge--open">No portal user</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if req.portal_user and req.portal_link %}
+                                    <div class="portal-link">
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            value="{{ req.portal_link }}"
+                                            readonly
+                                            onclick="this.select()"
+                                        >
+                                        <button
+                                            type="button"
+                                            class="btn-secondary"
+                                            onclick="copyPortalLink(this)"
+                                            data-link="{{ req.portal_link }}"
+                                        >
+                                            Copy
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <span class="muted-text">
+                                        Invite link available after account is created.
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="muted-text">
+                                No clients to show.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if clients_page.has_other_pages %}
+            {# Paginator (portal access section) #}
+            <nav class="pagination-nav" aria-label="Client portal pagination">
+                <ul class="pagination">
+                    {% if clients_page.has_previous %}
+                        <li class="pagination-item">
+                            <a
+                                href="?type={{ client_type }}&page={{ clients_page.previous_page_number }}"
+                                class="pagination-link"
+                            >
+                                &lt; Prev
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="pagination-item is-active">
+                        <span class="pagination-link">
+                            Page {{ clients_page.number }} of {{ clients_page.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if clients_page.has_next %}
+                        <li class="pagination-item">
+                            <a
+                                href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
+                                class="pagination-link"
+                            >
+                                Next &gt;
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
         {% endif %}
-
-        <li class="pagination-item is-active">
-            <span class="pagination-link">
-                Page {{ clients_page.number }} of {{ clients_page.paginator.num_pages }}
-            </span>
-        </li>
-
-        {% if clients_page.has_next %}
-        <li class="pagination-item">
-            <a
-                href="?type={{ client_type }}&page={{ clients_page.next_page_number }}"
-                class="pagination-link"
-            >
-                Next &gt;
-            </a>
-        </li>
-        {% endif %}
-    </ul>
-</nav>
-{% endif %}
-</div>
-
+    </div>
 {% endblock %}
 
+{% block extra_scripts %}
+    {{ block.super }}
+    <script>
+        // Copy the generated portal link to the clipboard.
+        // Falls back to a temporary input if the Clipboard API is blocked.
+        function copyPortalLink(btn) {
+            const link = btn.getAttribute("data-link");
+            if (!link) return;
+
+            navigator.clipboard?.writeText(link).catch(() => {
+                const temp = document.createElement("input");
+                temp.value = link;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand("copy");
+                document.body.removeChild(temp);
+            });
+
+            btn.textContent = "Copied";
+            setTimeout(() => {
+                btn.textContent = "Copy";
+            }, 1200);
+        }
+    </script>
+{% endblock %}

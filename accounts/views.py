@@ -18,6 +18,9 @@ from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from training.forms import BodyMetricEntryForm, WorkoutSessionForm
 from training.models import (
@@ -1391,6 +1394,7 @@ def trainer_clients(request):
     client_type = request.GET.get("type", "all")
     trainer_filter = request.GET.get("trainer", "all")
 
+    # Annotate each consultation with a portal user id if an account exists.
     user_id_sq = User.objects.filter(
         email__iexact=OuterRef("email")
     ).values("id")[:1]
@@ -1428,9 +1432,30 @@ def trainer_clients(request):
     else:
         qs = base_qs
 
+    # Paginate the filtered client list (5 per page).
     paginator = Paginator(qs, 5)
     page_number = request.GET.get("page")
     clients_page = paginator.get_page(page_number)
+
+    # Build portal access links so trainers can share a working password-set URL
+    # without relying on email delivery.
+    portal_ids = [
+        req.portal_user_id for req in clients_page if getattr(req, "portal_user_id", None)
+    ]
+    users_by_id = {u.id: u for u in User.objects.filter(id__in=portal_ids)}
+
+    for req in clients_page:
+        user = users_by_id.get(getattr(req, "portal_user_id", None))
+        req.portal_user = user
+        req.portal_link = None
+        if user:
+            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            path = reverse_lazy(
+                "password_reset_confirm",
+                kwargs={"uidb64": uidb64, "token": token},
+            )
+            req.portal_link = request.build_absolute_uri(path)
 
     # Keep filters when paging clients list.
     client_params = request.GET.copy()

@@ -28,8 +28,8 @@ SECRET_KEY = os.getenv(
     "dev-insecure-key-change-me",
 )
 
-# Drive DEBUG from env ("true"/"false"); default to True for local dev.
-DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
+# Drive DEBUG from env ("true"/"false").
+DEBUG = os.getenv("DJANGO_DEBUG", "false").lower() == "true"
 
 # Comma-separated hosts; ignore blanks.
 ALLOWED_HOSTS = [
