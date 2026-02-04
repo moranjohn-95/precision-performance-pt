@@ -82,25 +82,21 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
     invite_needed = False
 
     with transaction.atomic():
-        email_val = (consultation.email or "").strip()
+        email_val = (consultation.email or "").strip().lower()
         first = consultation.first_name or ""
         last = consultation.last_name or ""
 
         # Find or create user by email.
         user = User.objects.filter(email__iexact=email_val).first()
         if user is None and email_val:
-            base_username = email_val.split("@")[0] or "client"
-            username = base_username
-            suffix = 1
-            while User.objects.filter(username__iexact=username).exists():
-                username = f"{base_username}{suffix}"
-                suffix += 1
-
+            # Use email as username so clients sign in with the email they provided.
+            username = email_val
             user = User.objects.create(
                 username=username,
                 email=email_val,
                 first_name=first,
                 last_name=last,
+                is_active=True,  # ensure the portal account can log in
             )
             user.set_unusable_password()
             user.save()

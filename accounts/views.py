@@ -1448,6 +1448,7 @@ def trainer_clients(request):
         user = users_by_id.get(getattr(req, "portal_user_id", None))
         req.portal_user = user
         req.portal_link = None
+        req.portal_username = None  # Clients log in using this username + their password.
         if user:
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
@@ -1456,6 +1457,7 @@ def trainer_clients(request):
                 kwargs={"uidb64": uidb64, "token": token},
             )
             req.portal_link = request.build_absolute_uri(path)
+            req.portal_username = user.username
 
     # Keep filters when paging clients list.
     client_params = request.GET.copy()
