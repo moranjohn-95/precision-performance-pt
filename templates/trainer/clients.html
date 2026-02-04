@@ -7,9 +7,7 @@
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}My clients{% endblock %}
-{% block page_subtitle %}
-    Logged in: {{ request.user.get_full_name|default:request.user.username }}
-{% endblock %}
+{% block page_subtitle %}{% endblock %}
 
 {% block dashboard_content %}
     {# Section 1: clients added from consultation requests #}

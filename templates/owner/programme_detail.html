@@ -7,7 +7,6 @@
 {% block page_eyebrow %}Owner dashboard{% endblock %}
 {% block page_title %}Programme detail{% endblock %}
 {% block page_subtitle %}
-Logged in: {{ request.user.get_full_name|default:request.user.username }}
 <div style="margin-top: 0.5rem;">
     <a class="btn-secondary" href="{% url 'accounts:owner_programmes' %}">
         Back to programmes

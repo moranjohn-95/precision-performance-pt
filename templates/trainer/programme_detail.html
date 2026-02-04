@@ -7,7 +7,6 @@
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Programme detail{% endblock %}
 {% block page_subtitle %}
-Logged in: {{ request.user.get_full_name|default:request.user.username }}
 <div style="display:flex; align-items:center; gap:0.75rem; margin:0.5rem 0 1rem;">
     <a class="btn-secondary" href="{% url 'accounts:trainer_programmes' %}">
         Back to programmes

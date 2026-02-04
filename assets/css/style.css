@@ -438,6 +438,21 @@ h3
     font-size: 0.95rem;
 }
 
+.dashboard-page-subtitle {
+    margin-top: 0.25rem;
+    display: grid;
+    gap: 0.25rem;
+    color: var(--color-text-muted, #6b7a90);
+}
+
+.dashboard-page-subtitle * {
+    color: inherit;
+}
+
+.muted-text {
+    color: var(--color-text-muted, #6b7a90);
+}
+
 .page-meta__row {
     display: flex;
     align-items: center;
