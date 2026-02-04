@@ -2390,6 +2390,39 @@ def trainer_consultation_detail(request, pk):
     """
     consultation = get_object_or_404(ConsultationRequest, pk=pk)
 
+    # Owners can assign to any trainer; trainers can only assign to themselves.
+    if (
+        request.method == "POST"
+        and request.user.is_superuser
+        and "assign_to_trainer" in request.POST
+    ):
+        trainer_id = request.POST.get("trainer_id")
+        trainer_user = None
+        if trainer_id and trainer_id.isdigit():
+            trainer_id_int = int(trainer_id)
+            if trainer_id_int == request.user.id:
+                # Allow owner to assign to themselves; still block other superusers.
+                trainer_user = request.user
+            else:
+                trainer_user = User.objects.filter(
+                    id=trainer_id_int,
+                    is_staff=True,
+                    is_superuser=False,
+                ).first()
+
+        if not trainer_user:
+            messages.error(request, "Please choose a valid trainer.")
+            return redirect("accounts:trainer_consultation_detail", pk=pk)
+
+        result = assign_consultation_to_trainer(
+            request=request,
+            consultation=consultation,
+            trainer_user=trainer_user,
+        )
+        level = getattr(messages, result["message_level"].upper(), messages.INFO)
+        messages.add_message(request, level, result["message"] or "Assigned to trainer.")
+        return redirect(result["redirect"])
+
     if request.method == "POST" and "assign_to_me" in request.POST:
         result = assign_consultation_to_trainer(
             request=request,
@@ -2400,10 +2433,17 @@ def trainer_consultation_detail(request, pk):
         messages.add_message(request, level, result["message"])
         return redirect(result["redirect"])
 
+    trainers = (
+        User.objects.filter(is_staff=True, is_superuser=False)
+        .order_by("first_name", "last_name", "username")
+        if request.user.is_superuser
+        else None
+    )
+
     return render(
         request,
         "trainer/consultation_detail.html",
-        {"consultation": consultation},
+        {"consultation": consultation, "trainers": trainers},
     )
 
 

@@ -118,22 +118,54 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         </button>
                     {% endif %}
                 {% else %}
-                    <button
-                        type="submit"
-                        name="assign_to_me"
-                        class="btn-primary"
-                    >
-                        Add to my clients
-                    </button>
+                    {% if request.user.is_superuser %}
+                        {# Owner assign UI: choose any trainer (including self) then assign #}
+                        <div class="form-inline" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <label for="trainer_id" class="visually-hidden">Assign to trainer</label>
+                            <select
+                                name="trainer_id"
+                                id="trainer_id"
+                                class="form-control"
+                                style="min-width: 220px;"
+                                onchange="document.getElementById('assign-client-btn').disabled = !this.value;"
+                            >
+                                <option value="" selected disabled>Select trainer</option>
+                                <option value="{{ request.user.id }}">Me ({{ request.user.username }})</option>
+                                {% for t in trainers %}
+                                    <option value="{{ t.id }}">
+                                        {{ t.get_full_name|default:t.username }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button
+                                type="submit"
+                                name="assign_to_trainer"
+                                class="btn-primary"
+                                id="assign-client-btn"
+                                disabled
+                            >
+                                Assign client
+                            </button>
+                            <a
+                                href="{% url 'accounts:trainer_dashboard' %}"
+                                class="btn-link"
+                                style="align-self: center;"
+                            >
+                                Back to overview
+                            </a>
+                        </div>
+                    {% else %}
+                        {# Trainer self-assign UI #}
+                        <button
+                            type="submit"
+                            name="assign_to_me"
+                            class="btn-primary"
+                        >
+                            Add to my clients
+                        </button>
+                    {% endif %}
                 {% endif %}
             {% endif %}
-
-            <a
-                href="{% url 'accounts:trainer_dashboard' %}"
-                class="btn-link"
-            >
-                Back to overview
-            </a>
         </form>
     </footer>
 </section>
