@@ -85,10 +85,11 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
         <form method="post">
             {% csrf_token %}
 
-            {% if consultation.coaching_option in "small_group large_group" %}
+            {# Group coaching branch (small or large group) #}
+            {% if consultation.coaching_option == "small_group" or consultation.coaching_option == "large_group" %}
                 {% if consultation.status == consultation.STATUS_ADDED_CLASSES %}
                     <button type="submit" class="btn-secondary" disabled>
-                        Already added to Current Classes
+                        Already added to classes
                     </button>
                 {% else %}
                     <button
@@ -96,10 +97,11 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         formaction="{% url 'accounts:trainer_add_to_current_classes' consultation.id %}"
                         class="btn-primary"
                     >
-                        Add to Current Classes
+                        Add to classes
                     </button>
                 {% endif %}
             {% else %}
+                {# 1:1 or online branch #}
                 {% if consultation.assigned_trainer %}
                     <p class="text-muted">
                         Assigned trainer:
@@ -108,7 +110,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
 
                     {% if consultation.assigned_trainer == request.user %}
                         <button type="submit" class="btn-secondary" disabled>
-                            Already in trainer client list
+                            Already added to clients
                         </button>
                     {% else %}
                         <button type="submit" class="btn-secondary" disabled>
@@ -121,7 +123,7 @@ Logged in: {{ request.user.get_full_name|default:request.user.username }}
                         name="assign_to_me"
                         class="btn-primary"
                     >
-                        Assign to my client list
+                        Add to my clients
                     </button>
                 {% endif %}
             {% endif %}

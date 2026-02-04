@@ -28,8 +28,8 @@ SECRET_KEY = os.getenv(
     "dev-insecure-key-change-me",
 )
 
-# Drive DEBUG from env ("true"/"false").
-DEBUG = os.getenv("DJANGO_DEBUG", "false").lower() == "true"
+# Drive DEBUG from env ("true"/"false"); default to True for local dev.
+DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() == "true"
 
 # Comma-separated hosts; ignore blanks.
 ALLOWED_HOSTS = [
@@ -144,11 +144,16 @@ LOGOUT_REDIRECT_URL = "home"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "/static/"  # URL prefix seen by browsers
+STATIC_ROOT = BASE_DIR / "staticfiles"  # collectstatic output (Heroku uses this)
 STATICFILES_DIRS = [
-    BASE_DIR / "assets",
+    BASE_DIR / "assets",  # project-managed assets for local development
 ]
+# Let WhiteNoise serve files directly from STATICFILES_DIRS when DEBUG=True,
+# so `runserver` works without running collectstatic.
+if DEBUG:
+    WHITENOISE_USE_FINDERS = True
+
 # WhiteNoise for serving static files in production.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
