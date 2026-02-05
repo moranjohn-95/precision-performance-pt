@@ -29,6 +29,11 @@ body {
     height: 100%;
 }
 
+/* Smooth scrolling for anchor links on the page */
+html {
+    scroll-behavior: smooth;
+}
+
 /* Typography */
 body {
     font-family: "Open Sans", system-ui, -apple-system, BlinkMacSystemFont,
@@ -40,8 +45,7 @@ body {
 
 h1,
 h2,
-h3
- {
+h3 {
     font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
         "Segoe UI", sans-serif;
     color: var(--color-text-heading);
@@ -446,6 +450,7 @@ h3
 .site-footer .footer-links-list + .footer-item .footer-cta {
     margin-top: 0.6rem;
 }
+
 /* Footer card enhancements */
 .site-footer .footer-card {
     background: var(--color-header-bg);
@@ -507,6 +512,7 @@ h3
 .site-footer .footer-social__link {
     transition: box-shadow 0.15s ease, border-color 0.15s ease;
 }
+
 /* Primary button */
 .btn-primary,
 .btn-primary:visited {
@@ -756,7 +762,7 @@ h3
     gap: 1.75rem;
 }
 
-/* Program cards & backgrounnd image */
+/* Program cards & background image */
 .program-card {
     position: relative;
     border-radius: 0.75rem;
@@ -771,29 +777,28 @@ h3
     align-items: stretch;
 }
 
-
 /* Inner content to rest above overlay */
 .program-card-inner {
     position: relative;
     padding: 2.25rem 2rem 3rem;
     display: flex;
-    flex-direction: column;        
-    justify-content: space-between;  
-    min-height: 320px;              
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 320px;
 }
 
 /* Create space above button for top content area */
 .program-card-content {
-    margin-bottom: 1.5rem;       
+    margin-bottom: 1.5rem;
 }
 
 /* Bottom button area */
 .program-card-buttons {
     display: flex;
-    justify-content: center;     
+    justify-content: center;
 }
 
-/* Make buttons for cards slighlty smaller */
+/* Make buttons for cards slightly smaller */
 .btn-primary--sm {
     padding: 0.6rem 1.6rem;
     font-size: 0.9rem;
@@ -806,7 +811,7 @@ h3
     font-size: 1.3rem;
     font-weight: 600;
     margin: 0 0 0.75rem;
-    color: #ffffff
+    color: #ffffff;
 }
 
 .program-card p {
@@ -851,16 +856,15 @@ h3
 
 /* Full-screen with dark overlay */
 .modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(11, 31, 59, 0.85);
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s ease;
-  z-index: 40;
+    position: fixed;
+    inset: 0;
+    background: rgba(11, 31, 59, 0.85);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 40;
 }
-
 
 /* Modal panel */
 .program-modal {
@@ -884,7 +888,7 @@ h3
     min-height: 320px;
 }
 
-/* Left visual panel ? will add program-card classes using JS */
+/* Left visual panel - will add program-card classes using JS */
 .program-modal-visual {
     flex: 0 0 40%;
     background-color: var(--color-header-bg);
@@ -951,7 +955,7 @@ h3
     margin-top: auto;
 }
 
-/* Visible state ? will use JS to toggle the class */
+/* Visible state - will use JS to toggle the class */
 .modal-overlay.is-open {
     opacity: 1;
     pointer-events: auto;
@@ -1014,7 +1018,7 @@ h3
     border-top: 1px solid rgba(15, 23, 42, 0.12);
 }
 
-/* Step header: ?Step 1 ? Contact details? etc. */
+/* Step header: Step 1 / Contact details etc. */
 .consultation-section-heading {
     display: flex;
     align-items: flex-start;
@@ -1119,11 +1123,6 @@ textarea:focus {
 textarea {
     resize: vertical;
     min-height: 2.5rem;
-}
-
-/* Smooth scrolling for anchor links on the page */
-html {
-    scroll-behavior: smooth;
 }
 
 /* Checkbox fields */
@@ -1676,7 +1675,6 @@ html {
     color: #1f6de8;
 }
 
-
 .session-modal {
     background: #ffffff;
     border-radius: 1rem;
@@ -1860,7 +1858,6 @@ html {
     height: 260px;
 }
 
-
 /* Status badges */
 .badge {
     display: inline-flex;
@@ -1871,16 +1868,19 @@ html {
     font-weight: 600;
     border: 1px solid transparent;
 }
+
 .badge--open {
     background: #fdecec;
     border-color: #eb5757;
     color: #b42318;
 }
+
 .badge--assigned {
     background: #eaf7ef;
     border-color: #34c759;
     color: #1f7a3a;
 }
+
 .badge--classes {
     background: #eff6ff;
     border-color: #bfdbfe;
@@ -1898,7 +1898,6 @@ html {
     border-color: #eb5757;
     color: #b42318;
 }
-
 
 /* Client dashboard stats */
 .stats-grid {
@@ -1934,7 +1933,6 @@ html {
     color: #94a3b8;
 }
 
-
 .stat-delta {
     margin: 2px 0 0 0;
     font-size: 0.85rem;
@@ -1956,7 +1954,6 @@ html {
 .stat-delta--na {
     color: #94a3b8;
 }
-
 
 .stat-head {
     display: flex;
@@ -2054,7 +2051,6 @@ html {
     color: #94a3b8;
 }
 
-
 .this-week-footer {
     margin-top: 24px;
     padding-top: 16px;
@@ -2137,7 +2133,6 @@ html {
     color: var(--color-text-muted);
 }
 
-
 .form-actions--spaced {
     margin-top: 16px;
 }
@@ -2212,11 +2207,13 @@ html {
     box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
 }
 
-/* Visible keyboard focus for accessibility */
+/* Visible keyboard focus for accessibility (also matches hover lift) */
 .why-us__card:focus-within {
     outline: 3px solid rgba(31, 109, 232, 0.35);
     outline-offset: 4px;
     border-color: rgba(31, 109, 232, 0.28);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
 }
 
 .why-us__card-top {
@@ -2292,23 +2289,6 @@ html {
     font-size: 24px;
 }
 
-/* Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-    .why-us__card {
-        transition: none;
-    }
-
-    .why-us__card:hover {
-        transform: none;
-    }
-}
-
-/* Align keyboard focus with hover lift */
-.why-us__card:focus-within {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
-}
-
 .section-divider {
     width: min(1120px, 92vw);
     margin: 48px auto 24px auto;
@@ -2321,27 +2301,53 @@ html {
     );
 }
 
-/* Media Queries */
-/* ============
-   Tablet and below (<= 992px)
-   Mobile (<= 576px)
-   ============ */
+/* =====================================================================
+   MEDIA QUERIES
+   Keep ALL responsive + accessibility queries in this single section.
+   Order: (1) Preferences, (2) Desktop/large, (3) Tablet, (4) Mobile.
+===================================================================== */
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .why-us__card {
+        transition: none;
+    }
+
+    .why-us__card:hover {
+        transform: none;
+    }
+}
+
+/* Desktop / large screens (>= 993px) */
+@media (min-width: 993px) {
+    /* Client dashboard (desktop): align portal top bar with layout edges */
+    .dashboard-layout.client-dashboard {
+        padding-top: 0;
+    }
+
+    .dashboard-mobilebar {
+        margin-top: 0;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+        border-radius: 0;
+        box-shadow: none;
+    }
+}
 
 /* Tablet and below (<= 992px) */
 @media (max-width: 992px) {
-    /* Navbar: allow wrap so menu drops below */
+    /* Navbar */
     .main-nav {
         padding: 0.9rem 1.25rem;
-        flex-wrap: wrap;
+        flex-wrap: wrap; /* allow wrap so menu drops below */
     }
 
-    /* Navbar: show burger and keep it on the right */
     .nav-toggle {
-        display: inline-flex;
+        display: inline-flex; /* show burger and keep it on the right */
         margin-left: auto;
     }
 
-    /* Navbar: dropdown sits inside header and pushes content */
     .nav-menu {
         width: 100%;
         margin-top: 0.75rem;
@@ -2356,14 +2362,12 @@ html {
         display: block;
     }
 
-    /* Navbar: stack links vertically */
     .nav-links {
         flex-direction: column;
         align-items: stretch;
         gap: 0.25rem;
     }
 
-    /* Navbar: larger tap targets */
     .nav-links a {
         display: block;
         width: 100%;
@@ -2378,12 +2382,12 @@ html {
         outline: none;
     }
 
-    /* Overview tables: reduce clutter on tablets */
+    /* Owner/Trainer overview tables */
     .overview-consultations .col-email {
-        display: none;
+        display: none; /* reduce clutter on tablets */
     }
 
-    /* Why Us: two-column layout on tablets */
+    /* Why Us */
     .why-us__grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2398,7 +2402,6 @@ html {
         gap: 1rem;
     }
 
-    /* Show the same top bar used on mobile */
     .dashboard-layout.client-dashboard .dashboard-mobilebar {
         display: flex;
         align-items: center;
@@ -2429,7 +2432,6 @@ html {
         font-size: 0.95rem;
     }
 
-    /* IMPORTANT: correct toggle class */
     .dashboard-layout.client-dashboard .dashboard-mobilebar__toggle {
         background: #0b1f3b;
         color: #ffffff;
@@ -2445,7 +2447,6 @@ html {
         justify-content: center;
     }
 
-    /* Off-canvas sidebar defaults closed */
     .dashboard-layout.client-dashboard .dashboard-sidebar {
         position: fixed;
         top: 0;
@@ -2473,7 +2474,6 @@ html {
         z-index: 1090;
     }
 
-    /* Open state (toggled by existing JS on body) */
     body.dashboard-menu-open .dashboard-layout.client-dashboard .dashboard-sidebar {
         transform: translateX(0);
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
@@ -2486,7 +2486,8 @@ html {
     body.dashboard-menu-open {
         overflow: hidden;
     }
-    /* Footer adjustments on tablet */
+
+    /* Footer */
     .site-footer .footer-grid {
         grid-template-columns: 1fr;
     }
@@ -2496,30 +2497,14 @@ html {
     }
 }
 
-@media (min-width: 993px) {
-    /* Desktop: align portal top bar with layout edges and remove top gap */
-    .dashboard-layout.client-dashboard {
-        padding-top: 0;
-    }
-
-    .dashboard-mobilebar {
-        margin-top: 0;
-        margin-left: -1rem;
-        margin-right: -1rem;
-        width: calc(100% + 2rem);
-        border-radius: 0;
-        box-shadow: none;
-    }
-}
-
 /* Mobile (<= 576px) */
 @media (max-width: 576px) {
-    /* Navbar: tighter padding on small phones */
+    /* Navbar */
     .main-nav {
         padding: 0.85rem 1.25rem;
     }
 
-    /* Hero: keep headline to ~2 lines on phones */
+    /* Hero */
     .home-hero h1,
     .home-hero__title,
     .hero-title {
@@ -2539,7 +2524,7 @@ html {
         margin-right: auto;
     }
 
-    /* Home page section headings: keep to one line on phones */
+    /* Home page section headings */
     .home-section-title {
         font-size: clamp(1.35rem, 6vw, 1.7rem);
         line-height: 1.15;
@@ -2548,13 +2533,12 @@ html {
         text-align: center;
     }
 
-    /* Home page why-us lead: tighter spacing on phones */
     .home-section-lead {
         line-height: 1.5;
         margin-top: 0.35rem;
     }
 
-    /* Why Us: single column and softer padding */
+    /* Why Us */
     .why-us {
         padding: 48px 0;
     }
@@ -2567,7 +2551,7 @@ html {
         grid-template-columns: 1fr;
     }
 
-    /* Book a consultation form: keep fields inside the card */
+    /* Book a consultation form */
     .consultation-page .page-section-inner,
     .consultation-page .consultation-form {
         width: 100%;
@@ -2575,7 +2559,6 @@ html {
         margin: 0;
     }
 
-    /* Book a consultation form: inputs and selects full width */
     .consultation-form input,
     .consultation-form select,
     .consultation-form textarea,
@@ -2588,12 +2571,10 @@ html {
         border: 1px solid #cbd5e1;
     }
 
-    /* Book a consultation form: tighten step spacing */
     .consultation-form .form-field {
         margin-bottom: 0.85rem;
     }
 
-    /* Book a consultation form: keep focus ring visible */
     .consultation-form input:focus,
     .consultation-form select:focus,
     .consultation-form textarea:focus,
@@ -2603,7 +2584,7 @@ html {
         outline-offset: 1px;
     }
 
-    /* Coaching option modals: full-width, scrollable, no overflow */
+    /* Coaching option modals */
     .coaching-modal .modal-dialog {
         width: 100%;
         max-width: 100%;
@@ -2623,13 +2604,11 @@ html {
         padding: 1rem;
     }
 
-    /* Hide side media on phones to give text room */
     .coaching-modal .modal-media,
     .coaching-modal .program-modal-visual {
         display: none;
     }
 
-    /* Make close button easy to tap */
     .coaching-modal .modal-close,
     .coaching-modal .program-modal-close {
         min-width: 44px;
@@ -2638,7 +2617,7 @@ html {
         line-height: 1;
     }
 
-    /* Client dashboard: mobile menu */
+    /* Dashboards (shared) */
     .dashboard-layout {
         padding: 1.25rem 1rem 2rem;
     }
@@ -2664,35 +2643,6 @@ html {
         text-decoration: none;
         font-weight: 700;
         font-size: 1rem;
-    }
-
-    /* Overview tables: hide low-priority columns on phones */
-    .overview-consultations .col-email,
-    .overview-consultations .col-goal,
-    .overview-consultations .col-submitted,
-    .overview-classes .col-preferred-date,
-    .overview-classes .col-submitted {
-        display: none;
-    }
-
-    /* Overview tables: allow coaching option to wrap on phones */
-    .overview-classes .col-coaching-option {
-        white-space: normal;
-        line-height: 1.25;
-        max-width: 12rem;
-    }
-
-    /* Overview tables: slightly tighter table spacing on phones */
-    .dashboard-table th,
-    .dashboard-table td {
-        font-size: 0.85rem;
-        padding: 0.5rem 0.6rem;
-    }
-
-    /* Filters: full-width select on phones for tap targets */
-    .table-filter--row select,
-    .table-filter--row .form-select {
-        max-width: 100%;
     }
 
     .dashboard-mobilebar__actions {
@@ -2758,7 +2708,7 @@ html {
         overflow: hidden;
     }
 
-    /* Portal link layout: stack on narrow screens */
+    /* Portal link layout */
     .portal-link {
         flex-direction: column;
         align-items: stretch;
@@ -2768,12 +2718,48 @@ html {
         width: 100%;
     }
 
-    /* Query filters: stack filters on narrow screens */
+    /* Owner/Trainer overview tables */
+    .overview-consultations .col-email,
+    .overview-consultations .col-goal,
+    .overview-consultations .col-submitted,
+    .overview-classes .col-preferred-date,
+    .overview-classes .col-submitted {
+        display: none;
+    }
+
+    .overview-classes .col-coaching-option {
+        white-space: normal;
+        line-height: 1.25;
+        max-width: 12rem;
+    }
+
+    .dashboard-table th,
+    .dashboard-table td {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.6rem;
+    }
+
+    /* Filters */
     .table-filter--row {
         grid-template-columns: 1fr;
     }
 
-    /* Page header row: stack meta and actions on narrow screens */
+    .table-filter--row select,
+    .table-filter--row .form-select {
+        max-width: 100%;
+    }
+
+    /* Pills / badges: smaller on mobile to prevent layout overflow */
+    .badge,
+    .status-pill {
+        padding: 2px 8px;
+        font-size: 0.78rem;
+        line-height: 1.15;
+        white-space: nowrap;
+        border-radius: 999px;
+    }
+
+    /* Page header row */
     .page-header-row {
         flex-direction: column;
         align-items: stretch;
@@ -2792,7 +2778,7 @@ html {
         margin-top: 0.5rem;
     }
 
-    /* Footer mobile alignment */
+    /* Footer */
     .site-footer .footer-bottom {
         flex-direction: column;
         align-items: center;
@@ -2803,4 +2789,5 @@ html {
         justify-content: center;
     }
 }
+
 
