@@ -1730,15 +1730,28 @@ def trainer_programme_detail(request, block_id):
     exercise_formset = None
 
     # Only list clients that are assigned to this trainer for safety.
+    allowed_email_set = set()
+    assignable_users = []
     if is_template_block:
         # Source of truth: accepted 1:1/online consultations assigned to this trainer.
-        # Use ConsultationRequest so clients appear even if a User/portal access is not created yet.
+        # Use ConsultationRequest to keep eligibility in sync with consults,
+        # but present User ids to the form so the POST can resolve a User reliably.
         assignable_clients = list(
             ConsultationRequest.objects.filter(
                 assigned_trainer=request.user,
                 status=ConsultationRequest.STATUS_ASSIGNED,
                 coaching_option__in=["1to1", "online"],
             ).order_by("-created_at")
+        )
+        allowed_email_set = {
+            (c.email or "").strip().lower()
+            for c in assignable_clients
+            if c.email
+        }
+        assignable_users = list(
+            User.objects.filter(email__in=allowed_email_set)
+            .filter(is_staff=False)
+            .order_by("first_name", "last_name", "username")
         )
 
     if (
@@ -1789,17 +1802,35 @@ def trainer_programme_detail(request, block_id):
         and not is_tailored
         and "convert_to_tailored" not in request.POST
     ):
-        client_id = request.POST.get("assign_client_id") or request.POST.get(
+        client_id_raw = request.POST.get("assign_client_id") or request.POST.get(
             "client_id"
         )
         assign_clicked = (
             "assign_to_client" in request.POST
             or "assign_programme" in request.POST
-            or bool(client_id)
+            or bool(client_id_raw)
         )
 
-        if assign_clicked and client_id:
-            client_user = get_object_or_404(User, id=client_id)
+        if assign_clicked:
+            try:
+                client_id = int(client_id_raw)
+            except (TypeError, ValueError):
+                messages.error(request, "Please select a client before assigning.")
+                return redirect(
+                    "accounts:trainer_programme_detail",
+                    block_id=template_block.id,
+                )
+
+            client_user = User.objects.filter(id=client_id).first()
+            if not client_user:
+                messages.error(
+                    request,
+                    "Selected client could not be found. Please refresh and try again.",
+                )
+                return redirect(
+                    "accounts:trainer_programme_detail",
+                    block_id=template_block.id,
+                )
 
             allowed = request.user.is_superuser or (
                 client_user.email
@@ -1951,7 +1982,8 @@ def trainer_programme_detail(request, block_id):
         "block": template_block,
         "days": template_days_qs,
         "preview_days": preview_days,
-        "assignable_clients": assignable_clients,
+        # Template uses assignable_users so the form posts User ids (required by view).
+        "assignable_clients": assignable_users,
         "is_template_block": is_template_block,
         "tailored_client": tailored_client,
         "is_tailored": is_tailored,

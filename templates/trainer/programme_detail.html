@@ -125,10 +125,12 @@
             {% csrf_token %}
             <div class="form-field">
                 <label for="assign_client_id">Client</label>
+                {# Select must submit a Django User id so the view can resolve the client user #}
                 <select id="assign_client_id" name="assign_client_id" class="form-control">
-                    {% for consult in assignable_clients %}
-                        <option value="{{ consult.id }}">
-                            {{ consult.first_name }} {{ consult.last_name }} ({{ consult.email }})
+                    {% for client in assignable_clients %}
+                        <option value="{{ client.id }}">
+                            {{ client.get_full_name|default:client.username|default:client.email }}
+                            ({{ client.email }})
                         </option>
                     {% endfor %}
                 </select>
