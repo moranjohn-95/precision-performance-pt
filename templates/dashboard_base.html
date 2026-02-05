@@ -10,29 +10,29 @@
 </style>
 
 <div class="dashboard-layout client-dashboard">
-    <div class="dashboard-shell">
-
-        <!-- Mobile top bar for client dashboard -->
-        <div class="dashboard-mobilebar">
-            <a class="dashboard-mobilebar__brand" href="{% url 'home' %}">
-                Precision Performance PT
+    <!-- Mobile/portal top bar sits above the shell -->
+    <div class="dashboard-mobilebar">
+        <a class="dashboard-mobilebar__brand" href="{% url 'home' %}">
+            Precision Performance PT
+        </a>
+        <div class="dashboard-mobilebar__actions">
+            <a class="dashboard-mobilebar__logout" href="{% url 'accounts:logout' %}">
+                Logout
             </a>
-            <div class="dashboard-mobilebar__actions">
-                <a class="dashboard-mobilebar__logout" href="{% url 'accounts:logout' %}">
-                    Logout
-                </a>
-                <button
-                    type="button"
-                    class="dashboard-mobilebar__toggle"
-                    aria-controls="clientMobileMenu"
-                    aria-expanded="false"
-                    aria-label="Open client menu"
-                    data-dashboard-toggle
-                >
-                    ☰
-                </button>
-            </div>
+            <button
+                type="button"
+                class="dashboard-mobilebar__toggle"
+                aria-controls="clientMobileMenu"
+                aria-expanded="false"
+                aria-label="Open client menu"
+                data-dashboard-toggle
+            >
+                ☰
+            </button>
         </div>
+    </div>
+
+    <div class="dashboard-shell">
 
         <div class="dashboard-overlay" data-dashboard-overlay hidden></div>
 

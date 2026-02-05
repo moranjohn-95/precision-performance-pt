@@ -1000,7 +1000,48 @@ html {
 }
 
 .dashboard-mobilebar {
-    display: none;
+    display: flex; /* show portal top bar on all screen sizes */
+    align-items: center;
+    justify-content: space-between;
+    background: #0b1f3b;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12); /* subtler shadow */
+    margin-bottom: 1rem; /* breathing room before the grid below */
+    width: 100%; /* span layout width */
+}
+
+.dashboard-mobilebar__brand {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.dashboard-mobilebar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dashboard-mobilebar__logout {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.dashboard-mobilebar__toggle {
+    background: #0b1f3b;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 0.5rem;
+    padding: 0.35rem 0.6rem;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none; /* hide burger on large screens */
 }
 
 .dashboard-overlay {
@@ -2039,7 +2080,7 @@ html {
 
     /* Client dashboard: off-canvas menu (tablet and below) */
     .dashboard-layout.client-dashboard {
-        padding: 1.25rem 1rem 2rem;
+        padding: 1rem 1rem 2rem; /* slightly reduced top padding to seat the top bar */
     }
 
     .dashboard-layout.client-dashboard .dashboard-shell {
@@ -2089,6 +2130,9 @@ html {
         min-height: 44px;
         font-size: 1.2rem;
         cursor: pointer;
+        display: inline-flex; /* show burger only when sidebar is off-canvas */
+        align-items: center;
+        justify-content: center;
     }
 
     /* Off-canvas sidebar defaults closed */
@@ -2131,6 +2175,22 @@ html {
 
     body.dashboard-menu-open {
         overflow: hidden;
+    }
+}
+
+@media (min-width: 993px) {
+    /* Desktop: align portal top bar with layout edges and remove top gap */
+    .dashboard-layout.client-dashboard {
+        padding-top: 0;
+    }
+
+    .dashboard-mobilebar {
+        margin-top: 0;
+        margin-left: -1rem;
+        margin-right: -1rem;
+        width: calc(100% + 2rem);
+        border-radius: 0;
+        box-shadow: none;
     }
 }
 
