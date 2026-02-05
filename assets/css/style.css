@@ -2158,13 +2158,15 @@ html {
     align-items: stretch;
 }
 
+/* Why Us cards: cleaner shadow + structured layout */
 .why-us__card {
-    background: #fff;
-    border-radius: 18px;
+    background: #ffffff;
+    border-radius: 16px;
     border: 1px solid #e6edf5;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
-    padding: 20px;
-    transition: transform 160ms ease, box-shadow 160ms ease;
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+    padding: 20px 22px 18px; /* slightly tighter to balance card weight */
+    transition: transform 160ms ease, box-shadow 160ms ease,
+        border-color 160ms ease;
     display: flex;
     flex-direction: column;
     min-height: 300px;
@@ -2174,14 +2176,24 @@ html {
 
 .why-us__card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+    border-color: rgba(31, 109, 232, 0.22);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
+}
+
+/* Visible keyboard focus for accessibility */
+.why-us__card:focus-within {
+    outline: 3px solid rgba(31, 109, 232, 0.35);
+    outline-offset: 4px;
+    border-color: rgba(31, 109, 232, 0.28);
 }
 
 .why-us__card-top {
     display: flex;
     align-items: center;
-    gap: 12px;
     margin-bottom: 10px;
+    min-height: 150px; /* keep top content aligned across cards */
+    flex-direction: column;
+    gap: 10px;
 }
 
 .why-us__icon {
@@ -2201,15 +2213,20 @@ html {
 
 .why-us__card-title {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
+    font-weight: 700;
     color: #0b1a2f;
     width: 100%;
 }
 
 .why-us__card-text {
-    margin: 6px 0 0 0;
+    margin: 10px auto 0;
     color: #4a5568;
-    line-height: 1.6;
+    line-height: 1.65;
+    font-size: 0.95rem;
+    max-width: 46ch;
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
 }
 
@@ -2223,9 +2240,10 @@ html {
 
 .why-us__icon-slot {
     margin-top: auto;
-    padding: 16px 0 12px;
+    padding: 20px 0 12px;
     display: flex;
     justify-content: center;
+    border-top: 1px solid rgba(15, 23, 42, 0.09); /* slightly clearer divider above icons */
 }
 
 .why-us__icon-slot .why-us__icon {
@@ -2240,6 +2258,23 @@ html {
 
 .why-us__icon-slot .why-us__icon i {
     font-size: 24px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .why-us__card {
+        transition: none;
+    }
+
+    .why-us__card:hover {
+        transform: none;
+    }
+}
+
+/* Align keyboard focus with hover lift */
+.why-us__card:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 34px rgba(15, 23, 42, 0.09);
 }
 
 .section-divider {
