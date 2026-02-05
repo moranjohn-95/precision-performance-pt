@@ -15,24 +15,36 @@
         <h2 class="dashboard-card__title">Clients added from consultation requests</h2>
 
         <form method="get" class="table-filter" style="margin: 0 0 1rem;">
-            <label for="client-type-filter" class="form-label">Show:</label>
-            <select
-                id="client-type-filter"
-                name="type"
-                class="form-control"
-                onchange="this.form.submit()"
-            >
-                <option value="all" {% if client_type == "all" %}selected{% endif %}>
-                    All
-                </option>
-                <option value="online" {% if client_type == "online" %}selected{% endif %}>
-                    Online
-                </option>
-                <option value="1to1" {% if client_type == "1to1" %}selected{% endif %}>
-                    1:1
-                </option>
-            </select>
-        </form>
+        <label for="client-type-filter" class="form-label">Show:</label>
+        <select
+            id="client-type-filter"
+            name="type"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if client_type == "all" %}selected{% endif %}>
+                All
+            </option>
+            <option value="online" {% if client_type == "online" %}selected{% endif %}>
+                Online
+            </option>
+            <option value="1to1" {% if client_type == "1to1" %}selected{% endif %}>
+                1:1
+            </option>
+        </select>
+
+        <label for="portal-filter" class="form-label" style="margin-left: 1rem;">Portal access:</label>
+        <select
+            id="portal-filter"
+            name="portal"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            <option value="all" {% if portal_filter == "all" %}selected{% endif %}>All</option>
+            <option value="yes" {% if portal_filter == "yes" %}selected{% endif %}>Yes</option>
+            <option value="no" {% if portal_filter == "no" %}selected{% endif %}>No</option>
+        </select>
+    </form>
 
         <div class="dashboard-table-wrapper">
             <table class="dashboard-table">

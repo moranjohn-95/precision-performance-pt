@@ -1413,11 +1413,15 @@ def trainer_clients(request):
 
     client_type = request.GET.get("type", "all")
     trainer_filter = request.GET.get("trainer", "all")
+    portal_filter = request.GET.get("portal", "all")
 
     # Annotate each consultation with a portal user id if an account exists.
     user_id_sq = User.objects.filter(
         email__iexact=OuterRef("email")
     ).values("id")[:1]
+    password_sq = User.objects.filter(
+        email__iexact=OuterRef("email")
+    ).values("password")[:1]
 
     if request.user.is_superuser:
         # Owners can view all trainers; start with all assigned clients.
@@ -1442,8 +1446,23 @@ def trainer_clients(request):
         )
 
     base_qs = base_qs.annotate(
-        portal_user_id=Subquery(user_id_sq)
+        portal_user_id=Subquery(user_id_sq),
+        portal_password=Subquery(password_sq),
     ).order_by("-created_at")
+
+    # Portal filter before pagination: yes = usable password; no = missing or unusable.
+    if portal_filter == "yes":
+        base_qs = (
+            base_qs.filter(portal_password__isnull=False)
+            .exclude(portal_password__startswith="!")
+            .exclude(portal_password="")
+        )
+    elif portal_filter == "no":
+        base_qs = base_qs.filter(
+            Q(portal_password__isnull=True)
+            | Q(portal_password__startswith="!")
+            | Q(portal_password="")
+        )
 
     if client_type == "online":
         qs = base_qs.filter(coaching_option="online")
@@ -1499,6 +1518,7 @@ def trainer_clients(request):
         "clients_page": clients_page,
         "client_type": client_type,
         "trainer_filter": trainer_filter,
+        "portal_filter": portal_filter,
         "trainer_options": trainer_options,
         "clients_base_qs": clients_base_qs,
         "section": "clients",
