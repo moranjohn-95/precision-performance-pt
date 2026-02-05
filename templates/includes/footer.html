@@ -1,54 +1,116 @@
-<div class="footer-inner">
-    <div class="footer-col">
-        <h3 class="footer-heading">Our Details</h3>
-        <p>Cork HQ</p>
-        <p>123 Leeside Industrial Park</p>
-        <p>Cork, Ireland</p>
-    </div>
+<div class="footer-shell">
+  <div class="footer-grid">
+    <section class="footer-card footer-card--details" aria-label="Gym details">
+      <h3 class="footer-title">Cork Gym</h3>
 
-    <div class="footer-col">
-        <h3 class="footer-heading">Opening Hours</h3>
-        <p>Mon–Fri: 6am – 10pm</p>
-        <p>Sat–Sun: 8am – 8pm</p>
-    </div>
+      <div class="footer-list">
+        {# Address with location icon #}
+        <p class="footer-item">
+          <span class="footer-item__row">
+            <i class="footer-icon fa-solid fa-location-dot" aria-hidden="true"></i>
+            <span>
+              <span class="footer-item__label">Address</span>
+              123 Leeside Industrial Park, Cork, Ireland
+            </span>
+          </span>
+        </p>
 
-    <div class="footer-col">
-        <h3 class="footer-heading">Contact Us</h3>
-        <p>Phone: +353 21 555 6789</p>
-        <p>Email: info@precisionpt.ie</p>
-    </div>
+        {# Opening hours with clock icon #}
+        <p class="footer-item">
+          <span class="footer-item__row">
+            <i class="footer-icon fa-regular fa-clock" aria-hidden="true"></i>
+            <span>
+              <span class="footer-item__label">Opening hours</span>
+              Mon–Fri: 6am – 10pm<br>
+              Sat–Sun: 8am – 8pm
+            </span>
+          </span>
+        </p>
+      </div>
+    </section>
 
-    <div class="footer-col">
-        <h3 class="footer-heading">Follow Us</h3>
-        <ul class="footer-social">
-            <li>
-                <a href="#" aria-label="Facebook">
-                    <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
-                </a>
-            </li>
-            <li>
-                <a href="#" aria-label="X (Twitter)">
-                    <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
-                </a>
-            </li>
-            <li>
-                <a href="#" aria-label="Instagram">
-                    <i class="fa-brands fa-instagram" aria-hidden="true"></i>
-                </a>
-            </li>
-        </ul>
+    <section class="footer-card footer-card--contact" aria-label="Contact details">
+      <h3 class="footer-title">Contact us</h3>
 
-        <h4 class="footer-subheading">Quick links</h4>
-        <ul class="footer-links">
-            <li><a href="{% url 'accounts:client_login' %}">Client login</a></li>
-            <li><a href="{% url 'accounts:trainer_login' %}">Trainer login</a></li>
-            <li><a href="{% url 'contact_us' %}">Contact</a></li>
-        </ul>
-    </div>
+      <div class="footer-list">
+        {# Phone with icon #}
+        <p class="footer-item">
+          <span class="footer-item__row">
+            <i class="footer-icon fa-solid fa-phone" aria-hidden="true"></i>
+            <span>
+              <span class="footer-item__label">Phone</span>
+              +353 21 555 6789
+            </span>
+          </span>
+        </p>
 
-    <p class="footer-copy">
-        &copy; {% now "Y" %} Precision Performance PT. All rights reserved.
-    </p>
+        {# Email with icon #}
+        <p class="footer-item">
+          <span class="footer-item__row">
+            <i class="footer-icon fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>
+              <span class="footer-item__label">Email</span>
+              <a class="footer-link" href="mailto:info@precisionpt.ie">info@precisionpt.ie</a>
+            </span>
+          </span>
+        </p>
+
+        {# CTA to book a consultation #}
+        <p class="footer-item">
+          <a class="footer-cta btn-primary btn-primary--sm" href="{% url 'consultation_request' %}">
+            Book a Consultation
+          </a>
+        </p>
+
+        <p class="footer-help">Email or call for assistance.</p>
+      </div>
+    </section>
+
+    <section class="footer-card footer-card--links" aria-label="Quick links">
+      <h3 class="footer-title">Quick links</h3>
+
+      <ul class="footer-links-list">
+        <li>
+          <a class="footer-link" href="{% url 'accounts:client_login' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Client login
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{% url 'accounts:trainer_login' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Trainer login
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{% url 'contact_us' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Contact
+          </a>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">&copy; {% now "Y" %} Precision Performance PT. All rights reserved.</p>
+
+    <ul class="footer-social" aria-label="Social media">
+      <li>
+        <a class="footer-social__link" href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li>
+        <a class="footer-social__link" href="https://x.com/" target="_blank" rel="noopener noreferrer" aria-label="X (Twitter)">
+          <i class="fa-brands fa-x-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li>
+        <a class="footer-social__link" href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+          <i class="fa-brands fa-instagram" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
 </div>
-
-
