@@ -1782,9 +1782,10 @@ def trainer_programme_detail(request, block_id):
             exercise_formset.save()
             messages.success(request, "Tailored programme updated.")
 
+            # Stay on the tailored copy being edited; keep context (cp/day) and jump to editor.
             redirect_url = reverse_lazy(
                 "accounts:trainer_programme_detail",
-                kwargs={"block_id": template_block.id},
+                kwargs={"block_id": block.id},
             )
             query_bits = []
             if assignment:
@@ -1792,7 +1793,9 @@ def trainer_programme_detail(request, block_id):
             if selected_day:
                 query_bits.append(f"day={selected_day.id}")
             if query_bits:
-                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}"
+                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}#tailored-editor"
+            else:
+                redirect_url = f"{redirect_url}#tailored-editor"
             return redirect(redirect_url)
 
         messages.error(request, "Please correct the errors below.")

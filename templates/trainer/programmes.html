@@ -7,9 +7,7 @@
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Programmes{% endblock %}
-{% block page_subtitle %}
-Logged in: {{ request.user.get_full_name|default:request.user.username }}
-{% endblock %}
+{# Do not echo "Logged in" here; dashboard_base already shows it once #}
 
 {% block dashboard_content %}
 
