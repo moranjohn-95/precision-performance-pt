@@ -15,6 +15,8 @@
           </span>
         </p>
 
+        <div class="footer-card-divider" role="presentation"></div>
+
         {# Opening hours with clock icon #}
         <p class="footer-item">
           <span class="footer-item__row">
@@ -55,19 +57,23 @@
           </span>
         </p>
 
-        {# CTA to book a consultation #}
+        <p class="footer-help">Email or call for assistance.</p>
+
+        <div class="footer-card-divider" role="presentation"></div>
+
+        {# CTA to book a consultation (moved under help text) #}
         <p class="footer-item">
           <a class="footer-cta btn-primary btn-primary--sm" href="{% url 'consultation_request' %}">
             Book a Consultation
           </a>
         </p>
-
-        <p class="footer-help">Email or call for assistance.</p>
       </div>
     </section>
 
     <section class="footer-card footer-card--links" aria-label="Quick links">
       <h3 class="footer-title">Quick links</h3>
+
+      <div class="footer-card-divider" role="presentation"></div>
 
       <ul class="footer-links-list">
         <li>
