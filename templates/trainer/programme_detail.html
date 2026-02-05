@@ -126,9 +126,9 @@
             <div class="form-field">
                 <label for="assign_client_id">Client</label>
                 <select id="assign_client_id" name="assign_client_id" class="form-control">
-                    {% for u in assignable_clients %}
-                        <option value="{{ u.id }}">
-                            {{ u.get_full_name|default:u.username }} ({{ u.email }})
+                    {% for consult in assignable_clients %}
+                        <option value="{{ consult.id }}">
+                            {{ consult.first_name }} {{ consult.last_name }} ({{ consult.email }})
                         </option>
                     {% endfor %}
                 </select>

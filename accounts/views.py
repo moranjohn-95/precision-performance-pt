@@ -1731,17 +1731,14 @@ def trainer_programme_detail(request, block_id):
 
     # Only list clients that are assigned to this trainer for safety.
     if is_template_block:
-        assigned_emails = ConsultationRequest.objects.filter(
-            assigned_trainer=request.user,
-            status=ConsultationRequest.STATUS_ASSIGNED,
-        ).values_list("email", flat=True)
-
-        allowed_email_set = {e.lower() for e in assigned_emails if e}
+        # Source of truth: accepted 1:1/online consultations assigned to this trainer.
+        # Use ConsultationRequest so clients appear even if a User/portal access is not created yet.
         assignable_clients = list(
-            User.objects.filter(
-                email__in=allowed_email_set,
-                is_staff=False,
-            ).order_by("first_name", "last_name", "username")
+            ConsultationRequest.objects.filter(
+                assigned_trainer=request.user,
+                status=ConsultationRequest.STATUS_ASSIGNED,
+                coaching_option__in=["1to1", "online"],
+            ).order_by("-created_at")
         )
 
     if (
@@ -2171,31 +2168,59 @@ def owner_programme_detail(request, block_id):
         and not is_tailored
         and "convert_to_tailored" not in request.POST
     ):
-        client_id = request.POST.get("assign_client_id") or request.POST.get(
+        # Use consultation id as the source of truth for assignment.
+        consultation_id = request.POST.get("assign_client_id") or request.POST.get(
             "client_id"
         )
         assign_clicked = (
             "assign_to_client" in request.POST
             or "assign_programme" in request.POST
-            or bool(client_id)
+            or bool(consultation_id)
         )
 
-        if assign_clicked and client_id:
-            client_user = get_object_or_404(User, id=client_id)
-
-            allowed = client_user.email and (
-                client_user.email.lower() in allowed_email_set
+        if assign_clicked and consultation_id:
+            # Ensure the consultation belongs to this trainer and is 1:1/online + assigned.
+            consultation = get_object_or_404(
+                ConsultationRequest,
+                id=consultation_id,
+                assigned_trainer=request.user,
+                status=ConsultationRequest.STATUS_ASSIGNED,
+                coaching_option__in=["1to1", "online"],
             )
 
-            if not allowed:
+            email_val = (consultation.email or "").strip().lower()
+            client_user = User.objects.filter(email__iexact=email_val).first()
+
+            if client_user and client_user.is_staff:
                 messages.error(
                     request,
-                    "You are not allowed to assign this client.",
+                    "Staff users cannot be assigned as clients.",
                 )
                 return redirect(
                     "accounts:owner_programme_detail",
                     block_id=template_block.id,
                 )
+
+            if client_user is None:
+                base_username = email_val.split("@")[0] or "client"
+                username = base_username
+                suffix = 1
+                while User.objects.filter(username__iexact=username).exists():
+                    username = f"{base_username}{suffix}"
+                    suffix += 1
+
+                client_user = User.objects.create(
+                    username=username,
+                    email=email_val,
+                    first_name=consultation.first_name or "",
+                    last_name=consultation.last_name or "",
+                    is_staff=False,
+                )
+                client_user.set_unusable_password()
+                client_user.save()
+
+            # Ensure a ClientProfile exists for this user.
+            ClientProfile.objects.get_or_create(user=client_user)
 
             existing_cp = ClientProgramme.objects.filter(
                 client=client_user,
