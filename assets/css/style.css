@@ -1442,6 +1442,15 @@ textarea {
     min-width: 720px; /* forces horizontal scroll on small screens */
 }
 
+/* Coaching labels: default to full text on desktop/tablet */
+.coaching-label--short {
+    display: none;
+}
+
+.coaching-label--full {
+    display: inline;
+}
+
 /* Filters: avoid overly wide selects on large screens */
 .table-filter--row select,
 .table-filter--row .form-select {
@@ -2749,14 +2758,101 @@ textarea {
         max-width: 100%;
     }
 
+    /* =========================================================
+       Owner + Trainer overview tables (mobile layout <= 576px)
+       Force consistent alignment:
+       Left: name + status
+       Right: action (View) above coaching label
+       ========================================================= */
+    .overview-consultations .dashboard-table thead,
+    .overview-classes .dashboard-table thead {
+        display: none;
+    }
+
+    .overview-consultations .dashboard-table tbody tr,
+    .overview-classes .dashboard-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "name action"
+            "status coaching";
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .overview-consultations .dashboard-table td,
+    .overview-classes .dashboard-table td {
+        border: 0;
+        padding: 0;
+        vertical-align: top;
+    }
+
+    /* Map existing column classes into the grid */
+    .overview-consultations .col-name,
+    .overview-classes .col-name {
+        grid-area: name;
+        font-weight: 700;
+    }
+
+    .overview-consultations .col-status,
+    .overview-classes .col-status {
+        grid-area: status;
+        align-self: start;
+        justify-self: start;
+    }
+
+    .overview-consultations .col-coaching-option,
+    .overview-classes .col-coaching-option {
+        grid-area: coaching;
+        justify-self: end;
+        align-self: start;
+        white-space: normal;
+        line-height: 1.25;
+        max-width: 12rem;
+        text-align: right;
+    }
+
+    .overview-consultations .col-action,
+    .overview-classes .col-action {
+        grid-area: action;
+        text-align: right;
+        justify-self: end;
+        align-self: start;
+        white-space: nowrap;
+    }
+
+    /* Optional: make “View” feel visually anchored */
+    .overview-consultations .col-action a,
+    .overview-classes .col-action a {
+        display: inline-block;
+        line-height: 1.2;
+    }
+
+    /* Optional: prevent any forced horizontal scrolling on these overview tables */
+    .overview-consultations .table-scroll .dashboard-table,
+    .overview-classes .table-scroll .dashboard-table {
+        min-width: 0;
+    }
+
     /* Pills / badges: smaller on mobile to prevent layout overflow */
     .badge,
     .status-pill {
         padding: 2px 8px;
-        font-size: 0.78rem;
+        font-size: 0.75rem;
         line-height: 1.15;
         white-space: nowrap;
         border-radius: 999px;
+    }
+
+    /* Coaching labels: show short on phones */
+    .coaching-label--short {
+        display: inline;
+    }
+
+    .coaching-label--full {
+        display: none;
     }
 
     /* Page header row */

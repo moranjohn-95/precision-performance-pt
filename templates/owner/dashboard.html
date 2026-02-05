@@ -57,19 +57,28 @@
                     <th>Name</th>
                     <th class="col-email">Email</th>
                     <th class="col-goal">Goal</th>
-                    <th>Coaching option</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th class="col-coaching-option">Coaching option</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-action">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for req in latest_requests %}
                 <tr>
                     <td class="col-submitted">{{ req.created_at|date:"d M Y" }}</td>
-                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td class="col-name">{{ req.first_name }} {{ req.last_name }}</td>
                     <td class="col-email">{{ req.email }}</td>
                     <td class="col-goal">{{ req.get_training_goal_display|default:"" }}</td>
-                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td class="col-coaching-option">
+                        {% with opt=req.coaching_option %}
+                            <span class="coaching-label coaching-label--full">
+                                {{ req.get_coaching_option_display|default:"" }}
+                            </span>
+                            <span class="coaching-label coaching-label--short">
+                                {% if opt == "1to1" %}1:1{% elif opt == "online" %}Online{% elif opt == "small_group" %}Small group{% elif opt == "large_group" %}Large group{% else %}{{ req.get_coaching_option_display|default:"" }}{% endif %}
+                            </span>
+                        {% endwith %}
+                    </td>
                     <td>
                         {% if req.status == req.STATUS_ADDED_CLASSES %}
                             <span class="badge badge--classes">
@@ -178,20 +187,29 @@
             <thead>
                 <tr>
                     <th class="col-submitted">Submitted</th>
-                    <th>Name</th>
+                    <th class="col-name">Name</th>
                     <th class="col-preferred-date">Preferred date</th>
                     <th class="col-coaching-option">Coaching option</th>
-                    <th>Action</th>
+                    <th class="col-action">Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for req in current_classes %}
                 <tr>
                     <td class="col-submitted">{{ req.created_at|date:"d M Y" }}</td>
-                    <td>{{ req.first_name }} {{ req.last_name }}</td>
+                    <td class="col-name">{{ req.first_name }} {{ req.last_name }}</td>
                     <td class="col-preferred-date">{{ req.preferred_date|default:"-" }}</td>
-                    <td class="col-coaching-option">{{ req.get_coaching_option_display|default:"" }}</td>
-                    <td>
+                    <td class="col-coaching-option">
+                        {% with opt=req.coaching_option %}
+                            <span class="coaching-label coaching-label--full">
+                                {{ req.get_coaching_option_display|default:"" }}
+                            </span>
+                            <span class="coaching-label coaching-label--short">
+                                {% if opt == "1to1" %}1:1{% elif opt == "online" %}Online{% elif opt == "small_group" %}Small group{% elif opt == "large_group" %}Large group{% else %}{{ req.get_coaching_option_display|default:"" }}{% endif %}
+                            </span>
+                        {% endwith %}
+                    </td>
+                    <td class="col-action">
                         <a
                             class="btn-link"
                             href="{% url 'accounts:trainer_consultation_detail' req.id %}"
