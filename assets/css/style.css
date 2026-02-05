@@ -2190,8 +2190,8 @@ html {
     border-radius: 999px;
     display: grid;
     place-items: center;
-    background: var(--color-link);
-    color: #ffffff;
+    background: rgba(31, 109, 232, 0.12); /* soft blue tint so icons are secondary, not CTA */
+    color: var(--color-link); /* blue icon to match secondary actions */
     flex: 0 0 auto;
 }
 
@@ -2232,10 +2232,10 @@ html {
     width: 68px;
     height: 68px;
     border-radius: 999px;
-    background: var(--color-link);
+    background: rgba(31, 109, 232, 0.12); /* soft blue tint */
     display: grid;
     place-items: center;
-    color: #ffffff;
+    color: var(--color-link);
 }
 
 .why-us__icon-slot .why-us__icon i {
