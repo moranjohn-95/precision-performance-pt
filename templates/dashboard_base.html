@@ -15,21 +15,24 @@
         <a class="dashboard-mobilebar__brand" href="{% url 'home' %}">
             Precision Performance PT
         </a>
-        <div class="dashboard-mobilebar__actions">
-            <a class="dashboard-mobilebar__logout" href="{% url 'accounts:logout' %}">
-                Logout
-            </a>
-            <button
-                type="button"
-                class="dashboard-mobilebar__toggle"
-                aria-controls="clientMobileMenu"
-                aria-expanded="false"
-                aria-label="Open client menu"
-                data-dashboard-toggle
-            >
-                ☰
-            </button>
-        </div>
+            <div class="dashboard-mobilebar__actions">
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="dashboard-mobilebar__logout">
+                        Logout
+                    </button>
+                </form>
+                <button
+                    type="button"
+                    class="dashboard-mobilebar__toggle"
+                    aria-controls="clientMobileMenu"
+                    aria-expanded="false"
+                    aria-label="Open client menu"
+                    data-dashboard-toggle
+                >
+                    ☰
+                </button>
+            </div>
     </div>
 
     <div class="dashboard-shell">
