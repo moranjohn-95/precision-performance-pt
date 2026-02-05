@@ -441,6 +441,11 @@ h3
 .site-footer .footer-cta {
     margin-top: 0.35rem;
 }
+
+/* Tidy spacing when CTA follows quick links */
+.site-footer .footer-links-list + .footer-item .footer-cta {
+    margin-top: 0.6rem;
+}
 /* Footer card enhancements */
 .site-footer .footer-card {
     background: var(--color-header-bg);

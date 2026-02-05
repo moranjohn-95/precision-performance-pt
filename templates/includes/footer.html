@@ -31,6 +31,42 @@
       </div>
     </section>
 
+    {# Quick links now in middle column #}
+    <section class="footer-card footer-card--links" aria-label="Quick links">
+      <h3 class="footer-title">Quick links</h3>
+      {# Divider under title for consistent spacing #}
+      <div class="footer-card-divider footer-card-divider--title" role="presentation"></div>
+
+      <ul class="footer-links-list">
+        <li>
+          <a class="footer-link" href="{% url 'accounts:client_login' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Client login
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{% url 'accounts:trainer_login' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Trainer login
+          </a>
+        </li>
+        <li>
+          <a class="footer-link" href="{% url 'contact_us' %}">
+            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
+            Contact
+          </a>
+        </li>
+      </ul>
+
+      {# CTA moved here under quick links #}
+      <p class="footer-item">
+        <a class="footer-cta btn-primary btn-primary--sm" href="{% url 'consultation_request' %}">
+          Book a Consultation
+        </a>
+      </p>
+    </section>
+
+    {# Contact card now third column, without CTA #}
     <section class="footer-card footer-card--contact" aria-label="Contact details">
       <h3 class="footer-title">Contact us</h3>
       {# Divider under title for consistent spacing #}
@@ -60,43 +96,7 @@
         </p>
 
         <p class="footer-help">Email or call for assistance.</p>
-
-        <div class="footer-card-divider" role="presentation"></div>
-
-        {# CTA to book a consultation (moved under help text) #}
-        <p class="footer-item">
-          <a class="footer-cta btn-primary btn-primary--sm" href="{% url 'consultation_request' %}">
-            Book a Consultation
-          </a>
-        </p>
       </div>
-    </section>
-
-    <section class="footer-card footer-card--links" aria-label="Quick links">
-      <h3 class="footer-title">Quick links</h3>
-      {# Divider under title for consistent spacing #}
-      <div class="footer-card-divider footer-card-divider--title" role="presentation"></div>
-
-      <ul class="footer-links-list">
-        <li>
-          <a class="footer-link" href="{% url 'accounts:client_login' %}">
-            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
-            Client login
-          </a>
-        </li>
-        <li>
-          <a class="footer-link" href="{% url 'accounts:trainer_login' %}">
-            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
-            Trainer login
-          </a>
-        </li>
-        <li>
-          <a class="footer-link" href="{% url 'contact_us' %}">
-            <i class="footer-icon fa-solid fa-chevron-right" aria-hidden="true"></i>
-            Contact
-          </a>
-        </li>
-      </ul>
     </section>
   </div>
 
