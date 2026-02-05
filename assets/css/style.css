@@ -1418,6 +1418,38 @@ html {
     background-color: #f8fafc;
 }
 
+/* Overview tables: column helpers (owner + trainer dashboards) */
+.overview-consultations .col-email,
+.overview-consultations .col-goal,
+.overview-classes .col-preferred-date {
+    /* Visible by default on larger screens */
+}
+
+.overview-classes .col-coaching-option {
+    /* Keep tidy on wide screens */
+    white-space: nowrap;
+}
+
+/* Table scroll wrapper for small screens */
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem; /* match card rounding */
+}
+
+/* Prevent table columns from collapsing too much */
+.table-scroll .dashboard-table {
+    min-width: 720px; /* forces horizontal scroll on small screens */
+}
+
+/* Filters: avoid overly wide selects on large screens */
+.table-filter--row select,
+.table-filter--row .form-select {
+    width: 100%;
+    max-width: 320px;
+}
+
 .is-highlight {
     outline: 3px solid #9fe40a;
     outline-offset: 3px;
@@ -2346,6 +2378,11 @@ html {
         outline: none;
     }
 
+    /* Overview tables: reduce clutter on tablets */
+    .overview-consultations .col-email {
+        display: none;
+    }
+
     /* Why Us: two-column layout on tablets */
     .why-us__grid {
         grid-template-columns: repeat(2, 1fr);
@@ -2627,6 +2664,35 @@ html {
         text-decoration: none;
         font-weight: 700;
         font-size: 1rem;
+    }
+
+    /* Overview tables: hide low-priority columns on phones */
+    .overview-consultations .col-email,
+    .overview-consultations .col-goal,
+    .overview-consultations .col-submitted,
+    .overview-classes .col-preferred-date,
+    .overview-classes .col-submitted {
+        display: none;
+    }
+
+    /* Overview tables: allow coaching option to wrap on phones */
+    .overview-classes .col-coaching-option {
+        white-space: normal;
+        line-height: 1.25;
+        max-width: 12rem;
+    }
+
+    /* Overview tables: slightly tighter table spacing on phones */
+    .dashboard-table th,
+    .dashboard-table td {
+        font-size: 0.85rem;
+        padding: 0.5rem 0.6rem;
+    }
+
+    /* Filters: full-width select on phones for tap targets */
+    .table-filter--row select,
+    .table-filter--row .form-select {
+        max-width: 100%;
     }
 
     .dashboard-mobilebar__actions {

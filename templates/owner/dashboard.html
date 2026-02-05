@@ -13,7 +13,7 @@
 
 {% block dashboard_content %}
 
-<div class="dashboard-card">
+<div class="dashboard-card overview-consultations">
     <h2 class="dashboard-card__title">Consultation requests</h2>
     <p style="margin-bottom: 0.75rem; font-size: 0.9rem; color: #475569;">
         Total requests: {{ total_requests }}
@@ -53,10 +53,10 @@
         <table class="dashboard-table">
             <thead>
                 <tr>
-                    <th>Submitted</th>
+                    <th class="col-submitted">Submitted</th>
                     <th>Name</th>
-                    <th>Email</th>
-                    <th>Goal</th>
+                    <th class="col-email">Email</th>
+                    <th class="col-goal">Goal</th>
                     <th>Coaching option</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -65,10 +65,10 @@
             <tbody>
                 {% for req in latest_requests %}
                 <tr>
-                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td class="col-submitted">{{ req.created_at|date:"d M Y" }}</td>
                     <td>{{ req.first_name }} {{ req.last_name }}</td>
-                    <td>{{ req.email }}</td>
-                    <td>{{ req.get_training_goal_display|default:"" }}</td>
+                    <td class="col-email">{{ req.email }}</td>
+                    <td class="col-goal">{{ req.get_training_goal_display|default:"" }}</td>
                     <td>{{ req.get_coaching_option_display|default:"" }}</td>
                     <td>
                         {% if req.status == req.STATUS_ADDED_CLASSES %}
@@ -136,7 +136,7 @@
 
 </div>
 
-<section class="dashboard-card dashboard-card--wide">
+<section class="dashboard-card dashboard-card--wide overview-classes">
     <h2 class="dashboard-card__title">Current Classes</h2>
     <p class="dashboard-subtitle">
         Group coaching requests that have been added to current classes.
@@ -177,20 +177,20 @@
         <table class="dashboard-table">
             <thead>
                 <tr>
-                    <th>Submitted</th>
+                    <th class="col-submitted">Submitted</th>
                     <th>Name</th>
-                    <th>Preferred date</th>
-                    <th>Coaching option</th>
+                    <th class="col-preferred-date">Preferred date</th>
+                    <th class="col-coaching-option">Coaching option</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for req in current_classes %}
                 <tr>
-                    <td>{{ req.created_at|date:"d M Y" }}</td>
+                    <td class="col-submitted">{{ req.created_at|date:"d M Y" }}</td>
                     <td>{{ req.first_name }} {{ req.last_name }}</td>
-                    <td>{{ req.preferred_date|default:"-" }}</td>
-                    <td>{{ req.get_coaching_option_display|default:"" }}</td>
+                    <td class="col-preferred-date">{{ req.preferred_date|default:"-" }}</td>
+                    <td class="col-coaching-option">{{ req.get_coaching_option_display|default:"" }}</td>
                     <td>
                         <a
                             class="btn-link"
