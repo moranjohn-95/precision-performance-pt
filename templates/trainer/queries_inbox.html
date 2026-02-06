@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block dashboard_content %}
-<section class="dashboard-card dashboard-card--wide queries-page">
+<section class="dashboard-card dashboard-card--wide queries-page queries-page--trainer">
     <header class="card-header">
         {# Renamed for clarity: these are contact form submissions #}
         <h2 class="card-title">Contact forms</h2>
@@ -24,22 +24,24 @@
     <div class="card-body">
         {# Simple status filter for trainer inbox #}
         <form method="get" class="table-filter table-filter--row">
-            <label for="status">Status</label>
-            <select id="status" name="status" onchange="this.form.submit()">
-                <option value="all" {% if selected_status == "all" %}selected{% endif %}>
-                    All
-                </option>
-                <option value="new" {% if selected_status == "new" %}selected{% endif %}>
-                    New
-                </option>
-                <option value="in_progress"
-                    {% if selected_status == "in_progress" %}selected{% endif %}>
-                    In progress
-                </option>
-                <option value="closed" {% if selected_status == "closed" %}selected{% endif %}>
-                    Closed
-                </option>
-            </select>
+            <div class="filter-field">
+                <label for="status">Status</label>
+                <select id="status" name="status" class="form-select" onchange="this.form.submit()">
+                    <option value="all" {% if selected_status == "all" %}selected{% endif %}>
+                        All
+                    </option>
+                    <option value="new" {% if selected_status == "new" %}selected{% endif %}>
+                        New
+                    </option>
+                    <option value="in_progress"
+                        {% if selected_status == "in_progress" %}selected{% endif %}>
+                        In progress
+                    </option>
+                    <option value="closed" {% if selected_status == "closed" %}selected{% endif %}>
+                        Closed
+                    </option>
+                </select>
+            </div>
         </form>
 
         {% if page_obj %}

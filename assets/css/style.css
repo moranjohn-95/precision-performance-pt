@@ -3525,3 +3525,24 @@ textarea {
 }
 
 
+
+/* Trainer Queries: keep Status label above dropdown on all screen sizes */
+.queries-page--trainer .table-filter--row {
+    grid-template-columns: 1fr;
+    justify-items: start;
+}
+
+.queries-page--trainer .table-filter--row .filter-field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+.queries-page--trainer .table-filter--row .filter-field select,
+.queries-page--trainer .table-filter--row .filter-field .form-select {
+    width: 100%;
+    max-width: 320px;
+}
+
