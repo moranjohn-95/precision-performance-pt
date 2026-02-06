@@ -12,13 +12,14 @@
 
 {% block dashboard_content %}
 
+<div class="page-header-row">
+  <div class="page-header-row__action">
+    <a class="btn btn-secondary btn-secondary--sm" href="{% url 'accounts:trainer_support' %}">← Back to inbox</a>
+  </div>
+</div>
+
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <p class="card-kicker">
-            <a href="{% url 'accounts:trainer_support' %}" class="text-link">
-                ← Back to inbox
-            </a>
-        </p>
         <h2 class="card-title">{{ ticket.subject }}</h2>
     </header>
 
@@ -66,8 +67,8 @@
                         required
                     ></textarea>
                 </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-primary">
+                <div class="support-actions">
+                    <button type="submit" class="btn btn-secondary">
                         Send reply
                     </button>
                 </div>
@@ -78,14 +79,18 @@
             {% csrf_token %}
             {% if ticket.status == ticket.STATUS_CLOSED %}
                 <input type="hidden" name="action" value="reopen">
-                <button type="submit" class="btn-secondary">
-                    Reopen ticket
-                </button>
+                <div class="support-actions">
+                    <button type="submit" class="btn btn-danger">
+                        Reopen ticket
+                    </button>
+                </div>
             {% else %}
                 <input type="hidden" name="action" value="close">
-                <button type="submit" class="btn-secondary">
-                    Close ticket
-                </button>
+                <div class="support-actions">
+                    <button type="submit" class="btn btn-danger">
+                        Close ticket
+                    </button>
+                </div>
             {% endif %}
         </form>
     </footer>
