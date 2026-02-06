@@ -2554,6 +2554,11 @@ def trainer_programmes(request):
             }
         )
 
+    # Paginate active blocks to keep the table manageable.
+    # Show 5 active blocks per page to keep the table readable.
+    active_blocks_paginator = Paginator(programme_blocks, 5)
+    active_blocks_page = active_blocks_paginator.get_page(request.GET.get("abp"))
+
     template_blocks_qs = (
         ProgrammeBlock.objects.filter(is_template=True)
         .annotate(assignments_count=Count("assignments"))
@@ -2573,6 +2578,7 @@ def trainer_programmes(request):
 
     context = {
         "programme_blocks": programme_blocks,
+        "active_blocks_page": active_blocks_page,
         "programme_templates": programme_templates,
     }
     # Owners see owner-branded template; trainers see trainer template.

@@ -30,7 +30,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for cp in programme_blocks %}
+                {% for cp in active_blocks_page %}
                     <tr>
                         <td class="col-programme">
                             {# Active blocks should open the tailored copy directly #}
@@ -53,6 +53,33 @@
             </tbody>
         </table>
     </div>
+
+    {# Pagination for active blocks (abp param). #}
+    {% if active_blocks_page and active_blocks_page.has_other_pages %}
+    <nav class="pagination-nav">
+        <ul class="pagination">
+            {% if active_blocks_page.has_previous %}
+                <li class="pagination-item">
+                    <a class="pagination-link" href="?abp={{ active_blocks_page.previous_page_number }}">
+                        &lt; Prev
+                    </a>
+                </li>
+            {% endif %}
+            <li class="pagination-item is-active">
+                <span class="pagination-link">
+                    Page {{ active_blocks_page.number }} of {{ active_blocks_page.paginator.num_pages }}
+                </span>
+            </li>
+            {% if active_blocks_page.has_next %}
+                <li class="pagination-item">
+                    <a class="pagination-link" href="?abp={{ active_blocks_page.next_page_number }}">
+                        Next &gt;
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 </section>
 
 <section class="dashboard-card dashboard-card--wide">
