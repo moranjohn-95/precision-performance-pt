@@ -2356,6 +2356,157 @@ def owner_programme_detail(request, block_id):
     return render(request, "owner/programme_detail.html", context)
 
 
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def owner_tailored_programme_detail(request, block_id):
+    """
+    Owner view: edit a tailored (non-template) programme block for a specific client.
+    """
+    if not request.user.is_superuser:
+        raise Http404("Owner view only")
+
+    tailored_block = get_object_or_404(
+        ProgrammeBlock.objects.prefetch_related("days__exercises"),
+        id=block_id,
+        is_template=False,
+    )
+
+    client_programme = ClientProgramme.objects.filter(block=tailored_block).select_related(
+        "client", "trainer"
+    ).first()
+    client_user = client_programme.client if client_programme else None
+
+    ExerciseFormSet = modelformset_factory(
+        ProgrammeExercise,
+        fields=("exercise_name", "target_sets", "target_reps", "target_weight_kg"),
+        extra=0,
+    )
+
+    tailored_days = tailored_block.days.all().order_by("order")
+    day_param = request.GET.get("day")
+    selected_day = None
+    if tailored_days:
+        if day_param and day_param.isdigit():
+            selected_day = tailored_days.filter(id=int(day_param)).first()
+        if selected_day is None:
+            selected_day = tailored_days.first()
+
+    exercises_qs = (
+        ProgrammeExercise.objects.filter(day=selected_day)
+        .select_related("day")
+        .order_by("order")
+        if selected_day
+        else ProgrammeExercise.objects.none()
+    )
+
+    exercise_formset = None
+    if request.method == "POST" and "save_exercises" in request.POST:
+        exercise_formset = ExerciseFormSet(
+            request.POST,
+            queryset=exercises_qs,
+            prefix="ex",
+        )
+        if exercise_formset.is_valid():
+            exercise_formset.save()
+            messages.success(request, "Tailored programme updated.")
+            redirect_url = reverse_lazy(
+                "accounts:owner_tailored_programme_detail",
+                kwargs={"block_id": tailored_block.id},
+            )
+            if selected_day:
+                redirect_url = f"{redirect_url}?day={selected_day.id}"
+            return redirect(redirect_url)
+        messages.error(request, "Please correct the errors below.")
+    else:
+        exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
+
+    context = {
+        "block": tailored_block,
+        "client_programme": client_programme,
+        "client_user": client_user,
+        "tailored_days": tailored_days,
+        "selected_day_id": selected_day.id if selected_day else None,
+        "exercise_formset": exercise_formset,
+    }
+    return render(request, "owner/tailored_programme_detail.html", context)
+
+
+@login_required(login_url="accounts:trainer_login")
+@staff_required
+def trainer_tailored_programme_detail(request, block_id):
+    """
+    Trainer view: edit a tailored (non-template) programme block assigned to this trainer.
+    """
+    tailored_block = get_object_or_404(
+        ProgrammeBlock.objects.prefetch_related("days__exercises"),
+        id=block_id,
+        is_template=False,
+    )
+
+    client_programme = ClientProgramme.objects.filter(block=tailored_block).select_related(
+        "client", "trainer"
+    ).first()
+
+    if client_programme and client_programme.trainer != request.user:
+        raise Http404("Programme not found")
+
+    client_user = client_programme.client if client_programme else None
+
+    ExerciseFormSet = modelformset_factory(
+        ProgrammeExercise,
+        fields=("exercise_name", "target_sets", "target_reps", "target_weight_kg"),
+        extra=0,
+    )
+
+    tailored_days = tailored_block.days.all().order_by("order")
+    day_param = request.GET.get("day")
+    selected_day = None
+    if tailored_days:
+        if day_param and day_param.isdigit():
+            selected_day = tailored_days.filter(id=int(day_param)).first()
+        if selected_day is None:
+            selected_day = tailored_days.first()
+
+    exercises_qs = (
+        ProgrammeExercise.objects.filter(day=selected_day)
+        .select_related("day")
+        .order_by("order")
+        if selected_day
+        else ProgrammeExercise.objects.none()
+    )
+
+    exercise_formset = None
+    if request.method == "POST" and "save_exercises" in request.POST:
+        exercise_formset = ExerciseFormSet(
+            request.POST,
+            queryset=exercises_qs,
+            prefix="ex",
+        )
+        if exercise_formset.is_valid():
+            exercise_formset.save()
+            messages.success(request, "Tailored programme updated.")
+            redirect_url = reverse_lazy(
+                "accounts:trainer_tailored_programme_detail",
+                kwargs={"block_id": tailored_block.id},
+            )
+            if selected_day:
+                redirect_url = f"{redirect_url}?day={selected_day.id}"
+            return redirect(redirect_url)
+        messages.error(request, "Please correct the errors below.")
+    else:
+        exercise_formset = ExerciseFormSet(queryset=exercises_qs, prefix="ex")
+
+    context = {
+        "block": tailored_block,
+        "client_programme": client_programme,
+        "client_user": client_user,
+        "tailored_days": tailored_days,
+        "selected_day_id": selected_day.id if selected_day else None,
+        "exercise_formset": exercise_formset,
+    }
+    return render(request, "trainer/tailored_programme_detail.html", context)
+
+
 @login_required
 @staff_member_required
 def trainer_programmes(request):

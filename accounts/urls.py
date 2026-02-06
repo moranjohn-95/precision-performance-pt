@@ -11,7 +11,9 @@ from .views import (
     trainer_clients,
     trainer_programmes,
     trainer_programme_detail,
+    trainer_tailored_programme_detail,
     owner_programme_detail,
+    owner_tailored_programme_detail,
     trainer_consultation_detail,
     trainer_client_detail,
     trainer_session_edit,
@@ -59,6 +61,11 @@ urlpatterns = [
         trainer_programme_detail,
         name="trainer_programme_detail",
     ),
+    path(
+        "trainer/programmes/tailored/<int:block_id>/",
+        trainer_tailored_programme_detail,
+        name="trainer_tailored_programme_detail",
+    ),
     # Alias so owner templates can reverse the programmes list with owner branding.
     path(
         "owner/programmes/",
@@ -69,6 +76,11 @@ urlpatterns = [
         "owner/programmes/<int:block_id>/",
         owner_programme_detail,
         name="owner_programme_detail",
+    ),
+    path(
+        "owner/programmes/tailored/<int:block_id>/",
+        owner_tailored_programme_detail,
+        name="owner_tailored_programme_detail",
     ),
     path(
         "trainer/clients/<int:client_id>/",

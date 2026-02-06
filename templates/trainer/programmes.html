@@ -31,9 +31,10 @@
                 {% for cp in programme_blocks %}
                     <tr>
                         <td class="col-programme">
+                            {# Active blocks should open the tailored copy directly #}
                             <a
                                 class="text-link"
-                                href="{% url 'accounts:trainer_programme_detail' block_id=cp.block.id %}{% if cp.cp_id %}?cp={{ cp.cp_id }}{% endif %}"
+                                href="{% url 'accounts:trainer_tailored_programme_detail' block_id=cp.block.id %}"
                             >
                                 {{ cp.block.name }}
                             </a>

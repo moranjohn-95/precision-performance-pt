@@ -1,0 +1,81 @@
+{% extends "dashboard_base.html" %}
+
+{% block sidebar_title %}Owner Menu{% endblock %}
+{% block sidebar_menu %}{% include "owner/_sidebar.html" %}{% endblock %}
+
+{% block page_eyebrow %}Owner dashboard{% endblock %}
+{% block page_title %}Tailored programme{% endblock %}
+{% block page_subtitle %}
+<p class="muted-text" style="margin: 0;">Tailored for {{ client_user.get_full_name|default:client_user.username }}</p>
+{% endblock %}
+
+{% block dashboard_content %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h2 class="card-title">{{ block.name }}</h2>
+        <p class="card-subtitle">Edit sets/reps/weights for this client-specific copy.</p>
+    </header>
+
+    {# Day filter (tailored block only) #}
+    {% if tailored_days %}
+    <form method="get" class="form" style="margin-bottom: 1rem;">
+        <label for="day" class="form-label">Day</label>
+        <select
+            id="day"
+            name="day"
+            class="form-control"
+            onchange="this.form.submit()"
+        >
+            {% for d in tailored_days %}
+            <option value="{{ d.id }}" {% if selected_day_id == d.id %}selected{% endif %}>
+                {{ d.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </form>
+    {% endif %}
+
+    <div class="card-body">
+        <form method="post" class="form">
+            {% csrf_token %}
+            {{ exercise_formset.management_form }}
+
+            <div class="dashboard-table-wrapper">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Exercise</th>
+                            <th>Sets</th>
+                            <th>Reps</th>
+                            <th>Target weight (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for form in exercise_formset %}
+                        <tr>
+                            <td>
+                                {{ form.exercise_name }}
+                                {{ form.id }}
+                            </td>
+                            <td>{{ form.target_sets }}</td>
+                            <td>{{ form.target_reps }}</td>
+                            <td>{{ form.target_weight_kg }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="muted-text">No exercises for this day.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-actions" style="margin-top: 1rem;">
+                <button type="submit" name="save_exercises" value="1" class="btn-secondary btn-small">
+                    Save tailored changes
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}
