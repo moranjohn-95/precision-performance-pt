@@ -1467,6 +1467,63 @@ textarea {
     display: inline;
 }
 
+/* Page context banner (e.g. “Client: …”) */
+.page-context {
+    margin: 1rem 0 1.25rem;
+}
+
+.page-context__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.page-context__label {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #64748b;
+}
+
+.page-context__value {
+    margin: 0.2rem 0 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.page-context__actions {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Page context: ensure action buttons have readable text */
+.page-context__actions .btn,
+.page-context__actions button,
+.page-context__actions a {
+    color: #ffffff;
+}
+
+.page-context__actions .btn:hover,
+.page-context__actions .btn:focus,
+.page-context__actions .btn:active,
+.page-context__actions button:hover,
+.page-context__actions button:focus,
+.page-context__actions button:active,
+.page-context__actions a:hover,
+.page-context__actions a:focus,
+.page-context__actions a:active {
+    color: #ffffff;
+}
 /* Filters: avoid overly wide selects on large screens */
 .table-filter--row select,
 .table-filter--row .form-select {
@@ -2889,6 +2946,22 @@ textarea {
 
     .coaching-label--full {
         display: none;
+    }
+
+    /* Page context banner */
+    .page-context__inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .page-context__actions {
+        width: 100%;
+    }
+
+    .page-context__actions .btn,
+    .page-context__actions button,
+    .page-context__actions a {
+        width: 100%;
     }
 
     /* Clients page: mobile stacked layout */
