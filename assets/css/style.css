@@ -2430,6 +2430,34 @@ textarea {
 
 /* Tablet and below (<= 992px) */
 @media (max-width: 992px) {
+    /* Tailored programme (owner + trainer) */
+    .dashboard-layout.client-dashboard.tailored-programme {
+        padding: 1rem 1rem 2rem;
+    }
+
+    .tailored-programme .dashboard-card--wide {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Exercise rows area: allow horizontal scroll instead of squashing */
+    .tailored-programme .dashboard-card--wide table,
+    .tailored-programme .dashboard-card--wide .table,
+    .tailored-programme .dashboard-card--wide .table-scroll,
+    .tailored-programme .dashboard-card--wide .dashboard-table-wrapper {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Keep controls tappable */
+    .tailored-programme input[type="text"],
+    .tailored-programme input[type="number"],
+    .tailored-programme select {
+        min-height: 44px;
+    }
+
     /* Navbar */
     .main-nav {
         padding: 0.9rem 1.25rem;
@@ -2610,6 +2638,55 @@ textarea {
         white-space: nowrap;
     }
 
+    /* Tailored programme (tablet layout fixes) */
+    /* Tailored programme: tablet width fixes */
+    .tailored-programme .site-main,
+    .tailored-programme .dashboard-main,
+    .tailored-programme .dashboard-main__content,
+    .tailored-programme .dashboard-layout,
+    .tailored-programme .dashboard-shell {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .tailored-programme .dashboard-layout {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .tailored-programme .dashboard-card--wide {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* If any inner container is limiting width, remove it on tablet */
+    .tailored-programme .dashboard-card--wide .page-section-inner,
+    .tailored-programme .dashboard-card--wide .card-body,
+    .tailored-programme .dashboard-card--wide .dashboard-card__body {
+        max-width: 100%;
+    }
+
+    /* Tailored programme: exercise name readability (tablet) */
+    .tailored-programme table {
+        table-layout: auto;
+    }
+
+    .tailored-programme th:first-child,
+    .tailored-programme td:first-child {
+        width: 42%;
+        max-width: none;
+    }
+
+    /* Allow exercise names to wrap instead of truncating */
+    .tailored-programme td:first-child,
+    .tailored-programme td:first-child * {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+
     /* Footer */
     .site-footer .footer-grid {
         grid-template-columns: 1fr;
@@ -2622,6 +2699,93 @@ textarea {
 
 /* Mobile (<= 576px) */
 @media (max-width: 576px) {
+    /* Tailored programme: fine-tune exercise text on phones */
+    .tailored-programme td:first-child,
+    .tailored-programme td:first-child * {
+        font-size: 0.9rem;
+    }
+
+    /* Tailored programme (owner + trainer) */
+    /* Stack header content neatly */
+    .tailored-programme .dashboard-card--wide .card-header,
+    .tailored-programme .dashboard-card--wide header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.6rem;
+    }
+
+    /* Full-width controls on mobile */
+    .tailored-programme input[type="text"],
+    .tailored-programme input[type="number"],
+    .tailored-programme select {
+        width: 100%;
+        max-width: 100%;
+        padding: 0.65rem 0.75rem;
+    }
+
+    /* Tailored programme: mobile stacked exercise rows */
+    .tailored-programme table {
+        width: 100%;
+        min-width: 0;
+    }
+
+    /* Hide table header on mobile (we use stacked layout) */
+    .tailored-programme table thead {
+        display: none;
+    }
+
+    /* Each row becomes a small grid card */
+    .tailored-programme table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "exercise exercise"
+            "sets reps"
+            "weight weight";
+        gap: 0.5rem 0.75rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .tailored-programme table td {
+        border: 0;
+        padding: 0;
+        min-width: 0;
+    }
+
+    /* Map columns into grid areas (assumes: 1=exercise, 2=sets, 3=reps, 4=weight) */
+    .tailored-programme table td:nth-child(1) { grid-area: exercise; }
+    .tailored-programme table td:nth-child(2) { grid-area: sets; }
+    .tailored-programme table td:nth-child(3) { grid-area: reps; }
+    .tailored-programme table td:nth-child(4) { grid-area: weight; }
+
+    /* Exercise name: allow full wrap */
+    .tailored-programme table td:nth-child(1),
+    .tailored-programme table td:nth-child(1) * {
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+
+    /* Inputs should fill their grid cell */
+    .tailored-programme table input[type="number"],
+    .tailored-programme table input[type="text"],
+    .tailored-programme table select {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+
+    /* Save button full width for mobile */
+    .tailored-programme .btn,
+    .tailored-programme button,
+    .tailored-programme input[type="submit"] {
+        width: 100%;
+        max-width: 100%;
+    }
+
     /* Navbar */
     .main-nav {
         padding: 0.85rem 1.25rem;

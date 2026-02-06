@@ -9,7 +9,7 @@
 }
 </style>
 
-<div class="dashboard-layout client-dashboard">
+<div class="{% block dashboard_layout_class %}dashboard-layout client-dashboard{% endblock %}">
     <!-- Mobile/portal top bar sits above the shell -->
     <div class="dashboard-mobilebar">
         <a class="dashboard-mobilebar__brand" href="{% url 'home' %}">
