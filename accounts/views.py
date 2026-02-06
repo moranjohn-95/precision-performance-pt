@@ -2109,13 +2109,27 @@ def owner_programme_detail(request, block_id):
 
     exercise_formset = None
 
-    # Owner dropdown should list clients in the filtered assignment set.
-    assignment_clients = assignments_qs.values_list("client", flat=True)
-    assignable_clients = list(
-        User.objects.filter(id__in=assignment_clients)
-        .order_by("username")
-        .distinct()
-    )
+    # Build assignable clients list for owner view.
+    if request.user.is_superuser:
+        # Superusers can assign to any client with a ClientProfile; fallback to all non-staff users.
+        # Correct related name is client_profile.
+        assignable_clients_qs = User.objects.filter(
+            client_profile__isnull=False
+        ).order_by("first_name", "last_name", "username")
+        if not assignable_clients_qs.exists():
+            assignable_clients_qs = User.objects.filter(is_staff=False).order_by(
+                "first_name", "last_name", "username"
+            )
+        assignable_clients = list(assignable_clients_qs)
+    else:
+        # Non-owners: restrict to clients already linked to assignments for this block.
+        assignment_clients = assignments_qs.values_list("client", flat=True)
+        assignable_clients = list(
+            User.objects.filter(id__in=assignment_clients)
+            .order_by("username")
+            .distinct()
+        )
+
     allowed_email_set = {
         u.email.lower() for u in assignable_clients if u.email
     }

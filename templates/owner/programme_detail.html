@@ -245,15 +245,22 @@
             {% csrf_token %}
             <label for="client_id" class="form-label">Client</label>
             <select id="client_id" name="client_id" class="form-control">
+                <option value="" disabled selected>Select a client...</option>
                 {% for user in assignable_clients %}
                     <option value="{{ user.id }}">
                         {{ user.get_full_name|default:user.username }} ({{ user.email }})
                     </option>
                 {% endfor %}
             </select>
-            <button type="submit" name="assign_programme" class="btn-primary" style="margin-top: 0.5rem;">
-                Assign programme
-            </button>
+            {% if assignable_clients %}
+                <button type="submit" name="assign_programme" class="btn-primary" style="margin-top: 0.5rem;">
+                    Assign programme
+                </button>
+            {% else %}
+                <p class="muted-text" style="margin-top: 0.5rem;">
+                    No eligible clients available to assign.
+                </p>
+            {% endif %}
         </form>
     </div>
 </section>

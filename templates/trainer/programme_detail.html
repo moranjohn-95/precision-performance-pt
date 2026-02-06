@@ -135,11 +135,17 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-actions" style="margin-top: 1rem;">
-                <button type="submit" class="btn-secondary btn-small" name="assign_to_client" value="1">
-                    Create tailored copy + assign
-                </button>
-            </div>
+            {% if assignable_clients %}
+                <div class="form-actions" style="margin-top: 1rem;">
+                    <button type="submit" class="btn-secondary btn-small" name="assign_to_client" value="1">
+                        Create tailored copy + assign
+                    </button>
+                </div>
+            {% else %}
+                <p class="muted-text" style="margin-top: 0.5rem;">
+                    No eligible clients available to assign.
+                </p>
+            {% endif %}
         </form>
     </div>
 </section>
