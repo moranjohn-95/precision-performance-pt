@@ -10,15 +10,15 @@
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Queries{% endblock %}
-{% block page_subtitle %}Queries assigned to you.{% endblock %}
+{% block page_subtitle %}
+{# Subtitle removed to avoid redundant grey text #}
+{% endblock %}
 
 {% block dashboard_content %}
 <section class="dashboard-card dashboard-card--wide queries-page">
     <header class="card-header">
-        <h2 class="card-title">Queries</h2>
-        <p class="card-subtitle">
-            Contact queries assigned to you.
-        </p>
+        {# Renamed for clarity: these are contact form submissions #}
+        <h2 class="card-title">Contact forms</h2>
     </header>
 
     <div class="card-body">

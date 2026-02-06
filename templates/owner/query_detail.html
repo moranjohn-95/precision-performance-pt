@@ -10,15 +10,20 @@
 
 {% block page_eyebrow %}Owner dashboard{% endblock %}
 {% block page_title %}Query detail{% endblock %}
-{% block page_subtitle %}Contact query from the Contact us form.{% endblock %}
+{% block page_subtitle %}
+{# Subtitle removed for brevity #}
+{% endblock %}
 
 {% block dashboard_content %}
+<section class="page-actions">
+    <a class="btn btn-secondary" href="{% url 'accounts:owner_queries' %}">
+        Back to queries
+    </a>
+</section>
+
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Query summary</h2>
-        <p class="card-subtitle">
-            Manage assignment and status for this contact query.
-        </p>
     </header>
 
     <div class="card-body">
@@ -111,10 +116,7 @@
             </div>
 
             <div class="form-actions form-actions--spaced assign-actions-row">
-                <button type="submit" class="btn-primary">Save</button>
-                <a class="btn-secondary assign-back-link" href="{% url 'accounts:owner_queries' %}">
-                    Back to queries
-                </a>
+                <button type="submit" class="btn-secondary">Save</button>
             </div>
         </form>
     </div>

@@ -10,15 +10,20 @@
 
 {% block page_eyebrow %}Trainer dashboard{% endblock %}
 {% block page_title %}Query detail{% endblock %}
-{% block page_subtitle %}Contact query assigned to you.{% endblock %}
+{% block page_subtitle %}
+{# Subtitle removed to reduce clutter #}
+{% endblock %}
 
 {% block dashboard_content %}
+<section class="page-actions">
+    <a class="btn btn-secondary" href="{% url 'accounts:trainer_queries' %}">
+        Back to queries
+    </a>
+</section>
+
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Query summary</h2>
-        <p class="card-subtitle">
-            Trainers can update status only; assignment is owner-only.
-        </p>
     </header>
 
     <div class="card-body">
@@ -63,7 +68,9 @@
 
         <div class="card-section">
             <h3>Message</h3>
-            <p>{{ query.message|linebreaksbr }}</p>
+            <div class="message-box">
+                {{ query.message|linebreaksbr }}
+            </div>
         </div>
 
         <form method="post" class="form">
@@ -81,10 +88,7 @@
             </div>
 
             <div class="form-actions form-actions--spaced">
-                <button type="submit" class="btn-primary">Save</button>
-                <a class="btn-secondary" href="{% url 'accounts:trainer_queries' %}">
-                    Back to queries
-                </a>
+                <button type="submit" class="btn-secondary">Save</button>
             </div>
         </form>
     </div>
