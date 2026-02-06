@@ -2965,6 +2965,50 @@ textarea {
         width: 100%;
     }
 
+    /* Programmes: active blocks table stacked on mobile */
+    .active-blocks-table thead {
+        display: none;
+    }
+
+    .active-blocks-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "programme phase"
+            "status next";
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .active-blocks-table td {
+        border: 0;
+        padding: 0;
+        vertical-align: top;
+    }
+
+    .active-blocks-table .col-programme {
+        grid-area: programme;
+        word-break: break-word;
+    }
+
+    .active-blocks-table .col-phase {
+        grid-area: phase;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .active-blocks-table .col-status {
+        grid-area: status;
+    }
+
+    .active-blocks-table .col-next-action {
+        grid-area: next;
+        text-align: right;
+        word-break: break-word;
+    }
+
     /* Page header row */
     .page-header-row {
         flex-direction: column;

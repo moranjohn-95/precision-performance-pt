@@ -20,20 +20,19 @@
     </p>
 
     <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
+        <table class="dashboard-table active-blocks-table">
             <thead>
                 <tr>
-                    <th>Programme</th>
-                    <th>Phase</th>
-                    <th>Clients</th>
-                    <th>Status</th>
-                    <th>Next action</th>
+                    <th class="col-programme">Programme</th>
+                    <th class="col-phase">Phase</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-next-action">Next action</th>
                 </tr>
             </thead>
             <tbody>
                 {% for cp in programme_blocks %}
                     <tr>
-                        <td>
+                        <td class="col-programme">
                             {# Owner links to owner detail to keep owner branding #}
                             <a
                                 class="text-link"
@@ -42,14 +41,13 @@
                                 {{ cp.block.name }}
                             </a>
                         </td>
-                        <td>{{ cp.phase }}</td>
-                        <td>{{ cp.clients }}</td>
-                        <td>{{ cp.status }}</td>
-                        <td>{{ cp.next_action }}</td>
+                        <td class="col-phase">{{ cp.phase }}</td>
+                        <td class="col-status">{{ cp.status }}</td>
+                        <td class="col-next-action">{{ cp.next_action }}</td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5">No programmes have been set up yet.</td>
+                        <td colspan="4">No programmes have been set up yet.</td>
                     </tr>
                 {% endfor %}
             </tbody>
