@@ -1453,7 +1453,7 @@ textarea {
 
 /* Prevent table columns from collapsing too much */
 .table-scroll .dashboard-table {
-    min-width: 720px; /* forces horizontal scroll on small screens */
+    min-width: 400px; /* forces horizontal scroll on small screens */
 }
 
 /* Portal link layout (desktop-safe) */
@@ -1549,6 +1549,7 @@ textarea {
 .page-context__actions a:active {
     color: #ffffff;
 }
+
 /* Filters: avoid overly wide selects on large screens */
 .table-filter--row select,
 .table-filter--row .form-select {
@@ -2439,6 +2440,29 @@ textarea {
     gap: 0.35rem;
 }
 
+/* Tailored programme: consistent input styling (all screen sizes) */
+.tailored-programme table input[type="number"],
+.tailored-programme table input[type="text"],
+.tailored-programme table select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.6rem;
+    background-clip: padding-box;
+    box-shadow: none;
+    outline: none;
+}
+
+.tailored-programme table input[type="number"]:focus,
+.tailored-programme table input[type="text"]:focus,
+.tailored-programme table select:focus {
+    border-color: #1f6de8;
+    box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
+}
+
 /* =====================================================================
    MEDIA QUERIES
    Keep ALL responsive + accessibility queries in this single section.
@@ -2683,12 +2707,14 @@ textarea {
         white-space: nowrap;
     }
 
-    /* Queries: tablet and below */
+    /* Queries: TABLET layout (keep as a normal table, not stacked) */
     .queries-table .col-email {
         display: none;
     }
 
     /* Owner queries: hide Assigned on tablet and below */
+    .owner-dashboard .queries-table .col-assigned,
+    .queries-page.owner-queries .queries-table .col-assigned,
     .queries-page--owner .queries-table .col-assigned {
         display: none;
     }
@@ -2702,13 +2728,25 @@ textarea {
         padding: 0.55rem 0.7rem;
     }
 
+    /* Ensure table stays as table on tablet (prevents “mobile stacking” here) */
+    .queries-table thead {
+        display: table-header-group;
+    }
+
+    .queries-table tbody tr {
+        display: table-row;
+    }
+
+    .queries-table td {
+        display: table-cell;
+    }
+
     .table-scroll {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
 
     /* Tailored programme (tablet layout fixes) */
-    /* Tailored programme: tablet width fixes */
     .tailored-programme .site-main,
     .tailored-programme .dashboard-main,
     .tailored-programme .dashboard-main__content,
@@ -2767,30 +2805,6 @@ textarea {
         overflow: visible;
     }
 
-    /* Force consistent input borders + corners */
-    .tailored-programme table input[type="number"],
-    .tailored-programme table input[type="text"],
-    .tailored-programme table select {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
-        border-radius: 0.6rem;
-        background-clip: padding-box;
-        box-shadow: none;
-        outline: none;
-    }
-
-    /* Clear focus style (keeps borders clean) */
-    .tailored-programme table input[type="number"]:focus,
-    .tailored-programme table input[type="text"]:focus,
-    .tailored-programme table select:focus {
-        border-color: #1f6de8;
-        box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
-    }
-
     /* Tailored programme: use stacked layout for tablet and below */
     .tailored-programme table {
         width: 100%;
@@ -2830,60 +2844,6 @@ textarea {
         white-space: normal;
         word-break: break-word;
         line-height: 1.2;
-    }
-
-    /* Queries tables: mobile stacked layout */
-    .queries-table thead {
-        display: none;
-    }
-
-    .queries-table tbody tr {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        grid-template-areas:
-            "status name"
-            "submitted action";
-        column-gap: 0.75rem;
-        row-gap: 0.35rem;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .queries-table td {
-        padding: 0;
-        border: 0;
-        vertical-align: top;
-    }
-
-    .queries-table .col-status {
-        grid-area: status;
-        justify-self: start;
-    }
-
-    .queries-table .col-name {
-        grid-area: name;
-        justify-self: end;
-        text-align: right;
-        font-weight: 700;
-    }
-
-    .queries-table .col-submitted {
-        grid-area: submitted;
-        justify-self: start;
-        color: #475569;
-        font-size: 0.9rem;
-    }
-
-    .queries-table .col-action {
-        grid-area: action;
-        justify-self: end;
-        text-align: right;
-        white-space: nowrap;
-    }
-
-    /* Prevent forced horizontal scroll on stacked layout */
-    .table-scroll .queries-table {
-        min-width: 0;
     }
 
     /* Show labels above each cell if data-label is present */
@@ -3284,13 +3244,6 @@ textarea {
         white-space: nowrap;
     }
 
-    /* Optional: make “View” feel visually anchored */
-    .overview-consultations .col-action a,
-    .overview-classes .col-action a {
-        display: inline-block;
-        line-height: 1.2;
-    }
-
     /* Optional: prevent any forced horizontal scrolling on these overview tables */
     .overview-consultations .table-scroll .dashboard-table,
     .overview-classes .table-scroll .dashboard-table {
@@ -3340,11 +3293,6 @@ textarea {
         grid-column: 2;
         justify-self: end;
         white-space: nowrap;
-    }
-
-    .client-overview-page .client-overview-table .col-action a {
-        display: inline-block;
-        line-height: 1.2;
     }
 
     /* Page context banner */
@@ -3505,6 +3453,60 @@ textarea {
         grid-template-columns: 1fr;
     }
 
+    /* Queries table: MOBILE stacked layout only */
+    .queries-table thead {
+        display: none;
+    }
+
+    .queries-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "status name"
+            "submitted action";
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .queries-table td {
+        padding: 0;
+        border: 0;
+        vertical-align: top;
+    }
+
+    .queries-table .col-status {
+        grid-area: status;
+        justify-self: start;
+    }
+
+    .queries-table .col-name {
+        grid-area: name;
+        justify-self: end;
+        text-align: right;
+        font-weight: 700;
+    }
+
+    .queries-table .col-submitted {
+        grid-area: submitted;
+        justify-self: start;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    .queries-table .col-action {
+        grid-area: action;
+        justify-self: end;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    /* Prevent forced horizontal scroll on stacked layout */
+    .table-scroll .queries-table {
+        min-width: 0;
+    }
+
     /* Footer */
     .site-footer .footer-bottom {
         flex-direction: column;
@@ -3516,55 +3518,5 @@ textarea {
         justify-content: center;
     }
 }
-/* Tailored programme: consistent input styling (all screen sizes) */
-.tailored-programme table input[type="number"],
-.tailored-programme table input[type="text"],
-.tailored-programme table select {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 0.6rem;
-    background-clip: padding-box;
-    box-shadow: none;
-    outline: none;
-}
 
-.tailored-programme table input[type="number"]:focus,
-.tailored-programme table input[type="text"]:focus,
-.tailored-programme table select:focus {
-    border-color: #1f6de8;
-    box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
-}
-
-    /* Owner queries: hide Assigned on tablet and below */
-    .owner-dashboard .queries-table .col-assigned,
-    .queries-page.owner-queries .queries-table .col-assigned {
-        display: none;
-    }
-
-
-@media (min-width: 577px) and (max-width: 992px) {
-    /* Tailored programme: remove tablet width clamp (formerly nested) */
-    .tailored-programme .site-main,
-    .tailored-programme #main-content,
-    .tailored-programme .dashboard-layout,
-    .tailored-programme .dashboard-shell,
-    .tailored-programme .dashboard-main,
-    .tailored-programme .dashboard-main__content,
-    .tailored-programme .dashboard-card,
-    .tailored-programme .dashboard-card--wide,
-    .tailored-programme .page-section-inner,
-    .tailored-programme .container,
-    .tailored-programme .container-lg,
-    .tailored-programme .container-md,
-    .tailored-programme .container-sm {
-        max-width: 100%;
-        width: 100%;
-        margin-left: 0;
-        margin-right: 0;
-    }
-}
 
