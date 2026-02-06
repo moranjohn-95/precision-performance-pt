@@ -41,6 +41,12 @@
 
 {% block dashboard_content %}
 <section class="client-overview-page">
+<div class="page-actions">
+    <a class="btn btn-primary" href="{% url 'accounts:trainer_clients' %}">
+        Back to clients
+    </a>
+</div>
+
 <div class="client-overview-sections">
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">

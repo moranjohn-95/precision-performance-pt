@@ -567,6 +567,20 @@ h3 {
     outline-offset: 2px;
 }
 
+/* Dashboard: ensure primary buttons use the brand blue */
+.client-dashboard .btn.btn-primary {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    color: #ffffff;
+}
+
+.client-dashboard .btn.btn-primary:hover,
+.client-dashboard .btn.btn-primary:focus {
+    background: #155ac4;
+    border-color: #155ac4;
+    color: #ffffff;
+}
+
 /* Smaller button used on cards */
 .btn-secondary--sm {
     padding: 0.6rem 1.6rem;
@@ -2412,6 +2426,17 @@ textarea {
 
 .client-overview-sections .dashboard-card {
     margin-bottom: 0;
+}
+
+/* Page actions (light spacing for back links/buttons) */
+.page-actions {
+    margin: 0.75rem 0 1rem;
+}
+
+.page-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 /* =====================================================================
