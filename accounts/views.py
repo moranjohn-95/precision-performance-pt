@@ -1534,52 +1534,6 @@ def trainer_clients(request):
 
 @login_required(login_url="accounts:trainer_login")
 @staff_required
-def trainer_metrics(request):
-    """
-    Trainer view: overview of latest body metric entries per client.
-    """
-    entries = BodyMetricEntry.objects.select_related("client").order_by(
-        "client__id",
-        "-date",
-    )
-
-    latest_by_user = {}
-    for entry in entries:
-        user_id = entry.client_id
-        if user_id not in latest_by_user:
-            latest_by_user[user_id] = entry
-
-    client_rows = []
-    for entry in latest_by_user.values():
-        client = entry.client
-        client_rows.append(
-            {
-                "client_name": client.get_full_name() or client.username,
-                "email": client.email,
-                "date": entry.date,
-                "bodyweight": entry.bodyweight_kg,
-                "waist": entry.waist_cm,
-                "bench_topset": getattr(entry, "bench_top_set_kg", None),
-            }
-        )
-
-    client_rows.sort(key=lambda row: row["client_name"].lower())
-
-    # Owners see owner-branded template; trainers see trainer template.
-    template = (
-        "owner/metrics.html"
-        if request.user.is_superuser
-        else "trainer/metrics.html"
-    )
-    return render(
-        request,
-        template,
-        {"client_rows": client_rows},
-    )
-
-
-@login_required(login_url="accounts:trainer_login")
-@staff_required
 def trainer_programme_detail(request, block_id):
     """
     Trainer view: show a programme block with its days/exercises,
