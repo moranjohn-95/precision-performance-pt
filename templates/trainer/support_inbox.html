@@ -19,13 +19,13 @@
     </header>
 
     <div class="dashboard-table-wrapper">
-        <table class="dashboard-table">
+        <table class="dashboard-table support-table">
             <thead>
                 <tr>
                     <th>Client</th>
                     <th>Subject</th>
                     <th>Status</th>
-                    <th>Last updated</th>
+                    <th class="col-last-updated">Last updated</th>
                     <th class="action-cell">Action</th>
                 </tr>
             </thead>
@@ -41,7 +41,7 @@
                             {{ ticket.get_status_display }}
                         </span>
                     </td>
-                    <td>{{ ticket.updated_at|date:"d M Y H:i" }}</td>
+                    <td class="col-last-updated">{{ ticket.updated_at|date:"d M Y H:i" }}</td>
                     <td class="action-cell">
                         <a
                             class="text-link"

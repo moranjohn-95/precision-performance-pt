@@ -3448,6 +3448,11 @@ textarea {
         margin-top: 0.5rem;
     }
 
+    /* Support inbox: hide last updated on mobile */
+    .support-table .col-last-updated {
+        display: none;
+    }
+
     /* Queries: filters stack on mobile */
     .queries-page .table-filter--row {
         grid-template-columns: 1fr;
