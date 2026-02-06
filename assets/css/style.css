@@ -2394,6 +2394,26 @@ textarea {
     );
 }
 
+/* Client overview: section spacing */
+.client-overview-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.client-overview-sections > * {
+    margin: 0;
+}
+
+/* Optional light separation between stacked cards */
+.client-overview-sections > * + * {
+    padding-top: 0.25rem;
+}
+
+.client-overview-sections .dashboard-card {
+    margin-bottom: 0;
+}
+
 /* =====================================================================
    MEDIA QUERIES
    Keep ALL responsive + accessibility queries in this single section.
