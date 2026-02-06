@@ -13,7 +13,7 @@
 {% block page_subtitle %}Queries assigned to you.{% endblock %}
 
 {% block dashboard_content %}
-<section class="dashboard-card dashboard-card--wide">
+<section class="dashboard-card dashboard-card--wide queries-page">
     <header class="card-header">
         <h2 class="card-title">Queries</h2>
         <p class="card-subtitle">
@@ -23,7 +23,7 @@
 
     <div class="card-body">
         {# Simple status filter for trainer inbox #}
-        <form method="get" class="table-filter">
+        <form method="get" class="table-filter table-filter--row">
             <label for="status">Status</label>
             <select id="status" name="status" onchange="this.form.submit()">
                 <option value="all" {% if selected_status == "all" %}selected{% endif %}>
@@ -43,24 +43,24 @@
         </form>
 
         {% if page_obj %}
-            <div class="dashboard-table-wrapper">
-                <table class="dashboard-table">
+            <div class="dashboard-table-wrapper table-scroll">
+                <table class="dashboard-table queries-table">
                     <thead>
                         <tr>
-                            <th>Submitted</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th class="col-submitted">Submitted</th>
+                            <th class="col-name">Name</th>
+                            <th class="col-email">Email</th>
+                            <th class="col-status">Status</th>
+                            <th class="col-action">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for query in page_obj %}
                             <tr>
-                                <td>{{ query.created_at|date:"d M Y" }}</td>
-                                <td>{{ query.first_name }} {{ query.last_name }}</td>
-                                <td>{{ query.email }}</td>
-                                <td>
+                                <td class="col-submitted">{{ query.created_at|date:"d M Y" }}</td>
+                                <td class="col-name">{{ query.first_name }} {{ query.last_name }}</td>
+                                <td class="col-email">{{ query.email }}</td>
+                                <td class="col-status">
                                     {% if query.status == "new" %}
                                         <span class="badge badge--open">New</span>
                                     {% elif query.status == "in_progress" %}
@@ -71,7 +71,7 @@
                                         <span class="badge">{{ query.get_status_display|default:query.status }}</span>
                                     {% endif %}
                                 </td>
-                                <td>
+                                <td class="col-action">
                                     <a class="btn-link"
                                        href="{% url 'accounts:trainer_query_detail' query.id %}">
                                         View

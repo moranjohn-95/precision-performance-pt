@@ -2683,26 +2683,28 @@ textarea {
         white-space: nowrap;
     }
 
-    /* Tailored programme: remove tablet width clamp (577px–992px) */
-    @media (min-width: 577px) and (max-width: 992px) {
-        .tailored-programme .site-main,
-        .tailored-programme #main-content,
-        .tailored-programme .dashboard-layout,
-        .tailored-programme .dashboard-shell,
-        .tailored-programme .dashboard-main,
-        .tailored-programme .dashboard-main__content,
-        .tailored-programme .dashboard-card,
-        .tailored-programme .dashboard-card--wide,
-        .tailored-programme .page-section-inner,
-        .tailored-programme .container,
-        .tailored-programme .container-lg,
-        .tailored-programme .container-md,
-        .tailored-programme .container-sm {
-            max-width: 100%;
-            width: 100%;
-            margin-left: 0;
-            margin-right: 0;
-        }
+    /* Queries: tablet and below */
+    .queries-table .col-email {
+        display: none;
+    }
+
+    /* Owner queries: hide Assigned on tablet and below */
+    .queries-page--owner .queries-table .col-assigned {
+        display: none;
+    }
+
+    .queries-table .col-action {
+        white-space: nowrap;
+    }
+
+    .queries-table th,
+    .queries-table td {
+        padding: 0.55rem 0.7rem;
+    }
+
+    .table-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Tailored programme (tablet layout fixes) */
@@ -2828,6 +2830,60 @@ textarea {
         white-space: normal;
         word-break: break-word;
         line-height: 1.2;
+    }
+
+    /* Queries tables: mobile stacked layout */
+    .queries-table thead {
+        display: none;
+    }
+
+    .queries-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-template-areas:
+            "status name"
+            "submitted action";
+        column-gap: 0.75rem;
+        row-gap: 0.35rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .queries-table td {
+        padding: 0;
+        border: 0;
+        vertical-align: top;
+    }
+
+    .queries-table .col-status {
+        grid-area: status;
+        justify-self: start;
+    }
+
+    .queries-table .col-name {
+        grid-area: name;
+        justify-self: end;
+        text-align: right;
+        font-weight: 700;
+    }
+
+    .queries-table .col-submitted {
+        grid-area: submitted;
+        justify-self: start;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    .queries-table .col-action {
+        grid-area: action;
+        justify-self: end;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    /* Prevent forced horizontal scroll on stacked layout */
+    .table-scroll .queries-table {
+        min-width: 0;
     }
 
     /* Show labels above each cell if data-label is present */
@@ -3444,6 +3500,11 @@ textarea {
         margin-top: 0.5rem;
     }
 
+    /* Queries: filters stack on mobile */
+    .queries-page .table-filter--row {
+        grid-template-columns: 1fr;
+    }
+
     /* Footer */
     .site-footer .footer-bottom {
         flex-direction: column;
@@ -3477,3 +3538,33 @@ textarea {
     border-color: #1f6de8;
     box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
 }
+
+    /* Owner queries: hide Assigned on tablet and below */
+    .owner-dashboard .queries-table .col-assigned,
+    .queries-page.owner-queries .queries-table .col-assigned {
+        display: none;
+    }
+
+
+@media (min-width: 577px) and (max-width: 992px) {
+    /* Tailored programme: remove tablet width clamp (formerly nested) */
+    .tailored-programme .site-main,
+    .tailored-programme #main-content,
+    .tailored-programme .dashboard-layout,
+    .tailored-programme .dashboard-shell,
+    .tailored-programme .dashboard-main,
+    .tailored-programme .dashboard-main__content,
+    .tailored-programme .dashboard-card,
+    .tailored-programme .dashboard-card--wide,
+    .tailored-programme .page-section-inner,
+    .tailored-programme .container,
+    .tailored-programme .container-lg,
+    .tailored-programme .container-md,
+    .tailored-programme .container-sm {
+        max-width: 100%;
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
