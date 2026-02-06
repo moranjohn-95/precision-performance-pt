@@ -47,20 +47,21 @@
     </form>
 
         <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
+            <table class="dashboard-table clients-table">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Goal</th>
-                        <th scope="col">Coaching option</th>
-                        <th scope="col">Last request</th>
+                        <th scope="col" class="col-name">Name</th>
+                        <th scope="col" class="col-email">Email</th>
+                        <th scope="col" class="col-deal">Goal</th>
+                        <th scope="col" class="col-coaching">Coaching option</th>
+                        <th scope="col" class="col-last-requested">Last request</th>
+                        <th scope="col" class="col-action">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for req in clients_page %}
                         <tr>
-                            <td>
+                            <td class="col-name">
                                 {% with full_name=req.first_name|add:" "|add:req.last_name %}
                                     {% if req.portal_user_id %}
                                         <a
@@ -74,14 +75,26 @@
                                     {% endif %}
                                 {% endwith %}
                             </td>
-                            <td>{{ req.email }}</td>
-                            <td>{{ req.get_training_goal_display|default:req.training_goal }}</td>
-                            <td>{{ req.get_coaching_option_display|default:req.coaching_option }}</td>
-                            <td>{{ req.created_at|date:"d M Y" }}</td>
+                            <td class="col-email">{{ req.email }}</td>
+                            <td class="col-deal">{{ req.get_training_goal_display|default:req.training_goal }}</td>
+                            <td class="col-coaching">{{ req.get_coaching_option_display|default:req.coaching_option }}</td>
+                            <td class="col-last-requested">{{ req.created_at|date:"d M Y" }}</td>
+                            <td class="col-action">
+                                {% if req.portal_user_id %}
+                                    <a
+                                        class="btn-link"
+                                        href="{% url 'accounts:trainer_client_detail' req.portal_user_id %}"
+                                    >
+                                        View
+                                    </a>
+                                {% else %}
+                                    <span class="muted-text">N/A</span>
+                                {% endif %}
+                            </td>
                         </tr>
                     {% empty %}
                         <tr>
-                            <td colspan="5" class="muted-text">
+                            <td colspan="6" class="muted-text">
                                 No clients are currently assigned to this trainer.
                             </td>
                         </tr>
@@ -134,37 +147,37 @@
         </p>
 
         <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
+            <table class="dashboard-table portal-access-table">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Login username</th>
-                        <th scope="col">Portal access</th>
-                        <th scope="col">Password link</th>
+                        <th scope="col" class="col-name">Name</th>
+                        <th scope="col" class="col-login">Login username</th>
+                        <th scope="col" class="col-portal">Portal access</th>
+                        <th scope="col" class="col-link">Password link</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for req in clients_page %}
                         <tr>
-                            <td>
+                            <td class="col-name">
                                 {% with full_name=req.first_name|add:" "|add:req.last_name %}
                                     {{ full_name|default:req.email }}
                                 {% endwith %}
                             </td>
-                            <td>{{ req.portal_username|default:req.email }}</td>
-                            <td>
+                            <td class="col-login">{{ req.portal_username|default:req.email }}</td>
+                            <td class="col-portal">
                                 {% if req.portal_access %}
                                     <span class="badge badge--assigned">Yes</span>
                                 {% else %}
                                     <span class="badge badge--open">No</span>
                                 {% endif %}
                             </td>
-                            <td>
+                            <td class="col-link">
                                 {% if req.portal_user and req.portal_link %}
-                                    <div class="portal-link">
+                                    <div class="portal-link-wrap">
                                         <input
                                             type="text"
-                                            class="form-control"
+                                            class="form-control portal-link-input"
                                             value="{{ req.portal_link }}"
                                             readonly
                                             onclick="this.select()"
@@ -172,7 +185,7 @@
                                         >
                                         <button
                                             type="button"
-                                            class="btn-secondary"
+                                            class="btn-secondary portal-link-copy"
                                             onclick="copyPortalLink(this)"
                                             data-link="{{ req.portal_link }}"
                                             aria-label="Copy password link"

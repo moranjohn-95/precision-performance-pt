@@ -1442,6 +1442,22 @@ textarea {
     min-width: 720px; /* forces horizontal scroll on small screens */
 }
 
+/* Portal link layout (desktop-safe) */
+.portal-link-wrap {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.portal-link-input {
+    width: 100%;
+    min-width: 220px;
+}
+
+.portal-link-copy {
+    white-space: nowrap;
+}
+
 /* Coaching labels: default to full text on desktop/tablet */
 .coaching-label--short {
     display: none;
@@ -2717,14 +2733,20 @@ textarea {
         overflow: hidden;
     }
 
-    /* Portal link layout */
-    .portal-link {
-        flex-direction: column;
-        align-items: stretch;
+    /* Clients page: tablet and below */
+    .clients-table .col-email,
+    .clients-table .col-last-requested {
+        display: none;
     }
 
-    .portal-link .btn-secondary {
-        width: 100%;
+    .clients-table th,
+    .clients-table td {
+        padding: 0.55rem 0.7rem;
+    }
+
+    .clients-table .col-deal,
+    .clients-table .col-coaching {
+        white-space: normal;
     }
 
     /* Owner/Trainer overview tables */
@@ -2853,6 +2875,80 @@ textarea {
 
     .coaching-label--full {
         display: none;
+    }
+
+    /* Clients page: mobile stacked layout */
+    .clients-table thead {
+        display: none;
+    }
+
+    .clients-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.35rem 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .clients-table td {
+        padding: 0;
+        border: 0;
+        vertical-align: top;
+    }
+
+    .clients-table .col-name {
+        grid-column: 1;
+        font-weight: 700;
+    }
+
+    .clients-table .col-deal,
+    .clients-table .col-coaching {
+        grid-column: 1;
+        color: #475569;
+        font-size: 0.9rem;
+    }
+
+    .clients-table .col-action {
+        grid-column: 2;
+        justify-self: end;
+        align-self: start;
+        white-space: nowrap;
+    }
+
+    /* Portal access table: mobile stacking */
+    .portal-access-table thead {
+        display: none;
+    }
+
+    .portal-access-table tbody tr {
+        display: block;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .portal-access-table td {
+        display: block;
+        padding: 0;
+        border: 0;
+        margin: 0.2rem 0;
+    }
+
+    .portal-access-table .col-name {
+        font-weight: 700;
+    }
+
+    .portal-access-table .col-portal {
+        margin-top: 0.1rem;
+    }
+
+    .portal-link-wrap {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+    }
+
+    .portal-link-copy {
+        width: 100%;
     }
 
     /* Page header row */
