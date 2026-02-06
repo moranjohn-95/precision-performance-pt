@@ -2427,6 +2427,10 @@ def owner_tailored_programme_detail(request, block_id):
         "tailored_days": tailored_days,
         "selected_day_id": selected_day.id if selected_day else None,
         "exercise_formset": exercise_formset,
+        # Prefer base/template name when available; fallback to tailored block name.
+        "programme_title": tailored_block.parent_template.name
+        if tailored_block.parent_template
+        else tailored_block.name,
     }
     return render(request, "owner/tailored_programme_detail.html", context)
 
@@ -2503,6 +2507,10 @@ def trainer_tailored_programme_detail(request, block_id):
         "tailored_days": tailored_days,
         "selected_day_id": selected_day.id if selected_day else None,
         "exercise_formset": exercise_formset,
+        # Prefer base/template name when available; fallback to tailored block name.
+        "programme_title": tailored_block.parent_template.name
+        if tailored_block.parent_template
+        else tailored_block.name,
     }
     return render(request, "trainer/tailored_programme_detail.html", context)
 

@@ -7,12 +7,16 @@
 {% block page_title %}Tailored programme{% endblock %}
 {% block page_subtitle %}
 <p class="muted-text" style="margin: 0;">Tailored for {{ client_user.get_full_name|default:client_user.username }}</p>
+<div style="margin-top: 0.5rem;">
+  {# Back link to programmes list #}
+  <a class="btn-secondary" href="{% url 'accounts:owner_programmes' %}">Back to programmes</a>
+</div>
 {% endblock %}
 
 {% block dashboard_content %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h2 class="card-title">{{ block.name }}</h2>
+        <h2 class="card-title">{{ programme_title|default:"Tailored programme" }}</h2>
         <p class="card-subtitle">Edit sets/reps/weights for this client-specific copy.</p>
     </header>
 

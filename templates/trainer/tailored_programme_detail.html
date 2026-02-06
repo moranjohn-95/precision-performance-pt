@@ -12,7 +12,7 @@
 {% block dashboard_content %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h2 class="card-title">{{ block.name }}</h2>
+        <h2 class="card-title">{{ programme_title|default:"Tailored programme" }}</h2>
         <p class="card-subtitle">Edit sets/reps/weights for this client-specific copy.</p>
     </header>
 
