@@ -2171,56 +2171,31 @@ def owner_programme_detail(request, block_id):
         and not is_tailored
         and "convert_to_tailored" not in request.POST
     ):
-        # Use consultation id as the source of truth for assignment.
-        consultation_id = request.POST.get("assign_client_id") or request.POST.get(
-            "client_id"
-        )
-        assign_clicked = (
-            "assign_to_client" in request.POST
-            or "assign_programme" in request.POST
-            or bool(consultation_id)
+        assign_clicked = "assign_programme" in request.POST
+        client_id_raw = request.POST.get("client_id") or request.POST.get(
+            "assign_client_id"
         )
 
-        if assign_clicked and consultation_id:
-            # Ensure the consultation belongs to this trainer and is 1:1/online + assigned.
-            consultation = get_object_or_404(
-                ConsultationRequest,
-                id=consultation_id,
-                assigned_trainer=request.user,
-                status=ConsultationRequest.STATUS_ASSIGNED,
-                coaching_option__in=["1to1", "online"],
-            )
-
-            email_val = (consultation.email or "").strip().lower()
-            client_user = User.objects.filter(email__iexact=email_val).first()
-
-            if client_user and client_user.is_staff:
-                messages.error(
-                    request,
-                    "Staff users cannot be assigned as clients.",
-                )
+        if assign_clicked:
+            # Owners assign directly to a User (client) id.
+            try:
+                client_user_id = int(client_id_raw)
+            except (TypeError, ValueError):
+                messages.error(request, "Please select a client before assigning.")
                 return redirect(
                     "accounts:owner_programme_detail",
                     block_id=template_block.id,
                 )
 
-            if client_user is None:
-                base_username = email_val.split("@")[0] or "client"
-                username = base_username
-                suffix = 1
-                while User.objects.filter(username__iexact=username).exists():
-                    username = f"{base_username}{suffix}"
-                    suffix += 1
+            client_user = get_object_or_404(User, id=client_user_id)
 
-                client_user = User.objects.create(
-                    username=username,
-                    email=email_val,
-                    first_name=consultation.first_name or "",
-                    last_name=consultation.last_name or "",
-                    is_staff=False,
+            # Owners must still avoid staff/superusers.
+            if client_user.is_staff or client_user.is_superuser:
+                messages.error(request, "Only client accounts can be assigned.")
+                return redirect(
+                    "accounts:owner_programme_detail",
+                    block_id=template_block.id,
                 )
-                client_user.set_unusable_password()
-                client_user.save()
 
             # Ensure a ClientProfile exists for this user.
             ClientProfile.objects.get_or_create(user=client_user)
