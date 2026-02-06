@@ -1506,6 +1506,17 @@ textarea {
     gap: 0.75rem;
 }
 
+.client-overview-page .metrics-chart {
+    width: 100%;
+    overflow: hidden;
+}
+
+.client-overview-page .metrics-chart canvas {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
 /* Page context: ensure action buttons have readable text */
 .page-context__actions .btn,
 .page-context__actions button,
@@ -2820,6 +2831,26 @@ textarea {
         overflow: hidden;
     }
 
+    /* Client overview tables: tablet adjustments */
+    .client-overview-page .client-overview-table th,
+    .client-overview-page .client-overview-table td {
+        padding: 0.55rem 0.7rem;
+        font-size: 0.9rem;
+        word-break: break-word;
+    }
+
+    .client-overview-page .client-overview-table .col-action {
+        white-space: nowrap;
+    }
+
+    .client-overview-page .dashboard-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .client-overview-page .metrics-chart {
+        padding: 0.25rem 0;
+    }
+
     /* Owner/Trainer overview tables */
     .overview-consultations .col-email,
     .overview-consultations .col-goal,
@@ -2946,6 +2977,37 @@ textarea {
 
     .coaching-label--full {
         display: none;
+    }
+
+    /* Client overview tables: mobile stacked layout */
+    .client-overview-page .client-overview-table thead {
+        display: none;
+    }
+
+    .client-overview-page .client-overview-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.35rem 1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .client-overview-page .client-overview-table td {
+        border: 0;
+        padding: 0;
+        vertical-align: top;
+        grid-column: 1;
+    }
+
+    .client-overview-page .client-overview-table .col-action {
+        grid-column: 2;
+        justify-self: end;
+        white-space: nowrap;
+    }
+
+    .client-overview-page .client-overview-table .col-action a {
+        display: inline-block;
+        line-height: 1.2;
     }
 
     /* Page context banner */

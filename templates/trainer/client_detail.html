@@ -40,6 +40,7 @@
 {% endblock %}
 
 {% block dashboard_content %}
+<section class="client-overview-page">
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">Recent sessions</h2>
@@ -47,22 +48,22 @@
 
     <div class="card-body">
         <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
+            <table class="dashboard-table client-overview-table client-overview-table--sessions">
                 <thead>
                     <tr>
-                        <th>Session</th>
-                        <th>Date</th>
-                        <th>Notes</th>
-                        <th class="action-cell">Action</th>
+                        <th class="col-session">Session</th>
+                        <th class="col-date">Date</th>
+                        <th class="col-notes">Notes</th>
+                        <th class="action-cell col-action">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for s in workouts %}
                     <tr>
-                        <td>{{ s.name }}</td>
-                        <td>{{ s.date|date:"d/m/Y" }}</td>
-                        <td>{{ s.notes|default_if_none:""|truncatechars:60 }}</td>
-                        <td class="action-cell nowrap">
+                        <td class="col-session">{{ s.name }}</td>
+                        <td class="col-date">{{ s.date|date:"d/m/Y" }}</td>
+                        <td class="col-notes">{{ s.notes|default_if_none:""|truncatechars:60 }}</td>
+                        <td class="action-cell nowrap col-action">
                             <a href="{% url 'accounts:trainer_session_edit' s.id %}" class="text-link">
                                 Open
                             </a>
@@ -118,26 +119,26 @@
 
     <div class="card-body">
         <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
+            <table class="dashboard-table client-overview-table client-overview-table--checkins">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Bodyweight (kg)</th>
-                        <th>Waist (cm)</th>
-                        <th>Bench top set (kg)</th>
-                        <th>Sleep (h)</th>
-                        <th class="action-cell">Action</th>
+                        <th class="col-date">Date</th>
+                        <th class="col-bodyweight">Bodyweight (kg)</th>
+                        <th class="col-waist">Waist (cm)</th>
+                        <th class="col-bench">Bench top set (kg)</th>
+                        <th class="col-sleep">Sleep (h)</th>
+                        <th class="action-cell col-action">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for entry in recent_entries %}
                     <tr>
-                        <td>{{ entry.date|date:"d M Y" }}</td>
-                        <td>{{ entry.bodyweight_kg|default:"—" }}</td>
-                        <td>{{ entry.waist_cm|default:"—" }}</td>
-                        <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
-                        <td>{{ entry.sleep_hours|default:"—" }}</td>
-                        <td class="action-cell nowrap">
+                        <td class="col-date">{{ entry.date|date:"d M Y" }}</td>
+                        <td class="col-bodyweight">{{ entry.bodyweight_kg|default:"—" }}</td>
+                        <td class="col-waist">{{ entry.waist_cm|default:"—" }}</td>
+                        <td class="col-bench">{{ entry.bench_top_set_kg|default:"—" }}</td>
+                        <td class="col-sleep">{{ entry.sleep_hours|default:"—" }}</td>
+                        <td class="action-cell nowrap col-action">
                             <a
                                 href="#"
                                 class="text-link js-open-metric"
@@ -172,24 +173,24 @@
 
     <div class="card-body">
         <div class="dashboard-table-wrapper">
-            <table class="dashboard-table">
+            <table class="dashboard-table client-overview-table client-overview-table--keymetrics">
                 <thead>
                     <tr>
-                        <th>Metric</th>
-                        <th>Latest</th>
-                        <th>Change (4 weeks)</th>
-                        <th>Target</th>
+                        <th class="col-metric">Metric</th>
+                        <th class="col-latest">Latest</th>
+                        <th class="col-change">Change (4 weeks)</th>
+                        <th class="col-target">Target</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for row in summary_rows %}
                     <tr>
-                        <td>{{ row.label }}</td>
-                        <td>{{ row.latest }}</td>
-                        <td>{{ row.change }}</td>
-                        <td>{{ row.target }}</td>
+                        <td class="col-metric">{{ row.label }}</td>
+                        <td class="col-latest">{{ row.latest }}</td>
+                        <td class="col-change">{{ row.change }}</td>
+                        <td class="col-target">{{ row.target }}</td>
                     </tr>
-                    {% empty %}
+                {% empty %}
                     <tr>
                         <td colspan="4" class="text-muted">No summary data available yet.</td>
                     </tr>
@@ -266,8 +267,10 @@
                 </button>
             </footer>
         </form>
-    </div>
 </div>
+</div>
+
+</section>
 
 {% endblock %}
 
