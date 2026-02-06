@@ -2512,6 +2512,36 @@ textarea {
         overflow: hidden;
     }
 
+    /* Clients page: tablet and below */
+    .clients-table .col-email,
+    .clients-table .col-last-requested {
+        display: none;
+    }
+
+    .clients-table .col-action {
+        white-space: nowrap;
+    }
+
+    .clients-table th,
+    .clients-table td {
+        padding: 0.55rem 0.7rem;
+    }
+
+    .portal-access-table .portal-link-wrap {
+        flex-wrap: wrap;
+        gap: 0.6rem;
+    }
+
+    .portal-access-table .portal-link-input {
+        width: 100%;
+        min-width: 0; /* allow shrinking on tablet */
+    }
+
+    .portal-access-table .portal-link-copy {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
     /* Footer */
     .site-footer .footer-grid {
         grid-template-columns: 1fr;
@@ -2731,22 +2761,6 @@ textarea {
 
     body.dashboard-menu-open {
         overflow: hidden;
-    }
-
-    /* Clients page: tablet and below */
-    .clients-table .col-email,
-    .clients-table .col-last-requested {
-        display: none;
-    }
-
-    .clients-table th,
-    .clients-table td {
-        padding: 0.55rem 0.7rem;
-    }
-
-    .clients-table .col-deal,
-    .clients-table .col-coaching {
-        white-space: normal;
     }
 
     /* Owner/Trainer overview tables */
@@ -2981,5 +2995,3 @@ textarea {
         justify-content: center;
     }
 }
-
-
