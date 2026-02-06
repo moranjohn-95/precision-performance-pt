@@ -42,7 +42,7 @@
             {{ exercise_formset.management_form }}
 
             <div class="dashboard-table-wrapper">
-                <table class="dashboard-table">
+                <table class="dashboard-table tailored-programme__table">
                     <thead>
                         <tr>
                             <th>Exercise</th>
@@ -54,13 +54,13 @@
                     <tbody>
                         {% for form in exercise_formset %}
                         <tr>
-                            <td>
+                            <td data-label="Exercise">
                                 {{ form.exercise_name }}
                                 {{ form.id }}
                             </td>
-                            <td>{{ form.target_sets }}</td>
-                            <td>{{ form.target_reps }}</td>
-                            <td>{{ form.target_weight_kg }}</td>
+                            <td data-label="Sets">{{ form.target_sets }}</td>
+                            <td data-label="Reps">{{ form.target_reps }}</td>
+                            <td data-label="Target weight (kg)">{{ form.target_weight_kg }}</td>
                         </tr>
                         {% empty %}
                         <tr>

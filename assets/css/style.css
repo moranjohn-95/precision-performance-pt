@@ -2638,6 +2638,28 @@ textarea {
         white-space: nowrap;
     }
 
+    /* Tailored programme: remove tablet width clamp (577px–992px) */
+    @media (min-width: 577px) and (max-width: 992px) {
+        .tailored-programme .site-main,
+        .tailored-programme #main-content,
+        .tailored-programme .dashboard-layout,
+        .tailored-programme .dashboard-shell,
+        .tailored-programme .dashboard-main,
+        .tailored-programme .dashboard-main__content,
+        .tailored-programme .dashboard-card,
+        .tailored-programme .dashboard-card--wide,
+        .tailored-programme .page-section-inner,
+        .tailored-programme .container,
+        .tailored-programme .container-lg,
+        .tailored-programme .container-md,
+        .tailored-programme .container-sm {
+            max-width: 100%;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+        }
+    }
+
     /* Tailored programme (tablet layout fixes) */
     /* Tailored programme: tablet width fixes */
     .tailored-programme .site-main,
@@ -2687,6 +2709,111 @@ textarea {
         word-break: break-word;
     }
 
+    /* Tailored programme: ensure inputs render with full borders in stacked layout */
+    .tailored-programme table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .tailored-programme table tbody tr,
+    .tailored-programme table td {
+        overflow: visible;
+    }
+
+    /* Force consistent input borders + corners */
+    .tailored-programme table input[type="number"],
+    .tailored-programme table input[type="text"],
+    .tailored-programme table select {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.6rem;
+        background-clip: padding-box;
+        box-shadow: none;
+        outline: none;
+    }
+
+    /* Clear focus style (keeps borders clean) */
+    .tailored-programme table input[type="number"]:focus,
+    .tailored-programme table input[type="text"]:focus,
+    .tailored-programme table select:focus {
+        border-color: #1f6de8;
+        box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
+    }
+
+    /* Tailored programme: use stacked layout for tablet and below */
+    .tailored-programme table {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .tailored-programme table thead {
+        display: none;
+    }
+
+    .tailored-programme table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "exercise exercise"
+            "sets reps"
+            "weight weight";
+        gap: 0.6rem 0.75rem;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .tailored-programme table td {
+        border: 0;
+        padding: 0;
+        min-width: 0;
+    }
+
+    .tailored-programme table td:nth-child(1) { grid-area: exercise; }
+    .tailored-programme table td:nth-child(2) { grid-area: sets; }
+    .tailored-programme table td:nth-child(3) { grid-area: reps; }
+    .tailored-programme table td:nth-child(4) { grid-area: weight; }
+
+    /* Exercise name wraps */
+    .tailored-programme table td:nth-child(1),
+    .tailored-programme table td:nth-child(1) * {
+        white-space: normal;
+        word-break: break-word;
+        line-height: 1.2;
+    }
+
+    /* Show labels above each cell if data-label is present */
+    .tailored-programme table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Inputs fill the available width */
+    .tailored-programme table input[type="number"],
+    .tailored-programme table input[type="text"],
+    .tailored-programme table select {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        min-height: 44px;
+        box-sizing: border-box;
+    }
+
+    /* Save button full width */
+    .tailored-programme .btn,
+    .tailored-programme button,
+    .tailored-programme input[type="submit"] {
+        width: 100%;
+        max-width: 100%;
+    }
+
     /* Footer */
     .site-footer .footer-grid {
         grid-template-columns: 1fr;
@@ -2721,61 +2848,6 @@ textarea {
         width: 100%;
         max-width: 100%;
         padding: 0.65rem 0.75rem;
-    }
-
-    /* Tailored programme: mobile stacked exercise rows */
-    .tailored-programme table {
-        width: 100%;
-        min-width: 0;
-    }
-
-    /* Hide table header on mobile (we use stacked layout) */
-    .tailored-programme table thead {
-        display: none;
-    }
-
-    /* Each row becomes a small grid card */
-    .tailored-programme table tbody tr {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-areas:
-            "exercise exercise"
-            "sets reps"
-            "weight weight";
-        gap: 0.5rem 0.75rem;
-        padding: 0.75rem 0;
-        border-bottom: 1px solid #e2e8f0;
-    }
-
-    .tailored-programme table td {
-        border: 0;
-        padding: 0;
-        min-width: 0;
-    }
-
-    /* Map columns into grid areas (assumes: 1=exercise, 2=sets, 3=reps, 4=weight) */
-    .tailored-programme table td:nth-child(1) { grid-area: exercise; }
-    .tailored-programme table td:nth-child(2) { grid-area: sets; }
-    .tailored-programme table td:nth-child(3) { grid-area: reps; }
-    .tailored-programme table td:nth-child(4) { grid-area: weight; }
-
-    /* Exercise name: allow full wrap */
-    .tailored-programme table td:nth-child(1),
-    .tailored-programme table td:nth-child(1) * {
-        white-space: normal;
-        word-break: break-word;
-        line-height: 1.2;
-    }
-
-    /* Inputs should fill their grid cell */
-    .tailored-programme table input[type="number"],
-    .tailored-programme table input[type="text"],
-    .tailored-programme table select {
-        width: 100%;
-        max-width: 100%;
-        min-width: 0;
-        min-height: 44px;
-        box-sizing: border-box;
     }
 
     /* Save button full width for mobile */
@@ -3337,4 +3409,26 @@ textarea {
     .site-footer .footer-social {
         justify-content: center;
     }
+}
+/* Tailored programme: consistent input styling (all screen sizes) */
+.tailored-programme table input[type="number"],
+.tailored-programme table input[type="text"],
+.tailored-programme table select {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.6rem;
+    background-clip: padding-box;
+    box-shadow: none;
+    outline: none;
+}
+
+.tailored-programme table input[type="number"]:focus,
+.tailored-programme table input[type="text"]:focus,
+.tailored-programme table select:focus {
+    border-color: #1f6de8;
+    box-shadow: 0 0 0 3px rgba(31, 109, 232, 0.18);
 }
