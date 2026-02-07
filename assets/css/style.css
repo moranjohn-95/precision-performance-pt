@@ -1574,7 +1574,7 @@ textarea {
 
 .workout-row {
     display: grid;
-    grid-template-columns: 2.2fr 0.9fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2.2fr 0.9fr 1.2fr 1.2fr;
     align-items: center;
     column-gap: 0.75rem;
     padding: 0.4rem 0;

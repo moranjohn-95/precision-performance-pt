@@ -160,13 +160,17 @@
                     <div class="workout-cell workout-cell--exercise">Exercise</div>
                     <div class="workout-cell workout-cell--weight">Weight (kg)</div>
                     <div class="workout-cell workout-cell--target">Target</div>
-                    <div class="workout-cell">Set 1</div>
-                    <div class="workout-cell">Set 2</div>
-                    <div class="workout-cell">Set 3</div>
+                    <div class="workout-cell workout-cell--performed">Sets × reps</div>
                 </div>
 
                 {% for ex in programme_exercises %}
-                <div class="workout-row">
+                <div
+                    class="workout-row"
+                    data-ex-id="{{ ex.id }}"
+                    data-target-sets="{{ ex.target_sets }}"
+                    data-target-reps="{{ ex.target_reps }}"
+                    data-target-weight="{{ ex.target_weight_kg|default_if_none:'' }}"
+                >
                     <div class="workout-cell workout-cell--exercise">
                         <strong>{{ ex.exercise_name }}</strong>
                     </div>
@@ -186,26 +190,18 @@
                         @ {{ ex.target_weight_kg }} kg
                         {% endif %}
                     </div>
-                    <div class="workout-cell">
+                    <div class="workout-cell workout-cell--performed">
                         <input
                             type="text"
-                            name="ex_{{ ex.id }}_set1"
-                            class="form-control"
+                            name="ex_{{ ex.id }}_sets_reps"
+                            class="form-control js-sets-reps"
+                            placeholder="e.g. 3 x 8"
+                            data-ex-id="{{ ex.id }}"
                         >
-                    </div>
-                    <div class="workout-cell">
-                        <input
-                            type="text"
-                            name="ex_{{ ex.id }}_set2"
-                            class="form-control"
-                        >
-                    </div>
-                    <div class="workout-cell">
-                        <input
-                            type="text"
-                            name="ex_{{ ex.id }}_set3"
-                            class="form-control"
-                        >
+                        {# Keep legacy set fields so existing session summaries still work #}
+                        <input type="hidden" name="ex_{{ ex.id }}_set1" class="js-legacy-set" data-ex-id="{{ ex.id }}" data-set="1">
+                        <input type="hidden" name="ex_{{ ex.id }}_set2" class="js-legacy-set" data-ex-id="{{ ex.id }}" data-set="2">
+                        <input type="hidden" name="ex_{{ ex.id }}_set3" class="js-legacy-set" data-ex-id="{{ ex.id }}" data-set="3">
                     </div>
                 </div>
                 {% empty %}
@@ -360,6 +356,57 @@ document.addEventListener("DOMContentLoaded", function () {
         if (event.key === "Escape" && !backdrop.classList.contains("is-hidden")) {
             closeModal();
         }
+    });
+
+    // Map new "Sets x reps" field to legacy set1/set2/set3 hidden inputs
+    const workoutRows = document.querySelectorAll(".workout-row[data-ex-id]");
+
+    const parseSetsReps = (raw, fallbackSets, fallbackReps) => {
+        if (!raw) return { sets: fallbackSets || 0, reps: fallbackReps || 0 };
+        const cleaned = raw.toLowerCase().replace("×", "x");
+        const match = cleaned.match(/(\d+)\s*x\s*(\d+)/);
+        if (match) {
+            return { sets: parseInt(match[1], 10), reps: parseInt(match[2], 10) };
+        }
+        return { sets: fallbackSets || 0, reps: fallbackReps || 0 };
+    };
+
+    workoutRows.forEach((row) => {
+        const exId = row.dataset.exId;
+        const targetSets = parseInt(row.dataset.targetSets || "0", 10);
+        const targetReps = parseInt(row.dataset.targetReps || "0", 10);
+        const targetWeight = row.dataset.targetWeight || "";
+
+        const setsRepsInput = row.querySelector(`input[name="ex_${exId}_sets_reps"]`);
+        const weightInput = row.querySelector(`input[name="ex_${exId}_weight"]`);
+        const legacyInputs = row.querySelectorAll(".js-legacy-set");
+
+        // Prefill weight from target if empty
+        if (weightInput && !weightInput.value && targetWeight) {
+            weightInput.value = targetWeight;
+        }
+
+        // Prefill sets x reps from target if empty
+        if (setsRepsInput && !setsRepsInput.value && targetSets && targetReps) {
+            setsRepsInput.value = `${targetSets} x ${targetReps}`;
+        }
+
+        const syncLegacy = () => {
+            const parsed = parseSetsReps(setsRepsInput ? setsRepsInput.value : "", targetSets, targetReps);
+            legacyInputs.forEach((hidden) => {
+                const setNum = parseInt(hidden.dataset.set || "0", 10);
+                if (setNum >= 1 && setNum <= parsed.sets && parsed.reps) {
+                    hidden.value = parsed.reps;
+                } else {
+                    hidden.value = "";
+                }
+            });
+        };
+
+        if (setsRepsInput) {
+            setsRepsInput.addEventListener("input", syncLegacy);
+        }
+        syncLegacy();
     });
 });
 </script>
