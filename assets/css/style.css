@@ -587,6 +587,25 @@ h3 {
     font-size: 0.9rem;
 }
 
+/* Workout log: Session details submit button (blue, page-scoped) */
+.workout-log-form .btn-primary {
+    background: #1f6de8;
+    border-color: #1f6de8;
+    color: #ffffff;
+}
+
+.workout-log-form .btn-primary:hover,
+.workout-log-form .btn-primary:focus {
+    background: #1859bf;
+    border-color: #1859bf;
+    color: #ffffff;
+}
+
+.workout-log-form .btn-primary:focus-visible {
+    outline: 2px solid #1f6de8;
+    outline-offset: 2px;
+}
+
 /* Danger button for destructive owner actions */
 .btn-danger,
 .btn-danger:visited {
