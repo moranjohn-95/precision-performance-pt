@@ -3,7 +3,8 @@
 {% block title %}Trainer login | Precision Performance PT{% endblock %}
 
 {% block content %}
-<main class="auth-page">
+{# base.html already provides the page <main> element. #}
+<section class="auth-page">
   <section class="auth-card">
     <header class="auth-card__header">
       <h1 class="auth-card__title">Trainer login</h1>
@@ -44,6 +45,6 @@
       <a href="{% url 'accounts:client_login' %}">Go to client login</a>
     </p>
   </section>
-</main>
+</section>
 {% endblock %}
 
