@@ -27,6 +27,8 @@
 
     {# Main stylesheet #}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {# Page-specific CSS goes here so templates don't put <style> inside <main>. #}
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <div class="site-wrapper">
