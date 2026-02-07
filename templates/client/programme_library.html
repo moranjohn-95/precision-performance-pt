@@ -5,6 +5,8 @@
 
 {% block dashboard_content %}
 
+<div class="programme-library">
+
 {% with current_week=request.GET.week|default:"1" %}
 {% if assignments %}
     {% for assignment in assignments %}
@@ -90,6 +92,12 @@
 {% endif %}
 {% endwith %}
 
+</div>
+
+{% endblock %}
+
+{% block page_scripts %}
+{{ block.super }}
 {% endblock %}
 
 {% block extra_scripts %}
