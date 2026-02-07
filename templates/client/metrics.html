@@ -276,6 +276,7 @@
 {% endblock %}
 
 {% block extra_scripts %}
+{{ block.super }}
 <!-- Charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script defer src="{% static 'js/client_metrics_charts.js' %}"></script>
