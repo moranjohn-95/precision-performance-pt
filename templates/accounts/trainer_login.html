@@ -4,10 +4,10 @@
 
 {% block content %}
 {# base.html already provides the page <main> element. #}
-<section class="auth-page">
+<div class="auth-page">
   <section class="auth-card">
     <header class="auth-card__header">
-      <h1 class="auth-card__title">Trainer login</h1>
+      <h2 class="auth-card__title">Trainer login</h2>
       <p class="auth-card__subtitle">
         Log in to access your trainer dashboard.
       </p>
@@ -45,6 +45,6 @@
       <a href="{% url 'accounts:client_login' %}">Go to client login</a>
     </p>
   </section>
-</section>
+</div>
 {% endblock %}
 
