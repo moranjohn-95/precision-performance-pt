@@ -1010,7 +1010,10 @@ def trainer_support_ticket(request, ticket_id):
         trainer=request.user,
     )
 
-    thread = SupportMessage.objects.filter(ticket=ticket).order_by("created_at")
+    thread = (
+        SupportMessage.objects.filter(ticket=ticket)
+        .order_by("created_at")
+    )
 
     if request.method == "POST":
         action = request.POST.get("action", "").lower()
@@ -1110,7 +1113,9 @@ def owner_queries(request):
     elif selected_assigned.isdigit():
         trainer_ids = set(trainers.values_list("id", flat=True))
         if int(selected_assigned) in trainer_ids:
-            queries = queries.filter(assigned_trainer_id=int(selected_assigned))
+            queries = queries.filter(
+                assigned_trainer_id=int(selected_assigned)
+            )
         # Else ignore invalid id (fallback to all)
 
     # Queries specifically assigned to the current owner for quick access.
@@ -1449,7 +1454,8 @@ def trainer_clients(request):
         portal_password=Subquery(password_sq),
     ).order_by("-created_at")
 
-    # Portal filter before pagination: yes = usable password; no = missing or unusable.
+    # Portal filter before pagination:
+    # yes = usable password; no = missing or unusable.
     if portal_filter == "yes":
         base_qs = (
             base_qs.filter(portal_password__isnull=False)
@@ -1475,10 +1481,12 @@ def trainer_clients(request):
     page_number = request.GET.get("page")
     clients_page = paginator.get_page(page_number)
 
-    # Build portal access links so trainers can share a working password-set URL
-    # without relying on email delivery.
+    # Build portal access links so trainers can share a working
+    # password-set URL without relying on email delivery.
     portal_ids = [
-        req.portal_user_id for req in clients_page if getattr(req, "portal_user_id", None)
+        req.portal_user_id
+        for req in clients_page
+        if getattr(req, "portal_user_id", None)
     ]
     users_by_id = {u.id: u for u in User.objects.filter(id__in=portal_ids)}
 
@@ -1486,7 +1494,8 @@ def trainer_clients(request):
         user = users_by_id.get(getattr(req, "portal_user_id", None))
         req.portal_user = user
         req.portal_link = None
-        req.portal_username = None  # Clients log in using this username + their password.
+        req.portal_username = None  # Clients log in using this username
+        # and their password.
         # Portal access == account exists and has a usable password set.
         req.portal_access = bool(user and user.has_usable_password())
         if user:
@@ -1686,9 +1695,11 @@ def trainer_programme_detail(request, block_id):
     allowed_email_set = set()
     assignable_users = []
     if is_template_block:
-        # Source of truth: accepted 1:1/online consultations assigned to this trainer.
+        # Source of truth: accepted 1:1/online consultations assigned to this
+        # trainer.
         # Use ConsultationRequest to keep eligibility in sync with consults,
-        # but present User ids to the form so the POST can resolve a User reliably.
+        # but present User ids to the form so the POST can resolve a User
+        # reliably.
         assignable_clients = list(
             ConsultationRequest.objects.filter(
                 assigned_trainer=request.user,
@@ -1735,7 +1746,8 @@ def trainer_programme_detail(request, block_id):
             exercise_formset.save()
             messages.success(request, "Tailored programme updated.")
 
-            # Stay on the tailored copy being edited; keep context (cp/day) and jump to editor.
+            # Stay on the tailored copy being edited; keep context (cp/day)
+            # and jump to editor.
             redirect_url = reverse_lazy(
                 "accounts:trainer_programme_detail",
                 kwargs={"block_id": block.id},
@@ -1746,7 +1758,11 @@ def trainer_programme_detail(request, block_id):
             if selected_day:
                 query_bits.append(f"day={selected_day.id}")
             if query_bits:
-                redirect_url = f"{redirect_url}?{'&'.join(query_bits)}#tailored-editor"
+                redirect_url = (
+                    f"{redirect_url}?"
+                    f"{'&'.join(query_bits)}"
+                    "#tailored-editor"
+                )
             else:
                 redirect_url = f"{redirect_url}#tailored-editor"
             return redirect(redirect_url)
@@ -1758,8 +1774,9 @@ def trainer_programme_detail(request, block_id):
         and not is_tailored
         and "convert_to_tailored" not in request.POST
     ):
-        client_id_raw = request.POST.get("assign_client_id") or request.POST.get(
-            "client_id"
+        client_id_raw = (
+            request.POST.get("assign_client_id")
+            or request.POST.get("client_id")
         )
         assign_clicked = (
             "assign_to_client" in request.POST
@@ -1771,7 +1788,10 @@ def trainer_programme_detail(request, block_id):
             try:
                 client_id = int(client_id_raw)
             except (TypeError, ValueError):
-                messages.error(request, "Please select a client before assigning.")
+                messages.error(
+                    request,
+                    "Please select a client before assigning.",
+                )
                 return redirect(
                     "accounts:trainer_programme_detail",
                     block_id=template_block.id,
@@ -1781,7 +1801,8 @@ def trainer_programme_detail(request, block_id):
             if not client_user:
                 messages.error(
                     request,
-                    "Selected client could not be found. Please refresh and try again.",
+                    "Selected client could not be found. "
+                    "Please refresh and try again.",
                 )
                 return redirect(
                     "accounts:trainer_programme_detail",
@@ -1938,7 +1959,8 @@ def trainer_programme_detail(request, block_id):
         "block": template_block,
         "days": template_days_qs,
         "preview_days": preview_days,
-        # Template uses assignable_users so the form posts User ids (required by view).
+        # Template uses assignable_users so the form posts User ids (required
+        # by view).
         "assignable_clients": assignable_users,
         "is_template_block": is_template_block,
         "tailored_client": tailored_client,
@@ -2110,18 +2132,21 @@ def owner_programme_detail(request, block_id):
 
     # Build assignable clients list for owner view.
     if request.user.is_superuser:
-        # Superusers can assign to any client with a ClientProfile; fallback to all non-staff users.
+        # Superusers can assign to any client with a ClientProfile; fallback
+        # to all non-staff users.
         # Correct related name is client_profile.
         assignable_clients_qs = User.objects.filter(
             client_profile__isnull=False
         ).order_by("first_name", "last_name", "username")
         if not assignable_clients_qs.exists():
-            assignable_clients_qs = User.objects.filter(is_staff=False).order_by(
-                "first_name", "last_name", "username"
+            assignable_clients_qs = (
+                User.objects.filter(is_staff=False)
+                .order_by("first_name", "last_name", "username")
             )
         assignable_clients = list(assignable_clients_qs)
     else:
-        # Non-owners: restrict to clients already linked to assignments for this block.
+        # Non-owners: restrict to clients already linked to assignments for
+        # this block.
         assignment_clients = assignments_qs.values_list("client", flat=True)
         assignable_clients = list(
             User.objects.filter(id__in=assignment_clients)
@@ -2176,7 +2201,10 @@ def owner_programme_detail(request, block_id):
             try:
                 client_user_id = int(client_id_raw)
             except (TypeError, ValueError):
-                messages.error(request, "Please select a client before assigning.")
+                messages.error(
+                    request,
+                    "Please select a client before assigning.",
+                )
                 return redirect(
                     "accounts:owner_programme_detail",
                     block_id=template_block.id,
@@ -2186,7 +2214,10 @@ def owner_programme_detail(request, block_id):
 
             # Owners must still avoid staff/superusers.
             if client_user.is_staff or client_user.is_superuser:
-                messages.error(request, "Only client accounts can be assigned.")
+                messages.error(
+                    request,
+                    "Only client accounts can be assigned.",
+                )
                 return redirect(
                     "accounts:owner_programme_detail",
                     block_id=template_block.id,
@@ -2209,7 +2240,10 @@ def owner_programme_detail(request, block_id):
                     "accounts:owner_programme_detail",
                     kwargs={"block_id": template_block.id},
                 )
-                query_bits = [f"trainer={trainer_filter}", f"cp={existing_cp.id}"]
+                query_bits = [
+                    f"trainer={trainer_filter}",
+                    f"cp={existing_cp.id}",
+                ]
                 return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
             legacy_cp = ClientProgramme.objects.filter(
@@ -2240,7 +2274,10 @@ def owner_programme_detail(request, block_id):
                     "accounts:owner_programme_detail",
                     kwargs={"block_id": template_block.id},
                 )
-                query_bits = [f"trainer={trainer_filter}", f"cp={legacy_cp.id}"]
+                query_bits = [
+                    f"trainer={trainer_filter}",
+                    f"cp={legacy_cp.id}",
+                ]
                 return redirect(f"{redirect_base}?{'&'.join(query_bits)}")
 
             cloned_block = clone_programme_block(
@@ -2355,7 +2392,8 @@ def owner_programme_detail(request, block_id):
 @staff_required
 def owner_tailored_programme_detail(request, block_id):
     """
-    Owner view: edit a tailored (non-template) programme block for a specific client.
+    Owner view: edit a tailored (non-template) programme block for a
+    specific client.
     """
     if not request.user.is_superuser:
         raise Http404("Owner view only")
@@ -2366,14 +2404,21 @@ def owner_tailored_programme_detail(request, block_id):
         is_template=False,
     )
 
-    client_programme = ClientProgramme.objects.filter(block=tailored_block).select_related(
-        "client", "trainer"
-    ).first()
+    client_programme = (
+        ClientProgramme.objects.filter(block=tailored_block)
+        .select_related("client", "trainer")
+        .first()
+    )
     client_user = client_programme.client if client_programme else None
 
     ExerciseFormSet = modelformset_factory(
         ProgrammeExercise,
-        fields=("exercise_name", "target_sets", "target_reps", "target_weight_kg"),
+        fields=(
+            "exercise_name",
+            "target_sets",
+            "target_reps",
+            "target_weight_kg",
+        ),
         extra=0,
     )
 
@@ -2422,7 +2467,8 @@ def owner_tailored_programme_detail(request, block_id):
         "tailored_days": tailored_days,
         "selected_day_id": selected_day.id if selected_day else None,
         "exercise_formset": exercise_formset,
-        # Prefer base/template name when available; fallback to tailored block name.
+        # Prefer base/template name when available; fallback to tailored
+        # block name.
         "programme_title": tailored_block.parent_template.name
         if tailored_block.parent_template
         else tailored_block.name,
@@ -2434,7 +2480,8 @@ def owner_tailored_programme_detail(request, block_id):
 @staff_required
 def trainer_tailored_programme_detail(request, block_id):
     """
-    Trainer view: edit a tailored (non-template) programme block assigned to this trainer.
+    Trainer view: edit a tailored (non-template) programme block assigned to
+    this trainer.
     """
     tailored_block = get_object_or_404(
         ProgrammeBlock.objects.prefetch_related("days__exercises"),
@@ -2442,9 +2489,11 @@ def trainer_tailored_programme_detail(request, block_id):
         is_template=False,
     )
 
-    client_programme = ClientProgramme.objects.filter(block=tailored_block).select_related(
-        "client", "trainer"
-    ).first()
+    client_programme = (
+        ClientProgramme.objects.filter(block=tailored_block)
+        .select_related("client", "trainer")
+        .first()
+    )
 
     if client_programme and client_programme.trainer != request.user:
         raise Http404("Programme not found")
@@ -2453,7 +2502,12 @@ def trainer_tailored_programme_detail(request, block_id):
 
     ExerciseFormSet = modelformset_factory(
         ProgrammeExercise,
-        fields=("exercise_name", "target_sets", "target_reps", "target_weight_kg"),
+        fields=(
+            "exercise_name",
+            "target_sets",
+            "target_reps",
+            "target_weight_kg",
+        ),
         extra=0,
     )
 
@@ -2502,7 +2556,8 @@ def trainer_tailored_programme_detail(request, block_id):
         "tailored_days": tailored_days,
         "selected_day_id": selected_day.id if selected_day else None,
         "exercise_formset": exercise_formset,
-        # Prefer base/template name when available; fallback to tailored block name.
+        # Prefer base/template name when available; fallback to tailored
+        # block name.
         "programme_title": tailored_block.parent_template.name
         if tailored_block.parent_template
         else tailored_block.name,
@@ -2552,7 +2607,9 @@ def trainer_programmes(request):
     # Paginate active blocks to keep the table manageable.
     # Show 5 active blocks per page to keep the table readable.
     active_blocks_paginator = Paginator(programme_blocks, 5)
-    active_blocks_page = active_blocks_paginator.get_page(request.GET.get("abp"))
+    active_blocks_page = active_blocks_paginator.get_page(
+        request.GET.get("abp")
+    )
 
     template_blocks_qs = (
         ProgrammeBlock.objects.filter(is_template=True)
@@ -2604,7 +2661,8 @@ def trainer_consultation_detail(request, pk):
         if trainer_id and trainer_id.isdigit():
             trainer_id_int = int(trainer_id)
             if trainer_id_int == request.user.id:
-                # Allow owner to assign to themselves; still block other superusers.
+                # Allow owner to assign to themselves; still block other
+                # superusers.
                 trainer_user = request.user
             else:
                 trainer_user = User.objects.filter(
@@ -2622,8 +2680,16 @@ def trainer_consultation_detail(request, pk):
             consultation=consultation,
             trainer_user=trainer_user,
         )
-        level = getattr(messages, result["message_level"].upper(), messages.INFO)
-        messages.add_message(request, level, result["message"] or "Assigned to trainer.")
+        level = getattr(
+            messages,
+            result["message_level"].upper(),
+            messages.INFO,
+        )
+        messages.add_message(
+            request,
+            level,
+            result["message"] or "Assigned to trainer.",
+        )
         return redirect(result["redirect"])
 
     if request.method == "POST" and "assign_to_me" in request.POST:
@@ -2632,7 +2698,11 @@ def trainer_consultation_detail(request, pk):
             consultation=consultation,
             trainer_user=request.user,
         )
-        level = getattr(messages, result["message_level"].upper(), messages.INFO)
+        level = getattr(
+            messages,
+            result["message_level"].upper(),
+            messages.INFO,
+        )
         messages.add_message(request, level, result["message"])
         return redirect(result["redirect"])
 
@@ -2810,7 +2880,11 @@ def owner_delete_client(request, client_id):
     client_user = get_object_or_404(User, id=client_id)
 
     # Block deleting staff, other owners, or yourself.
-    if client_user.is_staff or client_user.is_superuser or client_user == request.user:
+    if (
+        client_user.is_staff
+        or client_user.is_superuser
+        or client_user == request.user
+    ):
         messages.error(request, "You cannot delete this account.")
         return redirect("accounts:trainer_client_detail", client_id=client_id)
 
@@ -2818,7 +2892,8 @@ def owner_delete_client(request, client_id):
         return HttpResponseForbidden("Invalid request method.")
 
     with transaction.atomic():
-        # Remove any consultation requests tied to this email to avoid stale rows.
+        # Remove any consultation requests tied to this email to avoid stale
+        # rows.
         if client_user.email:
             ConsultationRequest.objects.filter(
                 email__iexact=client_user.email
