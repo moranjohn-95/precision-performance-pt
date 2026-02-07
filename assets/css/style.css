@@ -3017,6 +3017,12 @@ textarea {
 
 /* Mobile (<= 576px) */
 @media (max-width: 576px) {
+    /* Home hero: shift the background focal point right so the athlete
+       stays visible on small screens (desktop remains unchanged). */
+    .home-hero {
+        background-position: 70% center;
+    }
+
     /* Tailored programme: fine-tune exercise text on phones */
     .tailored-programme td:first-child,
     .tailored-programme td:first-child * {
