@@ -2539,6 +2539,26 @@ textarea {
         line-height: 1.25;
     }
 
+    /* Workout log - Session details: wrap Weight (kg) header on phones */
+    .workout-row--header .workout-cell--weight {
+        white-space: normal;
+        line-height: 1.1;
+        text-align: center;
+    }
+
+    /* Workout log - Session details: hide Target and tighten grid on phones */
+    .workout-row--header .workout-cell--target {
+        display: none;
+    }
+
+    .workout-row[data-ex-id] .workout-cell--target {
+        display: none;
+    }
+
+    .workout-row {
+        grid-template-columns: 1.4fr 0.9fr 0.9fr;
+    }
+
     /* Navbar */
     .main-nav {
         padding: 0.9rem 1.25rem;
