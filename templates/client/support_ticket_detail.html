@@ -58,7 +58,7 @@
             <form method="post" class="support-status-form">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="close">
-                <button type="submit" class="btn-secondary">
+                <button type="submit" class="btn-danger">
                     Close ticket
                 </button>
             </form>
@@ -79,7 +79,7 @@
                 ></textarea>
             </div>
             <div class="form-actions">
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn-secondary">
                     Send reply
                 </button>
             </div>

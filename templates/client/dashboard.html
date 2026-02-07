@@ -29,7 +29,7 @@ Hello, {{ request.user.first_name|default:"Client" }}
             {{ plan.exercise_count }} exercises planned.
         </p>
         <div class="today-workout-footer">
-            <a href="{{ plan.start_url }}" class="btn-primary btn-primary--sm">
+            <a href="{{ plan.start_url }}" class="btn-secondary btn-secondary--sm">
                 Start session
             </a>
         </div>
@@ -154,7 +154,7 @@ Hello, {{ request.user.first_name|default:"Client" }}
         {% endwith %}
     </div>
     <div class="this-week-footer">
-        <a href="{% url 'accounts:client_metrics' %}" class="btn-primary btn-primary--sm">
+        <a href="{% url 'accounts:client_metrics' %}" class="btn-secondary btn-secondary--sm">
             See more
         </a>
     </div>
