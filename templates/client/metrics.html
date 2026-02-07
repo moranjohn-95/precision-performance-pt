@@ -18,6 +18,14 @@
 
 <div class="client-body-metrics-page">
 
+<!-- Data for charts (client_metrics_charts.js) -->
+<div
+    id="metrics-charts-data"
+    data-labels='{{ chart_labels_json|default:"[]"|safe }}'
+    data-bodyweight='{{ bodyweight_series_json|default:"[]"|safe }}'
+    data-bench='{{ bench_series_json|default:"[]"|safe }}'
+></div>
+
 <!-- Bodyweight trend -->
 <section class="dashboard-card dashboard-card--wide">
     <h2 class="card-title">Bodyweight trend</h2>
@@ -275,57 +283,6 @@
 {% block extra_scripts %}
 <!-- Charts -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-(function () {
-    const labels = {{ chart_labels_json|default:"[]"|safe }};
-    const bodyweightData = {{ bodyweight_series_json|default:"[]"|safe }};
-    const benchData = {{ bench_series_json|default:"[]"|safe }};
-
-    function makeLineChart(canvasId, data, labelText) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) {
-            return;
-        }
-        const hasValues = Array.isArray(data) && data.some(v => v !== null);
-        if (!hasValues) {
-            return;
-        }
-
-        new Chart(canvas, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: labelText,
-                    data: data,
-                    tension: 0.35,
-                    pointRadius: 3,
-                    borderWidth: 2,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    x: {
-                        title: { display: false }
-                    },
-                    y: {
-                        beginAtZero: false
-                    }
-                }
-            }
-        });
-    }
-
-    if (Array.isArray(labels) && labels.length) {
-        makeLineChart("bodyweightChart", bodyweightData, "Bodyweight (kg)");
-        makeLineChart("strengthChart", benchData, "Bench top set (kg)");
-    }
-})();
-</script>
+<script defer src="{% static 'js/client_metrics_charts.js' %}"></script>
 <script defer src="{% static 'js/body_metrics_modal.js' %}"></script>
 {% endblock %}
