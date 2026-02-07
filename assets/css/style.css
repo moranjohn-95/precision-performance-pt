@@ -3705,6 +3705,12 @@ textarea {
     .key-metrics-table .col-target {
         display: none;
     }
+
+    /* Allow key metrics headers to wrap on mobile */
+    .metrics-table th {
+        white-space: normal;
+        line-height: 1.2;
+    }
 }
 
 
