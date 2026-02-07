@@ -2558,6 +2558,12 @@ textarea {
         line-height: 1.25;
     }
 
+    /* Workout log: Recent sessions (mobile) - hide Date column */
+    .recent-sessions-table th:nth-child(2),
+    .recent-sessions-table td.date-cell {
+        display: none;
+    }
+
     /* Workout log - Session details: wrap Weight (kg) header on phones */
     .workout-row--header .workout-cell--weight {
         white-space: normal;
