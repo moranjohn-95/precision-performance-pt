@@ -10,6 +10,12 @@
 {% block page_subtitle %}{% endblock %}
 
 {% block dashboard_content %}
+<div class="page-actions">
+    <a href="{% url 'accounts:trainer_client_detail' client.id %}" class="btn btn-secondary">
+        Back to client
+    </a>
+</div>
+
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
         <h2 class="card-title">{{ session.name }}</h2>
@@ -33,12 +39,9 @@
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn-primary">
+                <button type="submit" class="btn btn-secondary">
                     Save changes
                 </button>
-                <a href="{% url 'accounts:trainer_client_detail' client.id %}" class="btn-secondary">
-                    Back to client
-                </a>
             </div>
         </form>
     </div>
