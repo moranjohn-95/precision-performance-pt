@@ -2875,6 +2875,16 @@ textarea {
         max-width: 100%;
     }
 
+    /* Workout log: hide Notes column on tablet and below */
+    .recent-sessions-table .col-notes {
+        display: none;
+    }
+    /* Fallback if class is missing */
+    .recent-sessions-table th:nth-child(4),
+    .recent-sessions-table td:nth-child(4) {
+        display: none;
+    }
+
     /* Footer */
     .site-footer .footer-grid {
         grid-template-columns: 1fr;
@@ -2900,6 +2910,16 @@ textarea {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.6rem;
+    }
+
+    /* Workout log: keep Notes hidden on phones */
+    .recent-sessions-table .col-notes {
+        display: none;
+    }
+    /* Fallback if class is missing */
+    .recent-sessions-table th:nth-child(4),
+    .recent-sessions-table td:nth-child(4) {
+        display: none;
     }
 
     /* Full-width controls on mobile */
