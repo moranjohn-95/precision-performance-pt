@@ -74,7 +74,10 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
             redirect_name="accounts:trainer_clients",
             redirect_kwargs=None,
             level="error",
-            message="This consultation is already assigned to another trainer.",
+            message=(
+                "This consultation is already assigned to another "
+                "trainer."
+            ),
         )
 
     user = None
@@ -89,7 +92,8 @@ def assign_consultation_to_trainer(*, request, consultation, trainer_user):
         # Find or create user by email.
         user = User.objects.filter(email__iexact=email_val).first()
         if user is None and email_val:
-            # Use email as username so clients sign in with the email they provided.
+            # Use email as username so clients sign in with the email
+            # they provided.
             username = email_val
             user = User.objects.create(
                 username=username,
