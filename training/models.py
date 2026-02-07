@@ -452,7 +452,10 @@ class ProgrammeExercise(models.Model):
         ordering = ["day", "order"]
 
     def __str__(self):
-        return f"{self.exercise_name} ({self.target_sets} x {self.target_reps})"
+        return (
+            f"{self.exercise_name} "
+            f"({self.target_sets} x {self.target_reps})"
+        )
 
 
 class ClientProgramme(models.Model):

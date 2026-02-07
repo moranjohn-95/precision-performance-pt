@@ -95,7 +95,9 @@ class WorkoutSessionForm(forms.ModelForm):
             "date": forms.DateInput(attrs={"type": "date"}),
             "name": forms.TextInput(
                 attrs={
-                    "placeholder": "Session name (e.g. Upper Body — Week 3 / Day 2)"
+                    "placeholder": (
+                        "Session name (e.g. Upper Body — Week 3 / Day 2)"
+                    )
                 }
             ),
             "notes": forms.Textarea(
@@ -148,7 +150,9 @@ class WorkoutSessionForm(forms.ModelForm):
             instance.client = user
 
         # Default status to "logged" if the model has a status field
-        if hasattr(instance, "status") and not getattr(instance, "status", None):
+        if hasattr(instance, "status") and not getattr(
+            instance, "status", None
+        ):
             try:
                 instance.status = "logged"
             except Exception:
@@ -158,7 +162,11 @@ class WorkoutSessionForm(forms.ModelForm):
         details = self._build_details_summary()
         if details:
             if instance.notes:
-                instance.notes = instance.notes + "\n\nSession details:\n" + details
+                instance.notes = (
+                    instance.notes
+                    + "\n\nSession details:\n"
+                    + details
+                )
             else:
                 instance.notes = "Session details:\n" + details
 
@@ -181,10 +189,16 @@ class BodyMetricEntryForm(forms.ModelForm):
         ]
         widgets = {
             "date": forms.DateInput(attrs={"type": "date"}),
-            "bodyweight_kg": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
+            "bodyweight_kg": forms.NumberInput(
+                attrs={"step": "0.1", "min": "0"}
+            ),
             "waist_cm": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
-            "bench_top_set_kg": forms.NumberInput(attrs={"step": "0.5", "min": "0"}),
-            "sleep_hours": forms.NumberInput(attrs={"step": "0.1", "min": "0"}),
+            "bench_top_set_kg": forms.NumberInput(
+                attrs={"step": "0.5", "min": "0"}
+            ),
+            "sleep_hours": forms.NumberInput(
+                attrs={"step": "0.1", "min": "0"}
+            ),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
 

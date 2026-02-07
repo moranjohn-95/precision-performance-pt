@@ -80,9 +80,24 @@ def main() -> None:
 
     checks = [
         ("python manage.py check", ["python", "manage.py", "check"]),
-        ("python manage.py check --deploy", ["python", "manage.py", "check", "--deploy"]),
-        ("python manage.py makemigrations --check --dry-run", ["python", "manage.py", "makemigrations", "--check", "--dry-run"]),
-        ("python manage.py showmigrations", ["python", "manage.py", "showmigrations"]),
+        (
+            "python manage.py check --deploy",
+            ["python", "manage.py", "check", "--deploy"],
+        ),
+        (
+            "python manage.py makemigrations --check --dry-run",
+            [
+                "python",
+                "manage.py",
+                "makemigrations",
+                "--check",
+                "--dry-run",
+            ],
+        ),
+        (
+            "python manage.py showmigrations",
+            ["python", "manage.py", "showmigrations"],
+        ),
     ]
 
     check_outputs: list[str] = []
@@ -110,7 +125,10 @@ def main() -> None:
         format_section("Environment", env_info),
         format_section("Project structure", snapshot),
         format_section("Django checks", "\n".join(check_outputs)),
-        format_section("Migrations status", "See makemigrations and showmigrations above."),
+        format_section(
+            "Migrations status",
+            "See makemigrations and showmigrations above.",
+        ),
         format_section("Linting", lint_placeholder),
         format_section("Automated tests", tests_placeholder),
         format_section("Packages", pip_section),

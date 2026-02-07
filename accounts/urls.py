@@ -66,7 +66,8 @@ urlpatterns = [
         trainer_tailored_programme_detail,
         name="trainer_tailored_programme_detail",
     ),
-    # Alias so owner templates can reverse the programmes list with owner branding.
+    # Alias so owner templates can reverse the programmes list with owner
+    # branding.
     path(
         "owner/programmes/",
         trainer_programmes,
@@ -113,7 +114,11 @@ urlpatterns = [
     path("client/dashboard/", client_dashboard, name="client_dashboard"),
     path("client/today/", client_today, name="client_today"),
     # Keep legacy name/path for programme library
-    path("client/programmes/", client_programme_library, name="client_programmes"),
+    path(
+        "client/programmes/",
+        client_programme_library,
+        name="client_programmes",
+    ),
     path(
         "client/programme-library/",
         client_programme_library,
