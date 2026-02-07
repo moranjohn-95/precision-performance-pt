@@ -106,11 +106,11 @@
 {% if recent_entries %}
 <section class="dashboard-card dashboard-card--wide">
     <header class="card-header">
-        <h3 class="card-title">Recent check-ins</h3>
+        <h2 class="card-title">Recent check-ins</h2>
     </header>
     <div class="card-body">
         <div class="dashboard-table-wrapper table-scroll">
-            <table class="dashboard-table metrics-table">
+            <table class="dashboard-table metrics-table checkins-table">
                 <thead>
                     <tr>
                         <th class="col-date">Date</th>
@@ -163,38 +163,40 @@
     </header>
 
     <div class="card-body">
-        <table class="dashboard-table">
-            <thead>
-                <tr>
-                    <th>Metric</th>
-                    <th>Latest</th>
-                    <th>Change (4 weeks)</th>
-                    <th>Target</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in summary_rows %}
-                <tr>
-                    <td>{{ row.label }}</td>
-                    <td>
-                        {% if row.latest is not None %}
-                            {{ row.latest }} {{ row.unit }}
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if row.change is not None %}
-                            {% if row.change > 0 %}+{% endif %}{{ row.change }} {{ row.unit }}
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                    <td>{{ row.target_display }}</td>
-                </tr>
-                {% endfor %}
+        <div class="dashboard-table-wrapper table-scroll">
+            <table class="dashboard-table metrics-table key-metrics-table">
+                <thead>
+                    <tr>
+                        <th class="col-metric">Metric</th>
+                        <th class="col-latest">Latest</th>
+                        <th class="col-change">Change (4 weeks)</th>
+                        <th class="col-target">Target</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in summary_rows %}
+                    <tr>
+                        <td class="col-metric">{{ row.label }}</td>
+                        <td class="col-latest">
+                            {% if row.latest is not None %}
+                                {{ row.latest }} {{ row.unit }}
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                        <td class="col-change">
+                            {% if row.change is not None %}
+                                {% if row.change > 0 %}+{% endif %}{{ row.change }} {{ row.unit }}
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                        <td class="col-target">{{ row.target_display }}</td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+        </div>
         </div>
 
         <footer class="card-footer text-muted">

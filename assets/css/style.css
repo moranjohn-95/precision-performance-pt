@@ -611,6 +611,20 @@ h3 {
     outline-offset: 2px;
 }
 
+/* Body metrics tables: keep cells from wrapping awkwardly */
+.checkins-table th,
+.checkins-table td,
+.key-metrics-table th,
+.key-metrics-table td {
+    white-space: nowrap;
+}
+
+/* Allow horizontal scroll in table wrappers */
+.table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 /* Danger button for destructive owner actions */
 .btn-danger,
 .btn-danger:visited {
@@ -3576,6 +3590,16 @@ textarea {
         word-break: break-word;
     }
 
+    /* Body metrics: hide Target column on tablet */
+    .key-metrics-table .col-target {
+        display: none;
+    }
+
+    /* Body metrics: hide Sleep column on tablet */
+    .checkins-table .col-sleep {
+        display: none;
+    }
+
     /* Page header row */
     .page-header-row {
         flex-direction: column;
@@ -3668,6 +3692,18 @@ textarea {
 
     .site-footer .footer-social {
         justify-content: center;
+    }
+
+    /* Body metrics: hide Waist and Sleep columns on mobile */
+    .checkins-table .col-waist,
+    .checkins-table .col-sleep {
+        display: none;
+    }
+
+    /* Body metrics: hide Change and Target columns on mobile */
+    .key-metrics-table .col-change,
+    .key-metrics-table .col-target {
+        display: none;
     }
 }
 
