@@ -1,4 +1,5 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
 {% block page_eyebrow %}Client dashboard{% endblock %}
 {% block page_title %}Workout log{% endblock %}
@@ -301,115 +302,11 @@
     </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const backdrop = document.getElementById("session-modal-backdrop");
-    const titleEl = document.getElementById("session-modal-title");
-    const idField = document.getElementById("session-id-field");
-    const nameField = document.getElementById("session-name-field");
-    const statusField = document.getElementById("session-status-field");
-    const notesField = document.getElementById("session-notes-field");
 
-    function openModalFromRow(row) {
-        const sessionId = row.dataset.sessionId;
-        const sessionName = row.dataset.sessionName || "";
-        const sessionStatus = row.dataset.sessionStatus || "logged";
-        const sessionNotes = row.dataset.sessionNotes || "";
 
-        idField.value = sessionId;
-        nameField.value = sessionName;
-        statusField.value = sessionStatus;
-        notesField.value = sessionNotes;
+{% endblock %}
 
-        titleEl.textContent = sessionName || "Workout session";
-
-        backdrop.classList.remove("is-hidden");
-        document.body.classList.add("no-scroll");
-    }
-
-    function closeModal() {
-        backdrop.classList.add("is-hidden");
-        document.body.classList.remove("no-scroll");
-    }
-
-    document.querySelectorAll(".js-open-session").forEach(function (btn) {
-        btn.addEventListener("click", function (event) {
-            event.preventDefault();
-            const row = btn.closest("tr");
-            if (row) {
-                openModalFromRow(row);
-            }
-        });
-    });
-
-    document.querySelectorAll(".js-close-session").forEach(function (btn) {
-        btn.addEventListener("click", closeModal);
-    });
-
-    backdrop.addEventListener("click", function (event) {
-        if (event.target === backdrop) {
-            closeModal();
-        }
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key === "Escape" && !backdrop.classList.contains("is-hidden")) {
-            closeModal();
-        }
-    });
-
-    // Map new "Sets x reps" field to legacy set1/set2/set3 hidden inputs
-    const workoutRows = document.querySelectorAll(".workout-row[data-ex-id]");
-
-    const parseSetsReps = (raw, fallbackSets, fallbackReps) => {
-        if (!raw) return { sets: fallbackSets || 0, reps: fallbackReps || 0 };
-        const cleaned = raw.toLowerCase().replace("×", "x");
-        const match = cleaned.match(/(\d+)\s*x\s*(\d+)/);
-        if (match) {
-            return { sets: parseInt(match[1], 10), reps: parseInt(match[2], 10) };
-        }
-        return { sets: fallbackSets || 0, reps: fallbackReps || 0 };
-    };
-
-    workoutRows.forEach((row) => {
-        const exId = row.dataset.exId;
-        const targetSets = parseInt(row.dataset.targetSets || "0", 10);
-        const targetReps = parseInt(row.dataset.targetReps || "0", 10);
-        const targetWeight = row.dataset.targetWeight || "";
-
-        const setsRepsInput = row.querySelector(`input[name="ex_${exId}_sets_reps"]`);
-        const weightInput = row.querySelector(`input[name="ex_${exId}_weight"]`);
-        const legacyInputs = row.querySelectorAll(".js-legacy-set");
-
-        // Prefill weight from target if empty
-        if (weightInput && !weightInput.value && targetWeight) {
-            weightInput.value = targetWeight;
-        }
-
-        // Prefill sets x reps from target if empty
-        if (setsRepsInput && !setsRepsInput.value && targetSets && targetReps) {
-            setsRepsInput.value = `${targetSets} x ${targetReps}`;
-        }
-
-        const syncLegacy = () => {
-            const parsed = parseSetsReps(setsRepsInput ? setsRepsInput.value : "", targetSets, targetReps);
-            legacyInputs.forEach((hidden) => {
-                const setNum = parseInt(hidden.dataset.set || "0", 10);
-                if (setNum >= 1 && setNum <= parsed.sets && parsed.reps) {
-                    hidden.value = parsed.reps;
-                } else {
-                    hidden.value = "";
-                }
-            });
-        };
-
-        if (setsRepsInput) {
-            setsRepsInput.addEventListener("input", syncLegacy);
-        }
-        syncLegacy();
-    });
-});
-</script>
-
+{% block page_scripts %}
+<script src="{% static 'js/workout_log.js' %}"></script>
 {% endblock %}
 

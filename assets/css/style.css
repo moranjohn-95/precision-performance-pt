@@ -2527,6 +2527,18 @@ textarea {
         min-height: 44px;
     }
 
+    /* Workout log - Session details: allow exercise text to wrap */
+    .workout-row > * {
+        min-width: 0; /* allow grid items to shrink so wrapping works */
+    }
+
+    .workout-cell--exercise {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+        line-height: 1.25;
+    }
+
     /* Navbar */
     .main-nav {
         padding: 0.9rem 1.25rem;
@@ -2590,6 +2602,18 @@ textarea {
     .dashboard-layout.client-dashboard .dashboard-shell {
         grid-template-columns: 1fr;
         gap: 1rem;
+    }
+
+    /* Workout log - Session details: allow exercise text to wrap */
+    .workout-row > * {
+        min-width: 0; /* allow grid items to shrink so wrapping works */
+    }
+
+    .workout-cell--exercise {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+        line-height: 1.25;
     }
 
     .dashboard-layout.client-dashboard .dashboard-mobilebar {
@@ -2929,6 +2953,18 @@ textarea {
         width: 100%;
         max-width: 100%;
         padding: 0.65rem 0.75rem;
+    }
+
+    /* Workout log - Session details: keep wrap on phones */
+    .workout-row > * {
+        min-width: 0;
+    }
+
+    .workout-cell--exercise {
+        white-space: normal;
+        overflow-wrap: anywhere;
+        word-break: normal;
+        line-height: 1.25;
     }
 
     /* Save button full width for mobile */
