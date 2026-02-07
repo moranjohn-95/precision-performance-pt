@@ -2,10 +2,10 @@
 from django.shortcuts import redirect, render
 
 from .forms import ConsultationRequestForm, ContactQueryForm
-from .models import ContactQuery
 
 
 # Create views here.
+
 def consultation(request):
     """
     Handles the 'Book a consultation' page.

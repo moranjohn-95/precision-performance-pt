@@ -8,7 +8,6 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.views import LoginView
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -2129,10 +2128,6 @@ def owner_programme_detail(request, block_id):
             .order_by("username")
             .distinct()
         )
-
-    allowed_email_set = {
-        u.email.lower() for u in assignable_clients if u.email
-    }
 
     if request.method == "POST" and "save_exercises" in request.POST:
         if not is_tailored:

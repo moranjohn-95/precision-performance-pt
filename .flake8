@@ -1,0 +1,16 @@
+[flake8]
+max-line-length = 79
+
+exclude =
+    venv,
+    .git,
+    __pycache__,
+    staticfiles,
+    media,
+    node_modules
+
+# Ignore long lines ONLY in auto-generated migration files
+per-file-ignores =
+    */migrations/*.py:E501
+
+# Keep E501 enabled elsewhere (so your real code still gets checked)
