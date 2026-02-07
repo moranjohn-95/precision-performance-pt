@@ -16,41 +16,41 @@
 
 {% block dashboard_content %}
 
-<!-- Trend placeholders -->
+<div class="client-body-metrics-page">
+
+<!-- Bodyweight trend -->
 <section class="dashboard-card dashboard-card--wide">
-    <div class="metrics-trend-grid">
-        <div class="metrics-trend-card">
-            <h2 class="card-title">Bodyweight trend</h2>
-            <p class="card-subtitle">
-                Weekly bodyweight pattern based on check-ins.
-            </p>
-            <div class="card-body">
-                <div class="metrics-chart">
-                    <canvas id="bodyweightChart" aria-label="Bodyweight trend chart"></canvas>
-                </div>
-                {% if not has_bodyweight_data %}
-                    <p class="empty-state">
-                        No bodyweight entries recorded yet. Add a body metrics check-in to see a trend.
-                    </p>
-                {% endif %}
-            </div>
+    <h2 class="card-title">Bodyweight trend</h2>
+    <p class="card-subtitle">
+        Weekly bodyweight pattern based on check-ins.
+    </p>
+    <div class="card-body">
+        <div class="metrics-chart">
+            <canvas id="bodyweightChart" aria-label="Bodyweight trend chart"></canvas>
         </div>
-        <div class="metrics-trend-card">
-            <h2 class="card-title">Strength trend</h2>
-            <p class="card-subtitle">
-                Top sets for an example lift (Bench) based on bench top set entries.
+        {% if not has_bodyweight_data %}
+            <p class="empty-state">
+                No bodyweight entries recorded yet. Add a body metrics check-in to see a trend.
             </p>
-            <div class="card-body">
-                <div class="metrics-chart">
-                    <canvas id="strengthChart" aria-label="Strength trend chart"></canvas>
-                </div>
-                {% if not has_bench_data %}
-                    <p class="empty-state">
-                        No strength entries recorded yet. Add bench top set data in body metrics check-ins.
-                    </p>
-                {% endif %}
-            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Strength trend -->
+<section class="dashboard-card dashboard-card--wide">
+    <h2 class="card-title">Strength trend</h2>
+    <p class="card-subtitle">
+        Top sets for an example lift (Bench) based on bench top set entries.
+    </p>
+    <div class="card-body">
+        <div class="metrics-chart">
+            <canvas id="strengthChart" aria-label="Strength trend chart"></canvas>
         </div>
+        {% if not has_bench_data %}
+            <p class="empty-state">
+                No strength entries recorded yet. Add bench top set data in body metrics check-ins.
+            </p>
+        {% endif %}
     </div>
 </section>
 
@@ -101,51 +101,57 @@
             </button>
         </form>
     </div>
-
-    {% if recent_entries %}
-    <div class="card-footer">
-        <h3 class="card-footer-title">Recent check-ins</h3>
-        <table class="dashboard-table table-compact">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Bodyweight (kg)</th>
-                    <th>Waist (cm)</th>
-                    <th>Bench top set (kg)</th>
-                    <th>Sleep (h)</th>
-                    <th class="action-cell">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for entry in recent_entries %}
-                <tr>
-                    <td>{{ entry.date|date:"d M Y" }}</td>
-                    <td>{{ entry.bodyweight_kg|default:"—" }}</td>
-                    <td>{{ entry.waist_cm|default:"—" }}</td>
-                    <td>{{ entry.bench_top_set_kg|default:"—" }}</td>
-                    <td>{{ entry.sleep_hours|default:"—" }}</td>
-                    <td class="action-cell nowrap">
-                        <a
-                            href="#"
-                            class="text-link js-open-metric"
-                            data-entry-id="{{ entry.id }}"
-                            data-date="{{ entry.date|date:'Y-m-d' }}"
-                            data-bodyweight="{{ entry.bodyweight_kg|default_if_none:'' }}"
-                            data-waist="{{ entry.waist_cm|default_if_none:'' }}"
-                            data-bench="{{ entry.bench_top_set_kg|default_if_none:'' }}"
-                            data-sleep="{{ entry.sleep_hours|default_if_none:'' }}"
-                            data-notes="{{ entry.notes|default_if_none:''|escape }}"
-                        >
-                            Open
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% endif %}
 </section>
+
+{% if recent_entries %}
+<section class="dashboard-card dashboard-card--wide">
+    <header class="card-header">
+        <h3 class="card-title">Recent check-ins</h3>
+    </header>
+    <div class="card-body">
+        <div class="dashboard-table-wrapper table-scroll">
+            <table class="dashboard-table metrics-table">
+                <thead>
+                    <tr>
+                        <th class="col-date">Date</th>
+                        <th class="col-bodyweight">Bodyweight (kg)</th>
+                        <th class="col-waist">Waist (cm)</th>
+                        <th class="col-bench">Bench top set (kg)</th>
+                        <th class="col-sleep">Sleep (h)</th>
+                        <th class="action-cell col-action">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in recent_entries %}
+                    <tr>
+                        <td class="col-date">{{ entry.date|date:"d M Y" }}</td>
+                        <td class="col-bodyweight">{{ entry.bodyweight_kg|default:"—" }}</td>
+                        <td class="col-waist">{{ entry.waist_cm|default:"—" }}</td>
+                        <td class="col-bench">{{ entry.bench_top_set_kg|default:"—" }}</td>
+                        <td class="col-sleep">{{ entry.sleep_hours|default:"—" }}</td>
+                        <td class="action-cell col-action nowrap">
+                            <a
+                                href="#"
+                                class="text-link js-open-metric"
+                                data-entry-id="{{ entry.id }}"
+                                data-date="{{ entry.date|date:'Y-m-d' }}"
+                                data-bodyweight="{{ entry.bodyweight_kg|default_if_none:'' }}"
+                                data-waist="{{ entry.waist_cm|default_if_none:'' }}"
+                                data-bench="{{ entry.bench_top_set_kg|default_if_none:'' }}"
+                                data-sleep="{{ entry.sleep_hours|default_if_none:'' }}"
+                                data-notes="{{ entry.notes|default_if_none:''|escape }}"
+                            >
+                                Open
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
 
 <!-- Key metrics summary -->
 <section class="dashboard-card dashboard-card--wide">
@@ -258,6 +264,8 @@
             </footer>
         </form>
     </div>
+</div>
+
 </div>
 
 {% endblock %}

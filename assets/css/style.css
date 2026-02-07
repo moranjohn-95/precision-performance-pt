@@ -587,6 +587,11 @@ h3 {
     font-size: 0.9rem;
 }
 
+/* Client body metrics: keep stacked cards separated */
+.client-body-metrics-page .dashboard-card + .dashboard-card {
+    margin-top: 1rem;
+}
+
 /* Workout log: Session details submit button (blue, page-scoped) */
 .workout-log-form .btn-primary {
     background: #1f6de8;
