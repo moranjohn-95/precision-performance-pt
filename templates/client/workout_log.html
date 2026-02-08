@@ -183,6 +183,7 @@
                             name="ex_{{ ex.id }}_weight"
                             class="form-control"
                             placeholder="kg"
+                            aria-label="Weight (kg) for {{ ex.exercise_name }}"
                         >
                     </div>
                     <div class="workout-cell workout-cell--target">
@@ -198,6 +199,7 @@
                             class="form-control js-sets-reps"
                             placeholder="e.g. 3 x 8"
                             data-ex-id="{{ ex.id }}"
+                            aria-label="Sets and reps for {{ ex.exercise_name }}"
                         >
                         {# Keep legacy set fields so existing session summaries still work #}
                         <input type="hidden" name="ex_{{ ex.id }}_set1" class="js-legacy-set" data-ex-id="{{ ex.id }}" data-set="1">
