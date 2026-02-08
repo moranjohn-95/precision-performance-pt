@@ -1,3 +1,5 @@
+/* jshint esversion: 11 */
+/* global Chart */
 // Render client body metrics charts from data attributes
 // Keeps globals clean via an IIFE
 (() => {

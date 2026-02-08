@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Programme library anchor highlight for the client programme library page. */
 document.addEventListener("DOMContentLoaded", function () {
     // Only run when the URL includes a hash target.

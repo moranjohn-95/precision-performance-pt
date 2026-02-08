@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Dashboard helpers for auto-submit filters and confirm prompts. */
 (() => {
   const onReady = () => {

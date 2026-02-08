@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* global Chart */
 /* Client metrics charts for the trainer client detail page. */
 document.addEventListener("DOMContentLoaded", function () {

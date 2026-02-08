@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Body metrics modal for client and trainer metrics pages. */
 document.addEventListener("DOMContentLoaded", function () {
     // DOM lookups for the modal and its fields.

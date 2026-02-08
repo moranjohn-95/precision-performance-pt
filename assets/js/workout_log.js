@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Workout log helpers for the client workout log page. */
 (() => {
     document.addEventListener("DOMContentLoaded", function () {

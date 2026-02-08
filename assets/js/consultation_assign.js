@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Enable the assign button when a trainer is selected. */
 (() => {
   const onReady = () => {

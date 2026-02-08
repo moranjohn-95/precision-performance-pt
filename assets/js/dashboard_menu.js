@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 // Client dashboard mobile menu toggle
 document.addEventListener("DOMContentLoaded", () => {
   const body = document.body;

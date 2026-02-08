@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 /* Copy portal links and select inputs on click. */
 (() => {
   const onReady = () => {

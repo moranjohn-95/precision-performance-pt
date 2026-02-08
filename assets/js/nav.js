@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 // Burger menu toggle for the public navbar only
 document.addEventListener("DOMContentLoaded", () => {
   const toggle = document.querySelector(".nav-toggle");

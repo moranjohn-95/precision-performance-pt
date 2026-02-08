@@ -1,3 +1,4 @@
+/* jshint esversion: 11 */
 // Program details modal
 (function () {
   const modal = document.querySelector("[data-program-modal]");
