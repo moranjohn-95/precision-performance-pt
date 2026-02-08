@@ -732,7 +732,7 @@ h3 {
 }
 
 .muted-text {
-    color: var(--color-text-muted, #6b7a90);
+    color: var(--color-text-muted, #556a82);
 }
 
 .page-meta__row {
