@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Page not found | Precision Performance PT{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <section class="auth-card" aria-labelledby="not-found-title">
+    <header class="auth-card__header">
+      <h1 id="not-found-title" class="auth-card__title">
+        404 &ndash; Page not found
+      </h1>
+      <p class="auth-card__subtitle">
+        Sorry, the page you are looking for doesn&rsquo;t exist or was moved.
+      </p>
+    </header>
+
+    <p>
+      <a class="btn-primary" href="{% url 'home' %}">Back to homepage</a>
+    </p>
+
+    <p class="auth-footer">
+      {% if request.user.is_authenticated %}
+        {% if request.user.is_superuser %}
+          <a href="{% url 'accounts:owner_dashboard' %}">Go to your dashboard</a>
+        {% elif request.user.is_staff %}
+          <a href="{% url 'accounts:trainer_dashboard' %}">Go to your dashboard</a>
+        {% else %}
+          <a href="{% url 'accounts:client_dashboard' %}">Go to your dashboard</a>
+        {% endif %}
+      {% else %}
+        <a href="{% url 'accounts:client_login' %}">Client login</a>
+        or
+        <a href="{% url 'accounts:trainer_login' %}">Trainer login</a>
+      {% endif %}
+    </p>
+  </section>
+</div>
+{% endblock %}
+
