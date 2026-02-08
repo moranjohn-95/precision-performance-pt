@@ -1,4 +1,5 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
 {% block sidebar_title %}Owner Menu{% endblock %}
 {% block sidebar_menu %}
@@ -23,7 +24,7 @@
             id="trainer-filter"
             name="trainer"
             class="form-control"
-            onchange="this.form.submit()"
+            data-auto-submit
         >
             <option value="all" {% if trainer_filter == "all" %}selected{% endif %}>
                 All trainers
@@ -48,7 +49,7 @@
             id="client-type-filter"
             name="type"
             class="form-control"
-            onchange="this.form.submit()"
+            data-auto-submit
         >
             <option value="all" {% if client_type == "all" %}selected{% endif %}>
                 All
@@ -74,7 +75,7 @@
             id="portal-filter"
             name="portal"
             class="form-control"
-            onchange="this.form.submit()"
+            data-auto-submit
         >
             <option value="all" {% if portal_filter == "all" %}selected{% endif %}>
                 All
@@ -223,13 +224,11 @@
                                     class="form-control portal-link-input"
                                     value="{{ req.portal_link }}"
                                     readonly
-                                    onclick="this.select()"
                                     aria-label="Password reset link"
                                 >
                                 <button
                                     type="button"
                                     class="btn-secondary portal-link-copy"
-                                    onclick="copyPortalLink(this)"
                                     data-link="{{ req.portal_link }}"
                                     aria-label="Copy password link"
                                 >
@@ -259,25 +258,5 @@
 
 {% block extra_scripts %}
 {{ block.super }}
-<script>
-// Copy the generated portal link to the clipboard; fallback if Clipboard API blocked.
-function copyPortalLink(btn) {
-    const link = btn.getAttribute("data-link");
-    if (!link) return;
-
-    navigator.clipboard?.writeText(link).catch(() => {
-        const temp = document.createElement("input");
-        temp.value = link;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        document.body.removeChild(temp);
-    });
-
-    btn.textContent = "Copied";
-    setTimeout(() => {
-        btn.textContent = "Copy";
-    }, 1200);
-}
-</script>
+<script src="{% static 'js/portal_link_copy.js' %}"></script>
 {% endblock %}

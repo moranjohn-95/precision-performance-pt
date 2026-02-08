@@ -25,7 +25,7 @@
         <form method="get" class="table-filter table-filter--row">
             <div class="filter-field">
                 <label for="status" class="form-label">Status</label>
-                <select id="status" name="status" class="form-control" onchange="this.form.submit()">
+                <select id="status" name="status" class="form-control" data-auto-submit>
                     <option value="all" {% if selected_status == "all" %}selected{% endif %}>
                         All
                     </option>
@@ -44,7 +44,7 @@
 
             <div class="filter-field">
                 <label for="assigned" class="form-label">Assigned to</label>
-                <select id="assigned" name="assigned" class="form-control" onchange="this.form.submit()">
+                <select id="assigned" name="assigned" class="form-control" data-auto-submit>
                     <option value="all" {% if selected_assigned == "all" %}selected{% endif %}>All</option>
                     <option value="unassigned" {% if selected_assigned == "unassigned" %}selected{% endif %}>Unassigned</option>
                     <option value="me" {% if selected_assigned == "me" %}selected{% endif %}>

@@ -18,7 +18,7 @@
         <button
             type="submit"
             class="btn-secondary"
-            onclick="return confirm('Delete this tailored programme?');"
+            data-confirm="Delete this tailored programme?"
         >
             Delete tailored programme
         </button>
@@ -47,7 +47,7 @@
         id="day"
         name="day"
         class="form-control"
-        onchange="this.form.submit()"
+        data-auto-submit
     >
         {% for d in tailored_days %}
             <option

@@ -28,7 +28,7 @@
             <button
                 type="submit"
                 class="btn-danger"
-                onclick="return confirm('Delete this client and all their data? This cannot be undone.');"
+                data-confirm="Delete this client and all their data? This cannot be undone."
             >
                 Delete client
             </button>
@@ -267,7 +267,7 @@
                     class="btn-danger"
                     name="action"
                     value="delete"
-                    onclick="return confirm('Delete this check-in?');"
+                    data-confirm="Delete this check-in?"
                 >
                     Delete
                 </button>

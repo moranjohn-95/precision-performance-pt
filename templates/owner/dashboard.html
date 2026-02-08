@@ -35,7 +35,7 @@
             id="status-filter"
             name="status"
             class="form-control"
-            onchange="this.form.submit()"
+            data-auto-submit
         >
             <option value="open" {% if status_filter == "open" %}selected{% endif %}>
                 Open
@@ -162,7 +162,7 @@
             id="classes-filter-select"
             name="classes"
             class="form-control"
-            onchange="this.form.submit()"
+            data-auto-submit
         >
             <option value="all" {% if classes_filter == "all" %}selected{% endif %}>
                 All ({{ total_classes_count }})

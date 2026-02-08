@@ -1,4 +1,5 @@
 {% extends "dashboard_base.html" %}
+{% load static %}
 
 {% block title %}Consultation details | Precision Performance PT{% endblock %}
 {% block sidebar_title %}Trainer Menu{% endblock %}
@@ -135,7 +136,8 @@
                                 id="trainer_id"
                                 class="form-control"
                                 style="min-width: 220px;"
-                                onchange="document.getElementById('assign-client-btn').disabled = !this.value;"
+                                data-assign-toggle
+                                data-assign-target="assign-client-btn"
                             >
                                 <option value="" selected disabled>Select trainer</option>
                                 <option value="{{ request.user.id }}">Me ({{ request.user.username }})</option>
@@ -177,4 +179,8 @@
         </form>
     </footer>
 </section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{% static 'js/consultation_assign.js' %}"></script>
 {% endblock %}

@@ -107,7 +107,7 @@
                     id="week"
                     name="week"
                     class="form-control"
-                    onchange="this.form.submit()"
+                    data-auto-submit
                 >
                     {% for w in week_options %}
                     <option
@@ -125,7 +125,7 @@
                     id="day"
                     name="day"
                     class="form-control"
-                    onchange="this.form.submit()"
+                    data-auto-submit
                 >
                     {% for day in available_days %}
                     <option

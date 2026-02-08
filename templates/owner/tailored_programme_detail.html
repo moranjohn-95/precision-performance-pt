@@ -26,12 +26,12 @@
     {% if tailored_days %}
     <form method="get" class="form" style="margin-bottom: 1rem;">
         <label for="day" class="form-label">Day</label>
-        <select
-            id="day"
-            name="day"
-            class="form-control"
-            onchange="this.form.submit()"
-        >
+    <select
+        id="day"
+        name="day"
+        class="form-control"
+        data-auto-submit
+    >
             {% for d in tailored_days %}
             <option value="{{ d.id }}" {% if selected_day_id == d.id %}selected{% endif %}>
                 {{ d.name }}
