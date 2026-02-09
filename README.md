@@ -1518,9 +1518,61 @@ User stories were tested manually against the live application to confirm that t
 | Owner – Assign consultations to trainers | Opened consultations list as owner and assigned a consultation to a selected trainer (not just self). | Pass | ![Owner assignment](documentation/features/owner-clientassignment.jpg) |
 
 ## 18. Bugs & Fixes
+During development, bugs were tracked and resolved as they appeared through testing and iterative improvements. The table below summarises key issues and how they were fixed.
+
+| Bug / Issue | Cause | Fix | Status |
+|------------|-------|-----|--------|
+| Client login routed to trainer dashboard | Role routing was not correctly separated between staff and non-staff users | Updated login redirect logic so staff go to trainer dashboard and non-staff go to client dashboard | Fixed |
+| Duplicate workout sessions could be created for the same day/week | No blocking logic when saving sessions | Added a duplicate session check (per client/day/week) and returned an error message instead of saving | Fixed |
+| Workout log notes were being overwritten unintentionally | Auto-generated session notes were being appended on page loads without a programme day context | Updated view logic to only generate session details when a programme day is present | Fixed |
+| Support tickets could be accessed outside assigned trainer scope | Ticket detail query did not fully enforce trainer scoping | Restricted queries using trainer=request.user to prevent unassigned ticket access | Fixed |
+| Mobile/tablet tables overflowed and became hard to use | Tables were too wide for smaller devices | Added responsive table handling (horizontal scroll on tablet, stacked/grid layout on mobile) | Fixed |
 
 ## 19. Deployment
+
 ### 19.1 Heroku Deployment
+
+Precision Performance PT was deployed to Heroku, a cloud platform that allows Django applications to be hosted and accessed online.
+
+The following steps were taken to deploy the application:
+
+1. **Prepare the project for deployment**
+   - Added `gunicorn` to `requirements.txt` to serve the application.
+   - Created a `Procfile` with the following command:
+     ```
+     web: gunicorn precision_performance.wsgi
+     ```
+   - Ensured `DEBUG` is set using an environment variable.
+
+2. **Environment variables**
+   The following environment variables were configured in the Heroku dashboard:
+
+   | Variable | Purpose |
+   |--------|--------|
+   | `DJANGO_SECRET_KEY` | Keeps the Django application secure |
+   | `DJANGO_DEBUG` | Controls debug mode (set to `False` in production) |
+   | `DJANGO_ALLOWED_HOSTS` | Specifies allowed domains |
+   | `DATABASE_URL` | Automatically provided by Heroku (PostgreSQL) |
+   | `DJANGO_CSRF_TRUSTED_ORIGINS` | Allows secure form submissions |
+
+3. **Database setup**
+   - Heroku Postgres was added as the production database.
+   - Django migrations were run on Heroku to create database tables.
+
+4. **Static files**
+   - Static files were collected using:
+     ```
+     python manage.py collectstatic
+     ```
+   - WhiteNoise was used to serve static files in production.
+
+5. **Deployment**
+   - The project was connected to a GitHub repository.
+   - Automatic deploys were enabled so each push to the `main` branch triggered a redeploy.
+   - The live application is accessible via the Heroku app URL.
+
+Heroku was chosen because it integrates well with Django and allows rapid, reliable deployment for portfolio projects.
+
 ### 19.2 Local Deployment
 
 ### 19.3 How to Fork the Repository
