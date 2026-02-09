@@ -1,4 +1,5 @@
 # precision-performance-pt
+Precision performance PT provide both online and in person personal training, as well as group classes. Precisison Performance also provide dashbaord access to personal training clients where by joiners will have a 24/7 access to a number of resources including trainer supprot, body metrics tracking as well as strength tracking.
 
 ## Table of Contents
 
@@ -230,7 +231,7 @@ The below wireframesw were initially developed thinking of the everyday user and
 | Homepage | Book a Consultation |
 |--------|---------------------|
 | ![Homepage wireframe](documentation/design/desktop-home-1.png) | ![Book a consultation wireframe](documentation/design/desktop-booking-con.png) |
-| **Homepage**  Introduces the brand, coaching options, and key value propositions, with strong calls to action. | **Book a Consultation** � Primary conversion form capturing contact details, training preferences, and availability. |
+| **Homepage**  Introduces the brand, coaching options, and key value propositions, with strong calls to action. | **Book a Consultation**  Primary conversion form capturing contact details, training preferences, and availability. |
 
 ---
 
@@ -254,7 +255,7 @@ The overall structure seen below is very close to the actual live structure with
 
 
 
-| **Client Dashboard**  Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard** � Central workspace for managing consultations, classes, and client activity. |
+| **Client Dashboard**  Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard**  Central workspace for managing consultations, classes, and client activity. |
 
 ### 8.4 Responsive Design
 Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile. As such media queries werre used throughout the wenbiste at key break points of min width of 993px (desktop), max-width of 992px (tablet and below), max width od 576 (mobiles.)
@@ -312,7 +313,7 @@ A prospective client begins their journey by submitting a consultation request v
 - This data is stored securely and made available to trainers and the owner via their dashboards.
 
 ![Consultation form](documentation/features/feature-consultation.jpg)
-![Consultation form � step view](documentation/features/feature-consultation-2.jpg)
+![Consultation form  step view](documentation/features/feature-consultation-2.jpg)
 
 ---
 
@@ -331,7 +332,7 @@ Once a consultation has been accepted and a trainer assigned, the client is prov
 
 After logging in, clients land on their dashboard overview.
 
-- The dashboard highlights today�s workout.
+- The dashboard highlights todays workout.
 - A clear call to action allows the client to start their training session.
 - Weekly summaries display recent activity and key metrics.
 
@@ -340,7 +341,7 @@ After logging in, clients land on their dashboard overview.
 
 ---
 
-### Today�s Workout & Programme Viewing
+### Todays Workout & Programme Viewing
 
 Clients can view their active training programme and see daily workout breakdowns.
 
@@ -370,7 +371,7 @@ Clients can view previously logged sessions.
 - Recent sessions are listed clearly.
 - Sessions can be reopened for review or editing if required.
 
-![Client workout log � recent sessions](documentation/features/feature_clientworkoutlog.jpg)
+![Client workout log  recent sessions](documentation/features/feature_clientworkoutlog.jpg)
 
 ---
 
@@ -1142,6 +1143,8 @@ This ensures critical actions are not blocked by external services.
 ## 16. Technologies Used
 
 ## 17. Testing
+The below section features all of the testing that was done during amnd after the development of the precision performance application. 
+
 ### 17.1 Automated Testing
 
 #### Python Code Validation (CI Python Linter)
@@ -1490,7 +1493,7 @@ WAVE was used to check for:
 - Minor flags were reviewed and documented, with intentional design choices kept where they improve clarity.
 
 Some dashboard pages show flags relating to **muted metadata text**, relating to the below:
-- **�Logged in: [username]�** is intentionally styled as subtle helper text and is not meant to stand out.
+- **Logged in: [username]** is intentionally styled as subtle helper text and is not meant to stand out.
   It is designed to sit in the background and not distract from more important content or the overall visual hierarchy.
   For this reason, it was intentionally kept in this style.
 
