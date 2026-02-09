@@ -506,6 +506,152 @@ The screenshots above demonstrate that all core client-facing features and suppo
 
 
 ## 10. Application Flow & Logic
+This section explains how users move through the Precision Performance PT application and how core actions are handled behind the scenes.  
+All flows are **role-based** (Public, Client, Trainer, Owner) and are enforced through Django views, decorators, and route level access checks.
+
+The aim of this logic is to keep user journeys clear, predictable, and secure while ensuring the correct data is created and used at each step.
+
+---
+
+### 10.1 Public Consultation Submission (Public User)
+
+This is the entry point for new clients.
+
+| Step | Description |
+|----|------------|
+| Visit page | User visits `/consultation/` |
+| Form render | `consultation.html` is rendered using `ConsultationRequestForm` |
+| Form submit | A `ConsultationRequest` record is created (POST request) |
+| Feedback | A success message is shown to the user |
+| Redirect | User is redirected back to the consultation page (Post/Redirect/Get pattern) |
+
+This prevents duplicate submissions and provides clear feedback to the user.
+
+---
+
+### 10.2 Consultation Review & Assignment (Trainer / Owner)
+
+Once submitted, consultations are reviewed by staff users.
+
+| Step | Description |
+|----|------------|
+| Login | Trainer or owner logs in |
+| Dashboard | User lands on the trainer dashboard |
+| Review | Consultation requests are listed with filters (Open, Assigned, Classes) |
+| Assignment | Trainer can assign to themselves, owner can assign to any trainer |
+| Business rules | Group coaching requests cannot be added to individual client lists |
+
+When a consultation is assigned, the following logic is executed:
+
+- A portal **User** is created using the client’s email address (email = username).
+- A **ClientProfile** is created or linked.
+- The preferred trainer is set.
+- A password setup email is sent if required.
+- Consultation status is updated to **Assigned**.
+
+Assignment logic is handled centrally in `assign_consultation_to_trainer()`.
+
+---
+
+### 10.3 Client Account Access & Login (Client)
+
+Clients access the platform after a consultation has been accepted.
+
+| Role | Login URL | Redirect |
+|----|----------|---------|
+| Client | `/accounts/client/login/` | Client dashboard |
+| Trainer / Owner | `/accounts/trainer/login/` | Trainer dashboard |
+
+- Client accounts are created automatically during consultation assignment.
+- Clients receive a password setup email if they do not already have credentials.
+- Separate login paths ensure role separation and clarity.
+
+---
+
+### 10.4 Client Programme Viewing (Client)
+
+Clients access their training plans through the programme library.
+
+| Step | Description |
+|----|------------|
+| Page | `/accounts/client/programme-library/` |
+| Data loaded | Active programme assignments for the client |
+| Optimisation | Programme days and exercises are prefetched |
+| Output | `programme_library.html` rendered |
+
+Each programme day includes a **“Log this session”** action that passes:
+- Programme day
+- Week number
+- Session name  
+into the workout logging flow.
+
+---
+
+### 10.5 Workout Logging (Client)
+
+Clients record completed training sessions.
+
+| Step | Description |
+|----|------------|
+| Page | `/accounts/client/workout-log/` |
+| Default logic | First available programme day selected if none provided |
+| Form submit | Exercise inputs compiled into structured session notes |
+| Validation | Duplicate sessions for the same day/week are blocked |
+| Save | Session is linked to programme, day, and week |
+
+Clients can also edit existing sessions via:
+- `/accounts/client/workout-log/edit/`
+
+This updates session name, notes, and completion status.
+
+---
+
+### 10.6 Body Metrics Check-ins & Charts (Client / Trainer)
+
+Clients and trainers track physical progress through metrics.
+
+| Feature | Description |
+|------|-------------|
+| Page | `/accounts/client/metrics/` |
+| Form | `BodyMetricEntryForm` |
+| Actions | Add, update, or delete metric entries |
+| Data | Summary rows and chart datasets built in the view |
+| Charts | Rendered using Chart.js and `client_metrics_charts.js` |
+
+- Clients see their own metrics and charts.
+- Trainers can view assigned clients’ metrics via the client detail page.
+- Owners can view metrics for all clients.
+
+---
+
+### 10.7 Support Tickets & Messaging (Client / Trainer / Owner)
+
+The support system enables structured communication.
+
+| Step | Description |
+|----|------------|
+| Create ticket | Client submits subject and message |
+| Data created | `SupportTicket` and `SupportMessage` records |
+| Assignment | Ticket assigned to preferred trainer (if set) |
+| Client view | Clients can reply and close tickets |
+| Trainer/Owner view | Trainers and owners see only assigned tickets |
+
+Support privacy rules ensure:
+- Clients only see their own tickets.
+- Trainers only see tickets assigned to them.
+- Owners can view and respond to their own assigned tickets.
+
+---
+
+### Key Business Rules
+
+| Rule | Description |
+|----|------------|
+| Role enforcement | `is_staff` and `is_superuser` control access |
+| Staff redirects | Staff users are redirected away from client-only pages |
+| Group coaching | Group consultations cannot create client accounts |
+| Ticket privacy | Only assigned trainer/owner can view or reply |
+| Workout integrity | Duplicate workout logs for the same day/week are blocked |
 
 
 ## 11. Database & Data Models
