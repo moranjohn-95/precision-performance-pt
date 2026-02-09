@@ -992,6 +992,62 @@ This ensures that even if a URL is guessed or manually entered, unauthorised dat
 
 ## 14. Security Features
 
+Security within Precision Performance PT is handled primarily through Djangos built-in security features, combined with a small number of explicit configuration choices.  
+This approach ensures the application follows industry standards while remaining simple, reliable, and suitable for a real world deployment.
+
+---
+
+### Core Security Protections
+
+| Feature | Description |
+|------|-------------|
+| **Authentication & Sessions** | Djangos authentication and session framework is used (`django.contrib.auth`, `django.contrib.sessions`). User sesions are securely managed using cookies. |
+| **CSRF Protection** | `CsrfViewMiddleware` is enabled globally. All forms include `{% csrf_token %}` to protect against cross site request forgery attacks. |
+| **Access Control** | Views are protected using `@login_required`, `staff_required`, and `@staff_member_required` decorators to ensure users only access permitted areas. |
+| **Security Middleware** | Django’s `SecurityMiddleware` and `XFrameOptionsMiddleware` are enabled to protect against common web vulnerabilities such as clickjacking. |
+
+---
+
+### Form & Request Security
+
+All user input is handled through Django forms and protected templates:
+
+| Area | Protection Used |
+|----|-----------------|
+| Login forms | CSRF tokens, Django auth validation |
+| Consultation form | CSRF token, server side form validation |
+| Workout log | CSRF token, authenticated access only |
+| Support tickets | CSRF token, role based access checks |
+
+This ensures that all submitted data is validated serverside and cannot be manipulated by unauthorised users.
+
+---
+
+### Environment-Driven Security Settings
+
+Sensitive configuration values are not hard coded and are instead managed through environment variables.  
+This supports secure deployment and prevents sensitive data from being exposed in version control.
+
+| Setting | Purpose |
+|------|---------|
+| `DJANGO_SECRET_KEY` | Stores the Django secret key securely outside the codebase |
+| `DJANGO_DEBUG` | Controls debug mode (disabled in production by default) |
+| `DJANGO_ALLOWED_HOSTS` | Restricts which domains can serve the application |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | Defines trusted origins for CSRF protection |
+
+Local fallback values are used only during development.
+
+---
+
+### Additional Security Considerations
+
+- Password handling is managed entirely by Djangos authentication system.
+- Password reset functionality uses Django’s built in secure token system.
+- Role based restrictions ensure clients, trainers, and owners never see unauthorised data.
+- Sensitive actions (assignment, editing, deleting) are always protected by server side checks.
+
+---
+
 ## 15. Validation & Error Handling
 
 ## 16. Technologies Used
