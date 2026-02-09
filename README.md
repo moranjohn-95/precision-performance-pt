@@ -656,6 +656,180 @@ Support privacy rules ensure:
 
 ## 11. Database & Data Models
 
+The Precision Performance PT application uses a relational database designed around **clear ownership of data**, **role separation**, and **real-world training workflows**.
+
+All data models are split across two Django apps:
+
+- **accounts** – user profiles, support, consultations, and queries  
+- **training** – programmes, workouts, and body metrics  
+
+Django’s built-in **User** model is used as the core identity for all users.  
+Additional profile and training-specific data is linked to this User model through related tables.
+
+---
+
+## Accounts App (`accounts`)
+
+### ClientProfile
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Stores additional client-specific information linked to a user account |
+| Linked user | One-to-one relationship with Django `User` |
+| Optional links | Consultation request, preferred trainer |
+| Why | Keeps authentication separate from client-only metadata |
+
+This allows every client to have a standard Django user account, while storing training-specific details safely alongside it.
+
+---
+
+### ConsultationRequest
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Stores consultation submissions from public users |
+| Created by | Public users via the consultation form |
+| Assigned trainer | Optional link to a trainer or owner |
+| Status | Tracks whether the consultation is open or assigned |
+
+This model is the entry point for new clients into the system.
+
+---
+
+### ContactQuery
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Stores general contact-us enquiries |
+| Use case | Non-consultation questions and follow-ups |
+| Assignment | Can be assigned to a trainer or owner |
+
+This keeps business enquiries separate from training consultations.
+
+---
+
+### SupportTicket
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Represents a client support conversation |
+| Client | Linked to the client user |
+| Trainer | Optional link to the assigned trainer |
+| Privacy | Only assigned trainer/owner can view and reply |
+
+Support tickets act as containers for message threads.
+
+---
+
+### SupportMessage
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Individual messages within a support ticket |
+| Linked ticket | Foreign key to `SupportTicket` |
+| Sender | Linked to the sending user (client or staff) |
+
+This allows structured, readable support conversations.
+
+---
+
+## Training App (`training`)
+
+### ProgrammeBlock
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Defines a programme template or a tailored version |
+| Created by | Trainer or owner |
+| Templates | Supports parent/child relationship for tailored copies |
+
+This structure allows base templates to be reused and customised per client.
+
+---
+
+### ProgrammeDay
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Groups exercises for a single day |
+| Linked block | Foreign key to `ProgrammeBlock` |
+
+---
+
+### ProgrammeExercise
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Defines an individual exercise |
+| Linked day | Foreign key to `ProgrammeDay` |
+| Data | Stores sets, reps, weights, and notes |
+
+---
+
+### ClientProgramme
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Assigns a programme to a client |
+| Client | Linked to the client user |
+| Trainer | Linked to assigned trainer |
+| Status | Active, planned, or completed |
+
+This model connects clients to specific training programmes.
+
+---
+
+### WorkoutSession
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Represents a logged workout |
+| Client | Linked to the client user |
+| Programme | Optional link to `ClientProgramme` |
+| Day | Optional link to `ProgrammeDay` |
+
+Each workout session represents one completed training day.
+
+---
+
+### WorkoutSet
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Stores individual sets within a workout |
+| Linked session | Foreign key to `WorkoutSession` |
+
+This allows detailed tracking of performance within a workout.
+
+---
+
+### BodyMetricEntry
+
+| Aspect | Description |
+|------|------------|
+| Purpose | Stores client body-metric check-ins |
+| Client | Linked to the client user |
+| Data | Weight, measurements, strength metrics, sleep |
+
+These entries are used to generate charts and progress summaries.
+
+---
+
+## Data Relationships Overview
+
+The data model is structured to reflect real world coaching workflows:
+
+- Client profiles extend Django users and link to consultations and trainers.
+- Programme templates flow from **ProgrammeBlock → ProgrammeDay → ProgrammeExercise**.
+- Tailored programmes inherit from base templates using a parent reference.
+- Client programme assignments live in **ClientProgramme**.
+- Workout logging uses **WorkoutSession** with optional **WorkoutSet** rows.
+- Body metrics are stored per client in **BodyMetricEntry**.
+- Support conversations are handled through **SupportTicket** and **SupportMessage**.
+- Consultations and contact enquiries are handled separately to maintain clarity.
+
+This structure ensures data integrity, scalability, and clear separation of responsibilities across user roles.
+
 ## 12. Authentication & Authorisation
 
 Authentication and authorisation in Precision Performance PT are handled via Django’s authentication system. This provides a secure and tested foundation while allowing custom logic for different user roles (in this case - Client, Trainer, Owner).
