@@ -17,11 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.templatetags.static import static
 from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
 from training import views as training_views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    # Favicon direct request (helps avoid /favicon.ico 404s).
+    path(
+        "favicon.ico",
+        RedirectView.as_view(url=static("images/favicon.ico")),
+        name="favicon",
+    ),
 
     # Home page
     path(

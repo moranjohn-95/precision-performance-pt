@@ -1206,6 +1206,48 @@ This was done in an attempt to keep templates cleaner and easier to work through
 
 ### 17.2 Manual Testing
 
+Manual testing was carried out throughout development to confirm that the application behaves as expected across all user roles (Public User, Client, Trainer, Owner).  
+Testing focused on core user journeys, permissions, data handling, and general usability across different screen sizes.
+
+All manually tested features behaved as intended, with no critical issues identified.
+
+#### Manual Testing Summary Table
+
+| Feature Area | User Role | Test Action | Expected Result | Outcome |
+|------------|----------|------------|----------------|--------|
+| Consultation Form | Public User | Submit consultation form with valid data | Consultation saved and success message shown | Pass |
+| Consultation Form | Public User | Submit form with missing required fields | Form errors displayed | Pass |
+| Client Login | Client | Log in with valid credentials | Redirected to client dashboard | Pass |
+| Client Login | Client | Log in with invalid credentials | Error message shown | Pass |
+| Dashboard Navigation | Client | Navigate via sidebar links | Correct pages load | Pass |
+| Today’s Workout | Client | View today’s assigned workout | Correct workout displayed | Pass |
+| Workout Logging | Client | Log a workout session | Session saved successfully | Pass |
+| Workout Logging | Client | Attempt duplicate session for same day | Error message shown | Pass |
+| Body Metrics | Client | Add new metrics check-in | Entry saved and chart updated | Pass |
+| Body Metrics | Client | Edit/delete existing metrics | Changes saved correctly | Pass |
+| Support Tickets | Client | Create support ticket | Ticket created and visible in list | Pass |
+| Support Tickets | Client | Reply to existing ticket | Message added to thread | Pass |
+| Trainer Login | Trainer | Log in with valid credentials | Redirected to trainer dashboard | Pass |
+| Client Access | Trainer | View assigned clients only | Only assigned clients visible | Pass |
+| Programme Creation | Trainer | Create and edit programme | Programme saved correctly | Pass |
+| Consultation Assignment | Trainer | Assign consultation to self | Client created and assigned | Pass |
+| Owner Access | Owner | View all clients and trainers | Full access available | Pass |
+| Owner Assignment | Owner | Assign consultation to trainer | Assignment completed successfully | Pass |
+| Role Restrictions | All Roles | Attempt unauthorised page access | Redirect or access denied | Pass |
+| Responsiveness | All Users | Resize across desktop/tablet/mobile | Layout adapts correctly | Pass |
+
+---
+
+#### Manual Testing Conclusion
+
+- All core user journeys were manually tested.
+- Role-based permissions behaved as expected.
+- Forms, navigation, and data handling worked correctly.
+- No blocking or critical usability issues were found.
+
+Manual testing confirms that the platform is stable, intuitive, and suitable for real-world use.
+
+
 ### 17.3 Validator & Accessibility Testing
 
 #### HTML Validation (Nu HTML Checker)
