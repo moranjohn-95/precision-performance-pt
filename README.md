@@ -1606,10 +1606,41 @@ To clone the repository to your local machine, follow these steps:
 
 
 ## 20. Future Features
+The following features were identified as realistic next steps after the initial release. These focus on improving communication, automation, and long-term usability across the client, trainer, and owner workflows.
 
-## 21. Credits
+| Future Feature | Priority | Who Benefits | Why It Matters | Notes / Implementation Idea |
+|---|:---:|---|---|---|
+| **Mailgun Email Integration (Production Emails)** | High | All users | Enables real email sending for password resets, consultation invites, notifications, and support updates (instead of console email in development). | Configure Mailgun SMTP/API, set environment variables on Heroku, update `EMAIL_BACKEND` for production, and add email templates for key events. |
+| **Automated Notifications** | High | Clients / Trainers | Keeps users engaged and reduces missed check-ins (e.g., reminders for workouts, metrics, and ticket replies). | Trigger emails on: assigned consultation, new programme assigned, support reply posted, upcoming workout day. |
+| **Trainer Notes / Coaching Comments on Sessions** | Medium | Clients / Trainers | Improves coaching quality by allowing trainers to leave feedback on logged sessions. | Add a trainer comment field on `WorkoutSession` (visible to client, editable by trainer). |
+| **Programme Version History / Change Tracking** | Medium | Trainers / Owners | Prevents confusion when programmes are updated and supports auditing. | Store programme “snapshots” or log edits with timestamp + editor. |
+| **In-App Messaging Notifications** | Medium | Clients / Trainers | Clients don’t need to keep checking support tickets manually. | Add a “new reply” badge/count in sidebar + optional email alerts. |
+| **Expanded Metrics (Photos & Measurements)** | Medium | Clients / Trainers | More complete progress tracking beyond numbers. | Add optional progress photo uploads + more measurement fields. |
+| **Payments / Subscription Management** | Low | Owner / Clients | Supports real business operations for online coaching. | Integrate Stripe for monthly coaching plans and payment history. |
+| **Class Management Enhancements** | Low | Owner / Trainers | Improves handling of group coaching clients (currently separated from dashboard access). | Add class attendance tracking, group programming, and class-based progress summaries. |
 
-## 22. Acknowledgements
+## Credits
+- Code Institute — learning material.
+- JavaScript: The Definitive Guide (7th ed.) — David Flanagan (book) — learning material and coding tips.
+  Fluent Python - (Book) Learning materials and coding tips.
+- W3Schools — troubleshooting and coding tips.
+
+### Content
+- Brio Catering, Budget Planner, The Spanish Language Quiz -  README — inspiration for the README layout and structure.
+
+### Tools & Libraries
+- Balsamiq — wireframe creation.
+- Bootstrap — responsive layout framework.
+- Fireworks.js — fireworks effect at the end of the quiz.
+- Favicon.io — favicon generation.
+- Font Awesome — social media icons.
+- Google Fonts — font sourcing.
+- ChatGPT  — brainstorming, troubleshooting, and refining code/documentation during development.
+
+
+## Acknowledgements
+- All Code Institute lecturers and staff — continued support throughout this project.
+
 
 
 
