@@ -1050,6 +1050,92 @@ Local fallback values are used only during development.
 
 ## 15. Validation & Error Handling
 
+Validation and error handling within **Precision Performance PT** are designed to keep user input safe, clear, and easy to understand.  
+Most validation is handled by Django forms and model constraints, with clear feedback provided to users through messages and inline error displays.
+
+---
+
+### Input Validation
+
+### Django Forms
+
+Django’s form system is used throughout the application to validate user input before it is saved to the database.
+
+| Form | Purpose | Validation Applied |
+|----|--------|--------------------|
+| `ConsultationRequestForm` | Public consultation submissions | Required fields, consent confirmation, message length checks |
+| `ContactQueryForm` | Public contact enquiries | Required fields, message length validation |
+| `BodyMetricEntryForm` | Client body metrics check-ins | Numeric validation, optional fields handled safely |
+| `WorkoutSessionForm` | Client workout logging | Required session data, safe handling of exercise inputs |
+
+Forms use Django’s built-in validation as well as custom `clean_*` methods where additional checks are required.
+
+---
+
+### Model-Level Validation
+
+Certain business rules are enforced directly at the database level to prevent invalid or duplicate data.
+
+| Model | Constraint | Purpose |
+|----|-----------|--------|
+| `WorkoutSession` | Unique per client, programme day, and week | Prevents duplicate workout logs |
+| `ClientProgramme` | Unique combination of client and programme block | Prevents assigning the same programme twice |
+
+These constraints ensure data integrity even if a view-level check is bypassed.
+
+---
+
+### User Feedback & Error Messages
+
+Clear feedback is provided to users so they understand what happened and how to correct issues.
+
+### Messages Framework
+
+The Django messages framework is used for global feedback:
+
+- **Success messages** – confirm actions such as logging a workout or submitting a consultation.
+- **Error messages** – explain why an action failed.
+- **Info messages** – provide helpful guidance where needed.
+
+Messages are rendered consistently in `base.html` so feedback is visible across all pages.
+
+---
+
+### Error Handling Strategies
+
+### HTTP Errors & Access Protection
+
+| Error Type | Handling |
+|----|---------|
+| **404 Not Found** | `get_object_or_404` used when data does not exist |
+| **403 Forbidden** | Returned when users attempt restricted actions |
+| **Custom 404 page** | A custom `404.html` template improves UX for missing pages |
+
+Owner-only routes explicitly raise `Http404` if accessed by non-owners.
+
+---
+
+### Graceful Failure Handling
+
+Some actions are wrapped in `try/except` blocks to avoid breaking the user flow:
+
+- Password invite email sending in `consultation_assignment.py` is wrapped in `try/except`.
+- If email delivery fails, the consultation assignment still completes successfully.
+
+This ensures critical actions are not blocked by external services.
+
+---
+
+## Validation Touchpoints (Confirmed)
+
+| Feature | Validation Location |
+|------|--------------------|
+| Consultation requests | `ConsultationRequestForm` + `training.views.consultation` |
+| Contact form | `ContactQueryForm` + `training.views.contact_us` |
+| Workout logging | `WorkoutSessionForm` + duplicate session checks |
+| Body metrics | `BodyMetricEntryForm` + create/update/delete logic |
+| Support tickets | View level checks in client and trainer support views |
+
 ## 16. Technologies Used
 
 ## 17. Testing
