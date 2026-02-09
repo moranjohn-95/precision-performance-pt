@@ -755,6 +755,34 @@ h3 {
     gap: 0.75rem;
 }
 
+/* Trainer consultation detail: CTA button styling (scoped). */
+.consultation-detail__cta {
+    margin-top: 1rem;
+    background-color: var(--color-secondary, var(--color-link, #1f6de8));
+    border-color: var(--color-secondary, var(--color-link, #1f6de8));
+    color: #ffffff;
+}
+
+.consultation-detail__cta:hover,
+.consultation-detail__cta:focus,
+.consultation-detail__cta:focus-visible {
+    background-color: var(
+        --color-secondary-hover,
+        var(--color-link-hover, #1a5fc9)
+    );
+    border-color: var(
+        --color-secondary-hover,
+        var(--color-link-hover, #1a5fc9)
+    );
+    color: #ffffff;
+}
+
+.consultation-detail__cta:focus,
+.consultation-detail__cta:focus-visible {
+    outline: 2px solid rgba(31, 109, 232, 0.35);
+    outline-offset: 2px;
+}
+
 /* Assign-to-trainer label spacing */
 .consultation-label {
     margin-top: 0.75rem;
