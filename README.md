@@ -1597,6 +1597,9 @@ The following steps were taken to deploy the application:
 
 1. **Prepare the project for deployment**
    - Added `gunicorn` to `requirements.txt` to serve the application.
+   - requirements.txt was generated using pip freeze to lock dependencies.
+   - Python runtime version is defined to ensure consistency between local and production environments.
+   - ALLOWED_HOSTS includes the Heroku app domain.
    - Created a `Procfile` with the following command:
      ```
      web: gunicorn precision_performance.wsgi
@@ -1633,6 +1636,12 @@ The following steps were taken to deploy the application:
 Heroku was chosen because it integrates well with Django and allows rapid, reliable deployment for portfolio projects.
 
 ### 19.2 Local Deployment
+   - 1. Clone Repo 
+   - 2. Create virtual enviroment.
+   - 3. Install dependencies.
+   - 4. Set enviorment variables.
+   - 5. Run migrations.
+   - 6. Run server
 
 ### 19.3 How to Fork the Repository
 
@@ -1651,8 +1660,7 @@ To create your own copy of the **Precision Performance PT** repository, follow t
 To clone the repository to your local machine, follow these steps:
 
 1. Log in (or sign up if required) to **GitHub**.
-2. Navigate to this [Project link](https://github.com/moranjohn-95/precision-performance-pt)
- repository.
+2. Navigate to the project repository: [Project link](https://github.com/moranjohn-95/precision-performance-pt)
 3. Click the **Code** button at the top of the repository.
 4. Choose one of the following options:
    - **HTTPS**
@@ -1662,7 +1670,43 @@ To clone the repository to your local machine, follow these steps:
 6. Open your code editor and terminal.
 7. Change the current working directory to the location where you want the cloned repository to be stored.
 8. Run the following command in the terminal:
-
+   ```bash
+   git clone https://github.com/moranjohn-95/precision-performance-pt
+   ```
+9. Navigate into the newly created project directory:
+   ```bash
+   cd <folder>
+   ```
+10. Create and activate a virtual environment:
+    - **Windows**
+      ```bash
+      python -m venv venv
+      venv\Scripts\activate
+      ```
+    - **Mac / Linux**
+      ```bash
+      python3 -m venv venv
+      source venv/bin/activate
+      ```
+11. Install the required dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+12. Apply database migrations:
+    ```bash
+    python manage.py migrate
+    ```
+13. Create a superuser (optional, for admin access):
+    ```bash
+    python manage.py createsuperuser
+    ```
+14. Run the development server:
+    ```bash
+    python manage.py runserver
+    ```
+15. Open a browser and visit:
+    `http://127.0.0.1:8000/`
+    The application should now be running locally.
 
 ## 20. Future Features
 The following features were identified as realistic next steps after the initial release. These focus on improving communication, automation, and long-term usability across the client, trainer, and owner workflows.
