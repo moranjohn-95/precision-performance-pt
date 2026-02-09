@@ -165,7 +165,7 @@ The thinking behind the design for the Precision Performance application was to 
 
 ### 8.1 Colour Scheme
 
-![Precision Performance PT colour palette](documentation/design/pppt-colour-palette.png)
+![Precision Performance PT colour palette](documentation/design/colour-design.png)
 
 *Colour palette created using [Coolors](https://coolors.co/?home).*
 
