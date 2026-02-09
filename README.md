@@ -1,6 +1,8 @@
 # Precision Performance PT
 Precision Performance PT provides both online and in-person personal training, as well as group classes. Precision Performance also provides dashboard access for personal training clients, giving members 24/7 access to resources including trainer support, body metrics tracking, and strength progress tracking.
 
+The live site can be viewed **[here](https://precision-performance-pt-78e56e90757a.herokuapp.com/)**.
+
 ## Table of Contents
 
 1. [Project Overview](#1-project-overview)  
@@ -295,7 +297,7 @@ This section outlines the core features of the Precision Performance PT platform
 | **Client List & Profiles** | — | — | ✓ | ✓ | Trainers see only their assigned clients. Owners can view all clients across the platform. |
 | **Programme Creation & Tailoring** | — | — | ✓ | ✓ | Trainers create and tailor programmes. Owners can also create and assign programmes. |
 | **Consultation & Query Management** | — | — | ✓ | ✓ | Trainers can accept consultations for themselves only. Owners can assign consultations and queries to any trainer or themselves. |
-| **Administrative Oversight** | — | — | — | ✓ | Owners have full system visibility across trainers, clients, consultations, and support tickets. |
+| **Administrative Oversight** | — | — | — | ✓ | Owners have system-wide oversight of support activity, but can only view and respond to tickets assigned to them, maintaining trainer–client confidentiality. |
 
 **Note:** Trainers cannot view other trainers’ clients or assign consultations to other trainers. All access is enforced through role-based permissions.
 
@@ -492,7 +494,7 @@ The functionality here is the exact same as trainers. Owners cannot see trainers
 ![Owner support ticket](documentation/features/owner-supportticket.jpg)
 ![Owner support inbox](documentation/features/owmer-support.jpg)
 
-Owners can view and manage all client/trainer support interactions across the system.
+Owners have administrative oversight of support operations, but can only view and respond to support tickets assigned to them, maintaining trainer/client confidentiality.
 
 ---
 
@@ -510,7 +512,7 @@ The screenshots above demonstrate that all core client-facing features and suppo
 
 ## 10. Application Flow & Logic
 This section explains how users move through the Precision Performance PT application and how core actions are handled behind the scenes.  
-All flows are **role-based** (Public, Client, Trainer, Owner) and are enforced through Django views, decorators, and route level access checks.
+All flows are **role-based** (Public, Client, Trainer, Owner) and are enforced through Django views, decorators, and route-level access checks.
 
 The aim of this logic is to keep user journeys clear, predictable, and secure while ensuring the correct data is created and used at each step.
 
@@ -642,18 +644,51 @@ The support system enables structured communication.
 Support privacy rules ensure:
 - Clients only see their own tickets.
 - Trainers only see tickets assigned to them.
-- Owners can view and respond to their own assigned tickets.
+- Owners can view and respond only to tickets assigned to them.
 
 ---
 
-### Key Business Rules
+### 10.8 CRUD Functionality
+
+Precision Performance PT implements CRUD (Create, Read, Update, Delete) operations across key areas of the platform. CRUD actions are controlled through role-based access rules to ensure users can only manage data they own or are authorised to access.
+
+#### CRUD Overview by Feature
+
+| Feature | Create | Read | Update | Delete | Who Can Do It |
+|--------|:------:|:----:|:------:|:------:|--------------|
+| **Consultation Requests** | ✓ Submit consultation form | ✓ View in dashboard lists + detail pages | ✓ Assign consultation / update status | — | Trainer/Owner (Read/Update), Public (Create) |
+| **Contact Queries** | ✓ Submit contact form | ✓ View in queries list + detail | ✓ Assign query / update status | — | Trainer/Owner (Read/Update), Public (Create) |
+| **Support Tickets** | ✓ Create ticket | ✓ View ticket list + message thread | ✓ Close / reopen ticket | — | Client (Create/Read/Update), Trainer/Owner (Read/Update on assigned tickets) |
+| **Support Messages** | ✓ Send message | ✓ View thread | — (messages are not edited) | — | Client + assigned Trainer/Owner |
+| **Workout Sessions** | ✓ Log session | ✓ View recent sessions + detail | ✓ Edit session details | ✓ Delete session *(if enabled)* | Client (own sessions), Trainer/Owner (view assigned clients where permitted) |
+| **Body Metric Entries** | ✓ Add check-in | ✓ View metric history + charts | ✓ Edit entry | ✓ Delete entry | Client (own entries), Trainer/Owner (view assigned clients; owner can view all clients) |
+| **Programmes (Templates)** | ✓ Create programme blocks/days/exercises | ✓ View programme library / editor | ✓ Edit programme structure | ✓ Delete programme *(if enabled)* | Trainer/Owner |
+| **Tailored Programmes (Per Client)** | ✓ Generate tailored copy | ✓ View tailored programme | ✓ Update exercises/targets | ✓ Remove tailored programme *(if enabled)* | Trainer/Owner |
+
+> **Note:** Where delete is restricted or disabled (e.g. consultations, queries, support messages), records are retained to preserve audit history and communication trails.
+
+#### Examples of CRUD in Practice
+
+**Client CRUD**
+- **Create:** log workout sessions and submit body-metric check-ins.
+- **Read:** view assigned programmes, recent sessions, progress charts, and support replies.
+- **Update:** edit previously logged sessions and metric entries when needed.
+- **Delete:** remove metric entries (and sessions if enabled) to correct mistakes.
+
+**Trainer / Owner CRUD**
+- **Create:** build programme templates and generate tailored client programmes.
+- **Read:** review assigned client activity (workout logs, metrics, and support tickets).
+- **Update:** edit programmes over time, assign consultations/queries, and manage ticket status.
+- **Delete:** remove programmes or tailored copies where appropriate *(often restricted to protect data integrity)*.
+
+#### Key Business Rules
 
 | Rule | Description |
 |----|------------|
 | Role enforcement | `is_staff` and `is_superuser` control access |
 | Staff redirects | Staff users are redirected away from client-only pages |
 | Group coaching | Group consultations cannot create client accounts |
-| Ticket privacy | Only assigned trainer/owner can view or reply |
+| Ticket privacy | Trainers/owners can only view tickets assigned to them (and only for their own clients where applicable) |
 | Workout integrity | Duplicate workout logs for the same day/week are blocked |
 
 
@@ -717,7 +752,7 @@ This keeps business enquiries separate from training consultations.
 | Purpose | Represents a client support conversation |
 | Client | Linked to the client user |
 | Trainer | Optional link to the assigned trainer |
-| Privacy | Only assigned trainer/owner can view and reply |
+| Privacy | Only the ticket’s assigned staff user can view/reply (clients only see their own tickets)|
 
 Support tickets act as containers for message threads.
 
@@ -980,7 +1015,7 @@ Access control is reinforced at the database query level to prevent data leakage
 | Trainer client detail | Blocked unless client is assigned to the trainer |
 | Support tickets (client) | Filtered by `SupportTicket.client == request.user` |
 | Support tickets (trainer) | Filtered by `SupportTicket.trainer == request.user` |
-| Owner views | Not restricted by trainer assignment |
+| Owner views | Full visibility for clients/trainers/consultations/queries; support tickets are restricted to those assigned to the owner. |
 
 This ensures that even if a URL is guessed or manually entered, unauthorised data cannot be accessed.
 
@@ -991,7 +1026,7 @@ This ensures that even if a URL is guessed or manually entered, unauthorised dat
 - Non-staff users are redirected away from trainer-only routes.
 - Staff users are redirected away from client-only routes.
 - Trainer support ticket detail views use `get_object_or_404(trainer=request.user)`, preventing access to unassigned tickets.
-- Owner-only routes explicitly block non-superusers.l
+- Owner-only routes explicitly block non-superusers.
 
 ## 14. Security Features
 
@@ -1748,12 +1783,11 @@ The following features were identified as realistic next steps after the initial
 ### Tools & Libraries
 - Balsamiq — wireframe creation.
 - Bootstrap — responsive layout framework.
-- Fireworks.js — fireworks effect at the end of the quiz.
 - Favicon.io — favicon generation.
 - Font Awesome — social media icons.
 - Google Fonts — font sourcing.
 - ChatGPT  — brainstorming, troubleshooting, and refining code/documentation during development.
-
+- Pexels - Images of staff/trainers/clients on homepage
 
 ## Acknowledgements
 - All Code Institute lecturers and staff — continued support throughout this project.
