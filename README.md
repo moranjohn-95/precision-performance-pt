@@ -62,7 +62,7 @@ The owner needs to be able to oversee the entire system at a high level, while s
 By centralising all business operations into a single dashboard, the platform helps reduce admin time, improve organisation, and ensure a consistent and professional experience for both clients and trainers.
 
 ## 5. Target Audience
-The target audience is simple, men or women looking to take charge of their fitness journey. The target audienece is those looking to improve in this aspect but still need some guidance and accountability. Ideally suited to those who want this accountability in the form of a expert trainer and have the support of not only in person training sessions but the backfall of a community 
+The target audience includes men and women looking to take control of their fitness journey. The target audienece is those looking to improve in this aspect but still need some guidance and accountability. Ideally suited to those who want this accountability in the form of a expert trainer and have the support of not only in person training sessions but the backfall of a community 
 like feel with 24/7 support. 
 
 ## 6. User Experience (UX)
@@ -1145,7 +1145,63 @@ This ensures critical actions are not blocked by external services.
 ## 17. Testing
 The below section features all of the testing that was done during amnd after the development of the precision performance application. 
 
-### 17.1 Automated Testing
+## 16. Technologies Used
+
+The Precision Performance PT platform was built using a modern full-stack technology stack, with Django at its core. The technologies chosen support secure authentication, structured data handling, and responsive user interfaces.
+
+### Backend
+
+| Technology | Purpose |
+|----------|---------|
+| **Python** | Core programming language used for application logic |
+| **Django** | Full-stack web framework providing routing, ORM, authentication, and security |
+| **Django ORM** | Handles database interactions using Python models |
+| **PostgreSQL** | Production database (Heroku Postgres) |
+| **SQLite** | Local development database |
+
+### Frontend
+
+| Technology | Purpose |
+|----------|---------|
+| **HTML5** | Structure and semantic markup |
+| **CSS3** | Custom styling, layout, and responsive design |
+| **JavaScript (ES6)** | Client-side interactivity and dynamic behaviour |
+| **Chart.js** | Visualisation of body metrics and progress data |
+| **Bootstrap** | Grid system and base UI utilities |
+
+### Authentication & Security
+
+| Technology | Purpose |
+|----------|---------|
+| **Django Auth** | User authentication, login/logout, password handling |
+| **Django Sessions** | Secure session-based authentication |
+| **CSRF Protection** | Prevents cross-site request forgery attacks |
+| **WhiteNoise** | Serves static files securely in production |
+
+### Development & Deployment
+
+| Tool | Purpose |
+|----|---------|
+| **Git & GitHub** | Version control and project management |
+| **GitHub Projects** | Agile planning and user story tracking |
+| **Heroku** | Cloud deployment platform |
+| **Gunicorn** | WSGI HTTP server for Django |
+| **Coolors** | Colour palette generation |
+| **Balsamiq** | Wireframe creation |
+| **Google Fonts** | Typography (Open Sans & Montserrat) |
+
+### Testing & Validation
+
+| Tool | Purpose |
+|----|---------|
+| **PEP8CI (CI Python Linter)** | Python code validation |
+| **JSHint** | JavaScript validation |
+| **W3C HTML Validator** | HTML validation |
+| **W3C CSS Validator** | CSS validation |
+| **Lighthouse** | Performance, accessibility, SEO testing |
+| **WAVE** | Accessibility evaluation |
+
+---
 
 #### Python Code Validation (CI Python Linter)
 
@@ -1160,7 +1216,7 @@ The purpose of this testing was to confirm that:
 Only **custom-written project logic** was tested.  
 Auto-generated files such as migrations, virtual environments, and third-party framework code were intentionally excluded.
 
-All tested files returned **�All clear, no errors found�**.
+All tested files returned **All clear, no errors found**.
 
 ##### Python Files Tested
 
@@ -1278,7 +1334,7 @@ All tested pages returned no errors or warnings to show as seen below.
 |------|------------------------|--------|
 | Client Login | [![Client login HTML validation](documentation/testing/html/client-html-test.png)](documentation/testing/html/client-html-test.png) | No errors or warnings |
 | Dashboard | [![Client dashboard HTML validation](documentation/testing/html/client-dash-html-test.png)](documentation/testing/html/client-dash-html-test.png) | No errors or warnings |
-| Today�s Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
+| Todays Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
 | Programme Library | [![Client programme HTML validation](documentation/testing/html/client-programme-html-test.png)](documentation/testing/html/client-programme-html-test.png) | No errors or warnings |
 | Workout Log | [![Client workout HTML validation](documentation/testing/html/client-workout-html-test.png)](documentation/testing/html/client-workout-html-test.png) | No errors or warnings |
 | Body Metrics | [![Client body metrics HTML validation](documentation/testing/html/client-bodymetrics-html-test.png)](documentation/testing/html/client-bodymetrics-html-test.png) | No errors or warnings |
@@ -1332,7 +1388,7 @@ Mobile scores are generally lower than desktop scores due to Lighthouse simulate
 
 ##### Lighthouse Scoring Criteria
 
-- **Performance**: Influenced by JavaScript execution, dynamic data rendering, and Lighthouse�s simulated device constraints.
+- **Performance**: Influenced by JavaScript execution, dynamic data rendering, and Lighthouses simulated device constraints.
 - **Accessibility**: : High scores achieved through semantic HTML, proper labels, good contrast and ARIA friendly patterns.
 - **Best Practices**: Strong results are due to modern standards, secure contexts, and valid markup.
 - **SEO**: High scores are driven by appropriate meta tags, descriptive page titles and crawlable content.
@@ -1367,12 +1423,12 @@ Client pages include dashboards, logs, and metrics, all of which involve dynamic
 | Client Login | Mobile | [![Client Login Mobile](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png)](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png) |
 | Dashboard | Desktop | [![Client Dashboard Desktop](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png)](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png) |
 | Dashboard | Mobile | [![Client Dashboard Mobile](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png)](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png) |
-| Today�s Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
-| Today�s Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
+| Todays Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
+| Todays Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
 | Programme Library | Desktop | [![Programme Desktop](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png)](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png) |
 | Programme Library | Mobile | [![Programme Mobile](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png)](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png) |
 | Workout Log | Desktop | [![Workout Desktop](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png)](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png) |
-| Workout Log | Mobile | [![Workout Mobile](documentation/testing/lighthouselighthouse-client-workout-mobile.png)](documentation/testing/lighthouse/lighthouse-client-workout-mobile.png) |
+| Workout Log | Mobile | [![Workout Mobile](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png.png)](documentation/testing/lighthouse/lighthouse-client-workout-mobile.png) |
 | Support | Desktop | [![Support Desktop](documentation/testing/lighthouse/lighthouse-client-support-desktop.png)](documentation/testing/lighthouse/lighthouse-client-support-desktop.png) |
 | Support | Mobile | [![Support Mobile](documentation/testing/lighthouse/lighthouse-client-support-mobile.png)](documentation/testing/lighthouse/lighthouse-client-support-mobile.png) |
 
@@ -1411,7 +1467,7 @@ Lower mobile performance scores expected and reflect:
 
 - Performance differences are normal in a feature-heavy and role-based django application (pages with larger datasets, tables/forms, and extra JavaScript tend to score lower).
 - Accessibility, Best Practices, and SEO results are consistent and strong across key pages.
-- Mobile performance scores are affected by Lighthouse�s simulated throttling (CPU/network constraints) and don�t necessarily showcase real world usability on modern devices.
+- Mobile performance scores are affected by Lighthouses simulated throttling (CPU/network constraints) and dont necessarily showcase real world usability on modern devices.
 
 #### Accessibility Testing (WAVE)
 
@@ -1454,7 +1510,7 @@ WAVE was used to check for:
 | Page | Result |
 |------|--------|
 | Client dashboard (overview) | [![WAVE - Client dashboard](documentation/testing/wave/wave-client-dasbaord-explain.png)](documentation/testing/wave/wave-client-dasbaord-explain.png) |
-| Today�s plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
+| Todays plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
 | Programme library | [![WAVE - Programme library](documentation/testing/wave/wave-client-programmelibrary-explain.png)](documentation/testing/wave/wave-client-programmelibrary-explain.png) |
 | Workout log | [![WAVE - Workout log](documentation/testing/wave/wave-client-workoutlog-explain.png)](documentation/testing/wave/wave-client-workoutlog-explain.png) |
 | Client support (ticket list) | [![WAVE - Client support](documentation/testing/wave/wave-client-support-explain.png)](documentation/testing/wave/wave-client-support-explain.png) |
