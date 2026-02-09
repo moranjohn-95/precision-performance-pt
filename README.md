@@ -52,11 +52,11 @@ A key aim of the project is to clearly separate user roles. Clients, trainers, a
 The project also aims to demonstrate full-stack development skills using Django, including authentication, role-based access control, database design, and responsive front-end development, in line with Code Institute assessment criteria.
 ## 3. User Goals
 The primary users of the Precision Performance PT platform are clients who want a clear, simple, and structured way to follow their training programmes online.
-Clients want to easily understand what workouts they need to complete, see their progress over time, and communicate with their assigned trainer when needed. The platform aims to remove confusion by presenting only relevant information to the client, such as todayís workout, recent sessions, and progress metrics.
+Clients want to easily understand what workouts they need to complete, see their progress over time, and communicate with their assigned trainer when needed. The platform aims to remove confusion by presenting only relevant information to the client, such as todayÔøΩs workout, recent sessions, and progress metrics.
 
 Users also want a smooth and intuitive experience across all devices. Clear navigation, readable layouts, and straightforward actions help ensure clients can focus on their training rather than learning how to use the system.
 ## 4. Site Owner Goals
-The site ownerís primary goal is to manage the personal training business efficiently from one central platform. Precision Performance PT was designed to give the owner full visibility of clients, trainers, consultations, and any ongoing activity withot needing to rely on external tools or manual processes.
+The site ownerÔøΩs primary goal is to manage the personal training business efficiently from one central platform. Precision Performance PT was designed to give the owner full visibility of clients, trainers, consultations, and any ongoing activity withot needing to rely on external tools or manual processes.
 The owner needs to be able to oversee the entire system at a high level, while still having the option to act as a trainer when required. This includes assigning consultations, reviewing client progress, managing trainers, and responding to support queries.
 By centralising all business operations into a single dashboard, the platform helps reduce admin time, improve organisation, and ensure a consistent and professional experience for both clients and trainers.
 
@@ -79,7 +79,7 @@ A strong focus was placed on clarity, accessibility, and reducing load, ensuring
 
 Client pages are designed to minimise effort and confusion:
 
-- The client dashboard immediately highlights Todayís Workout, reducing decision fatigue.
+- The client dashboard immediately highlights TodayÔøΩs Workout, reducing decision fatigue.
 - Logging workouts is pre-filled with trainer-defined targets to reduce manual input.
 - Body metrics are logged through simple forms and visualised using charts for easy progress tracking.
 - Support messaging uses a familiar ticket style interface to keep communication clear and organised.
@@ -106,27 +106,27 @@ https://github.com/users/moranjohn-95/projects/10
 
 | Title | User Story |
 |------|-----------|
-| **All Users - Auth ñ Registration, Login / Logout** | I want to be able to register, log in, and log out securely so that my account and personal data are protected. |
-| **All Users ñ Clear, Consistent and Visually Appealing Interface** | I want the website to be visually clear and consistent so that it is easy to use and understand across all pages. |
-| **Client ñ Dashboard & View Workout Plan** | I want to access my dashboard and view my assigned workout plan so that I clearly know what training I need to complete. |
-| **Client ñ Log & Manage Workout Sessions** | I want to log my workout sessions so that I can track completed training and review past workouts. |
-| **Client ñ Record & View Body Metrics** | I want to record and view body metrics so that I can track physical progress over time. |
-| **Owner ñ Business Dashboard** | I want to view a high level business dashboard so that I can understand overall activity and performance. |
-| **Owner ñ View All Clients** | I want to view all clients across the business so that I can oversee client activity and assignments. |
-| **Owner ñ View All Trainers** | I want to view all trainers working in the business so that I can manage staff and understand capacity. |
-| **Trainer ñ Client List & Profiles** | I want to see a list of my assigned clients and access their profiles so that I can manage coaching effectively. |
-| **Trainer ñ Create Workout Plans** | I want to create structured workout plans so that clients receive clear and organised training programmes. |
-| **Trainer ñ Edit & Save Workout Plans** | I want to edit and save workout plans over time so that programmes stay aligned with client progress. |
+| **All Users - Auth ÔøΩ Registration, Login / Logout** | I want to be able to register, log in, and log out securely so that my account and personal data are protected. |
+| **All Users ÔøΩ Clear, Consistent and Visually Appealing Interface** | I want the website to be visually clear and consistent so that it is easy to use and understand across all pages. |
+| **Client ÔøΩ Dashboard & View Workout Plan** | I want to access my dashboard and view my assigned workout plan so that I clearly know what training I need to complete. |
+| **Client ÔøΩ Log & Manage Workout Sessions** | I want to log my workout sessions so that I can track completed training and review past workouts. |
+| **Client ÔøΩ Record & View Body Metrics** | I want to record and view body metrics so that I can track physical progress over time. |
+| **Owner ÔøΩ Business Dashboard** | I want to view a high level business dashboard so that I can understand overall activity and performance. |
+| **Owner ÔøΩ View All Clients** | I want to view all clients across the business so that I can oversee client activity and assignments. |
+| **Owner ÔøΩ View All Trainers** | I want to view all trainers working in the business so that I can manage staff and understand capacity. |
+| **Trainer ÔøΩ Client List & Profiles** | I want to see a list of my assigned clients and access their profiles so that I can manage coaching effectively. |
+| **Trainer ÔøΩ Create Workout Plans** | I want to create structured workout plans so that clients receive clear and organised training programmes. |
+| **Trainer ÔøΩ Edit & Save Workout Plans** | I want to edit and save workout plans over time so that programmes stay aligned with client progress. |
 
 #### Agile Board & Development Journey
 
 User stories and epics were tracked using a **GitHub Project board** and were organised into the following groupings and stages, As seen below. Having a visual aid like this was a big help in planning and structuring the design/development of this project.
 
-- **Epics** ñ High level project goals and feature groupings. 
-- **To Do** ñ User stories planned but not yet started.
-- **In Progress** ñ User stories actively being developed. 
-- **Testing / In Review** ñ Completed features undergoing testing. 
-- **Done** ñ Fully implemented and verified user stories. 
+- **Epics** ÔøΩ High level project goals and feature groupings. 
+- **To Do** ÔøΩ User stories planned but not yet started.
+- **In Progress** ÔøΩ User stories actively being developed. 
+- **Testing / In Review** ÔøΩ Completed features undergoing testing. 
+- **Done** ÔøΩ Fully implemented and verified user stories. 
 
 Each user story was linked to an epic and labelled to reflect priority and user role (Client, Trainer, Owner, All Users).
 
@@ -142,19 +142,19 @@ The screenshots below show how user stories moved through the Agile workflow dur
 At the start of the project, epics and user stories were defined and placed into the **To Do** column.  
 This stage focused on identifying core functionality, user roles, and UX requirements before development began.
 
-![Agile board ñ initial planning](documentation/agile/agile-board.png)
+![Agile board ÔøΩ initial planning](documentation/agile/agile-board.png)
 
 As development progressed, user stories were moved into **In Progress** and **Testing**.  
 This ensured features were built incrementally and reviewed before being marked as complete.
 
-![Agile board ñ development in progress](documentation/agile/agile-step-2.png)
+![Agile board ÔøΩ development in progress](documentation/agile/agile-step-2.png)
 
 ### Completion Stage
 
 Once features were fully implemented and tested, user stories were moved into the **Done** column.  
 This confirms that acceptance criteria were met and functionality was working as intended.
 
-![Agile board ñ completed user stories](documentation/agile/agile-end.png)
+![Agile board ÔøΩ completed user stories](documentation/agile/agile-end.png)
 
 
 
@@ -177,12 +177,12 @@ Care was taken to maintain sufficient colour contrast across all areas of the si
 
 The primary colours used throughout the application are defined as CSS root variables to ensure consistency across all templates and components:
 
-- **Background colour:** `#F7FAFC` ñ clean, neutral background for pages and cards  
-- **Primary brand navy:** `#0B1F3B` ñ headers, navigation, and key headings  
-- **Body text colour:** `#0F172A` ñ main readable text  
-- **Accent colour:** `#B6F400` ñ highlights, progress indicators, emphasis points  
-- **Primary action blue:** `#1F6DE8` ñ buttons, links, and interactive elements  
-- **Surface white:** `#FFFFFF` ñ cards, tables, and form containers  
+- **Background colour:** `#F7FAFC` ÔøΩ clean, neutral background for pages and cards  
+- **Primary brand navy:** `#0B1F3B` ÔøΩ headers, navigation, and key headings  
+- **Body text colour:** `#0F172A` ÔøΩ main readable text  
+- **Accent colour:** `#B6F400` ÔøΩ highlights, progress indicators, emphasis points  
+- **Primary action blue:** `#1F6DE8` ÔøΩ buttons, links, and interactive elements  
+- **Surface white:** `#FFFFFF` ÔøΩ cards, tables, and form containers  
 
 This combination ensures the interface feels professional and focused, while remaining easy to navigate for clients, trainers, and owners across desktop, tablet, and mobile devices.
 
@@ -192,10 +192,10 @@ Typography played an important role in ensuring the Precision Performance PT app
 
 Two primary fonts are used throughout the application:
 
-- **Open Sans** ñ for body text, forms, tables, and longer content.
-- **Montserrat** ñ for headings, section titles, and key UI labels.
+- **Open Sans** ÔøΩ for body text, forms, tables, and longer content.
+- **Montserrat** ÔøΩ for headings, section titles, and key UI labels.
 
-#### Open Sans ñ Body Text
+#### Open Sans ÔøΩ Body Text
 
 **Open Sans** is used as the main body font across the platform.
 
@@ -206,7 +206,7 @@ It was chosen because:
 
 This makes Open Sans particularly suitable for a personal training platform where users regularly read structured information such as exercises, sets, reps, and progress data.
 
-#### Montserrat ñ Headings & UI Hierarchy
+#### Montserrat ÔøΩ Headings & UI Hierarchy
 
 **Montserrat** is used for headings and prominent UI elements.
 
@@ -230,7 +230,7 @@ The below wireframesw were initially developed thinking of the everyday user and
 | Homepage | Book a Consultation |
 |--------|---------------------|
 | ![Homepage wireframe](documentation/design/desktop-home-1.png) | ![Book a consultation wireframe](documentation/design/desktop-booking-con.png) |
-| **Homepage** ñ Introduces the brand, coaching options, and key value propositions, with strong calls to action. | **Book a Consultation** ñ Primary conversion form capturing contact details, training preferences, and availability. |
+| **Homepage** ÔøΩ Introduces the brand, coaching options, and key value propositions, with strong calls to action. | **Book a Consultation** ÔøΩ Primary conversion form capturing contact details, training preferences, and availability. |
 
 ---
 
@@ -240,7 +240,7 @@ The contact and login wireframes below were also  desinged with a simplistic vie
 | Contact Us | Trainer / Client Login |
 |-----------|------------------------|
 | ![Contact form wireframe](documentation/design/desktop-contact-form.png) | ![Login wireframe](documentation/design/desktop-client-trainer-login.png) |
-| **Contact Us** ñ General enquiries for non-consultation queries with follow-up preferences. | **Login** ñ Shared authentication entry point for trainers and clients. |
+| **Contact Us** ÔøΩ General enquiries for non-consultation queries with follow-up preferences. | **Login** ÔøΩ Shared authentication entry point for trainers and clients. |
 
 ---
 
@@ -254,9 +254,25 @@ The overall structure seen below is very close to the actual live structure with
 
 
 
-| **Client Dashboard** ñ Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard** ñ Central workspace for managing consultations, classes, and client activity. |
+| **Client Dashboard** ÔøΩ Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard** ÔøΩ Central workspace for managing consultations, classes, and client activity. |
 
 ### 8.4 Responsive Design
+Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile.  
+The fact the platform contains data heavy views (tables, forms, charts, and logs), responsiveness focused on keeping key actions accessible while preventing layouts from becoming cluttered on smaller screens. A good example of this is the sidebar featurea and how its leveraged on differnet devices.
+
+On **desktop**, the sidebar remains visible to provide reliable navigation between dashboard sections.  
+On **tablet and mobile**, the sidebar becomes an **off-canvas menu** (opened via a menu toggle). preventing it from taking up valuable screen space while still keeping navigation easy to access.
+
+| Tablet / Mobile (Off-canvas sidebar) | Desktop (Sidebar visible) |
+|---|---|
+| ![Trainer sidebar - tablet view](documentation/design/feature-trainer-boardsidebar.jpg) | ![Trainer dashboard - desktop view](documentation/design/feature-trainerdahsbaord-desktop-responsive.png) |
+
+**Key responsive behaviour:**
+- Desktop view uses a fixed sidebar so the user can move between sections quickly.
+- Tablet/mobile view uses a slide-out sidebar to keep the main content readable.
+- Navigation labels remain consistent across all breakpoints so users never have to ‚Äúre-learn‚Äù the UI.
+- Buttons and links remain large enough for touch interaction on smaller devices.
+
 
 ## 9. Features
 The below sections cover the key features of the precision perfromance application, all images are screenshots from a tablet to showacse a happy medium betweem mobile and desktop.
@@ -267,19 +283,19 @@ This section outlines the core features of the Precision Performance PT platform
 
 | Feature                                   | Public User | Client | Trainer | Owner | Notes |
 |-------------------------------------------|:-----------:|:------:|:-------:|:-----:|-------|
-| **Booking Consultation**                  | ?           | ó      | ó       | ó     | Prospective clients fill a consultation form with contact details, training goals, coaching preferences, and availability.  This data is stored securely for trainers/owners. |
-| **Dedicated Login & Account Access**      | ó           | ?      | ?       | ?     | Each role has its own login page ensuring role-based access (client login, trainer login, owner login). |
-| **Dashboard Overview**                    | ó           | ?      | ?       | ?     | Clients see todayís workout and a weekly summary.  Trainers and owners view consultations, clients, and key metrics for their roles. |
-| **View Programme & Daily Workouts**       | ó           | ?      | ?       | ?     | Clients view their assigned training programmes, broken down by week and day.  Trainers and owners can view programme details for each client. |
-| **Log & Manage Workout Sessions**         | ó           | ?      | ?       | ?     | Clients log workouts (with pre-filled targets and editable weights/reps).  Trainers and owners can view logs and adjust or comment if needed. |
-| **Body Metrics Tracking & Check-Ins**     | ó           | ?      | ?       | ?     | Clients submit metrics such as bodyweight, waist measurement, top sets, and sleep hours.  Trainers and owners review entries and visualise progress via charts. |
-| **Support & Messaging**                   | ó           | ?      | ?       | ?     | Clients can open support tickets to contact their trainer.  Trainers and owners reply via the support system.  Tickets remain open until resolved. |
-| **Client List & Profiles**                | ó           | ó      | ?       | ?     | Trainers and owners see a list of assigned (or all) clients and access their profiles, including body metrics and workout logs. |
-| **Programme Creation & Tailoring**        | ó           | ó      | ?       | ?     | Trainers build programmes from base templates and tailor exercises, sets, reps, and target weights per client.  Owners can also create/assign programmes. |
-| **Consultation & Query Management**       | ó           | ó      | ?     | ?     | Trainers can accept consultations **only for themselves**.  Owners can assign consultations and queries to any trainer or themselves. |
-| **Administrative Oversight**              | ó           | ó      | ó       | ?     | Owners have full visibility across trainers, clients, consultations, and support tickets, while maintaining confidentiality between trainers and their clients. |
+| **Booking Consultation**                  | ?           | ÔøΩ      | ÔøΩ       | ÔøΩ     | Prospective clients fill a consultation form with contact details, training goals, coaching preferences, and availability.  This data is stored securely for trainers/owners. |
+| **Dedicated Login & Account Access**      | ÔøΩ           | ?      | ?       | ?     | Each role has its own login page ensuring role-based access (client login, trainer login, owner login). |
+| **Dashboard Overview**                    | ÔøΩ           | ?      | ?       | ?     | Clients see todayÔøΩs workout and a weekly summary.  Trainers and owners view consultations, clients, and key metrics for their roles. |
+| **View Programme & Daily Workouts**       | ÔøΩ           | ?      | ?       | ?     | Clients view their assigned training programmes, broken down by week and day.  Trainers and owners can view programme details for each client. |
+| **Log & Manage Workout Sessions**         | ÔøΩ           | ?      | ?       | ?     | Clients log workouts (with pre-filled targets and editable weights/reps).  Trainers and owners can view logs and adjust or comment if needed. |
+| **Body Metrics Tracking & Check-Ins**     | ÔøΩ           | ?      | ?       | ?     | Clients submit metrics such as bodyweight, waist measurement, top sets, and sleep hours.  Trainers and owners review entries and visualise progress via charts. |
+| **Support & Messaging**                   | ÔøΩ           | ?      | ?       | ?     | Clients can open support tickets to contact their trainer.  Trainers and owners reply via the support system.  Tickets remain open until resolved. |
+| **Client List & Profiles**                | ÔøΩ           | ÔøΩ      | ?       | ?     | Trainers and owners see a list of assigned (or all) clients and access their profiles, including body metrics and workout logs. |
+| **Programme Creation & Tailoring**        | ÔøΩ           | ÔøΩ      | ?       | ?     | Trainers build programmes from base templates and tailor exercises, sets, reps, and target weights per client.  Owners can also create/assign programmes. |
+| **Consultation & Query Management**       | ÔøΩ           | ÔøΩ      | ?     | ?     | Trainers can accept consultations **only for themselves**.  Owners can assign consultations and queries to any trainer or themselves. |
+| **Administrative Oversight**              | ÔøΩ           | ÔøΩ      | ÔøΩ       | ?     | Owners have full visibility across trainers, clients, consultations, and support tickets, while maintaining confidentiality between trainers and their clients. |
 
-π Trainers cannot see other trainersí clients or delegate consultations to other trainers.
+ÔøΩ Trainers cannot see other trainersÔøΩ clients or delegate consultations to other trainers.
 
 ---
 
@@ -293,7 +309,7 @@ A prospective client begins their journey by submitting a consultation request v
 - This data is stored securely and made available to trainers and the owner via their dashboards.
 
 ![Consultation form](documentation/features/feature-consultation.jpg)
-![Consultation form ñ step view](documentation/features/feature-consultation-2.jpg)
+![Consultation form ÔøΩ step view](documentation/features/feature-consultation-2.jpg)
 
 ---
 
@@ -312,7 +328,7 @@ Once a consultation has been accepted and a trainer assigned, the client is prov
 
 After logging in, clients land on their dashboard overview.
 
-- The dashboard highlights todayís workout.
+- The dashboard highlights todayÔøΩs workout.
 - A clear call to action allows the client to start their training session.
 - Weekly summaries display recent activity and key metrics.
 
@@ -321,7 +337,7 @@ After logging in, clients land on their dashboard overview.
 
 ---
 
-### Todayís Workout & Programme Viewing
+### TodayÔøΩs Workout & Programme Viewing
 
 Clients can view their active training programme and see daily workout breakdowns.
 
@@ -351,7 +367,7 @@ Clients can view previously logged sessions.
 - Recent sessions are listed clearly.
 - Sessions can be reopened for review or editing if required.
 
-![Client workout log ñ recent sessions](documentation/features/feature_clientworkoutlog.jpg)
+![Client workout log ÔøΩ recent sessions](documentation/features/feature_clientworkoutlog.jpg)
 
 ---
 
@@ -520,7 +536,7 @@ The purpose of this testing was to confirm that:
 Only **custom-written project logic** was tested.  
 Auto-generated files such as migrations, virtual environments, and third-party framework code were intentionally excluded.
 
-All tested files returned **ìAll clear, no errors foundî**.
+All tested files returned **ÔøΩAll clear, no errors foundÔøΩ**.
 
 ##### Python Files Tested
 
@@ -596,7 +612,7 @@ All tested pages returned no errors or warnings to show as seen below.
 |------|------------------------|--------|
 | Client Login | [![Client login HTML validation](documentation/testing/html/client-html-test.png)](documentation/testing/html/client-html-test.png) | No errors or warnings |
 | Dashboard | [![Client dashboard HTML validation](documentation/testing/html/client-dash-html-test.png)](documentation/testing/html/client-dash-html-test.png) | No errors or warnings |
-| Todayís Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
+| TodayÔøΩs Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
 | Programme Library | [![Client programme HTML validation](documentation/testing/html/client-programme-html-test.png)](documentation/testing/html/client-programme-html-test.png) | No errors or warnings |
 | Workout Log | [![Client workout HTML validation](documentation/testing/html/client-workout-html-test.png)](documentation/testing/html/client-workout-html-test.png) | No errors or warnings |
 | Body Metrics | [![Client body metrics HTML validation](documentation/testing/html/client-bodymetrics-html-test.png)](documentation/testing/html/client-bodymetrics-html-test.png) | No errors or warnings |
@@ -650,7 +666,7 @@ Mobile scores are generally lower than desktop scores due to Lighthouse simulate
 
 ##### Lighthouse Scoring Criteria
 
-- **Performance**: Influenced by JavaScript execution, dynamic data rendering, and Lighthouseís simulated device constraints.
+- **Performance**: Influenced by JavaScript execution, dynamic data rendering, and LighthouseÔøΩs simulated device constraints.
 - **Accessibility**: : High scores achieved through semantic HTML, proper labels, good contrast and ARIA friendly patterns.
 - **Best Practices**: Strong results are due to modern standards, secure contexts, and valid markup.
 - **SEO**: High scores are driven by appropriate meta tags, descriptive page titles and crawlable content.
@@ -685,8 +701,8 @@ Client pages include dashboards, logs, and metrics, all of which involve dynamic
 | Client Login | Mobile | [![Client Login Mobile](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png)](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png) |
 | Dashboard | Desktop | [![Client Dashboard Desktop](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png)](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png) |
 | Dashboard | Mobile | [![Client Dashboard Mobile](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png)](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png) |
-| Todayís Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
-| Todayís Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
+| TodayÔøΩs Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
+| TodayÔøΩs Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
 | Programme Library | Desktop | [![Programme Desktop](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png)](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png) |
 | Programme Library | Mobile | [![Programme Mobile](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png)](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png) |
 | Workout Log | Desktop | [![Workout Desktop](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png)](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png) |
@@ -729,7 +745,7 @@ Lower mobile performance scores expected and reflect:
 
 - Performance differences are normal in a feature-heavy and role-based django application (pages with larger datasets, tables/forms, and extra JavaScript tend to score lower).
 - Accessibility, Best Practices, and SEO results are consistent and strong across key pages.
-- Mobile performance scores are affected by Lighthouseís simulated throttling (CPU/network constraints) and donít necessarily showcase real world usability on modern devices.
+- Mobile performance scores are affected by LighthouseÔøΩs simulated throttling (CPU/network constraints) and donÔøΩt necessarily showcase real world usability on modern devices.
 
 #### Accessibility Testing (WAVE)
 
@@ -772,7 +788,7 @@ WAVE was used to check for:
 | Page | Result |
 |------|--------|
 | Client dashboard (overview) | [![WAVE - Client dashboard](documentation/testing/wave/wave-client-dasbaord-explain.png)](documentation/testing/wave/wave-client-dasbaord-explain.png) |
-| Todayís plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
+| TodayÔøΩs plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
 | Programme library | [![WAVE - Programme library](documentation/testing/wave/wave-client-programmelibrary-explain.png)](documentation/testing/wave/wave-client-programmelibrary-explain.png) |
 | Workout log | [![WAVE - Workout log](documentation/testing/wave/wave-client-workoutlog-explain.png)](documentation/testing/wave/wave-client-workoutlog-explain.png) |
 | Client support (ticket list) | [![WAVE - Client support](documentation/testing/wave/wave-client-support-explain.png)](documentation/testing/wave/wave-client-support-explain.png) |
@@ -790,12 +806,12 @@ WAVE was used to check for:
 
 | Page | Result |
 |------|--------|
-| Owner ñ Dashboard overview | [![WAVE - Owner dashboard overview](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png)](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png) |
-| Owner ñ My clients | [![WAVE - Owner clients](documentation/testing/wave/wave-ownertrianer-clients-explain.png)](documentation/testing/wave/wave-ownertrianer-clients-explain.png) |
-| Owner ñ Programmes | [![WAVE - Owner programmes](documentation/testing/wave/wave-ownertrianer-programmes-explain.png)](documentation/testing/wave/wave-ownertrianer-programmes-explain.png) |
-| Owner ñ Queries (contact forms) | [![WAVE - Owner queries](documentation/testing/wave/wave-ownertrianer-queries-explain.png)](documentation/testing/wave/wave-ownertrianer-queries-explain.png) |
-| Owner ñ Support inbox | [![WAVE - Owner support inbox](documentation/testing/wave/wave-ownertrianer-support-explain.png)](documentation/testing/wave/wave-ownertrianer-support-explain.png) |
-| Trainer ñ Consultation detail | [![WAVE - Trainer consultation detail](documentation/testing/wave/wave-trainer-consultationdetails-explain.png)](documentation/testing/wave/wave-trainer-consultationdetails-explain.png) |
+| Owner ÔøΩ Dashboard overview | [![WAVE - Owner dashboard overview](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png)](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png) |
+| Owner ÔøΩ My clients | [![WAVE - Owner clients](documentation/testing/wave/wave-ownertrianer-clients-explain.png)](documentation/testing/wave/wave-ownertrianer-clients-explain.png) |
+| Owner ÔøΩ Programmes | [![WAVE - Owner programmes](documentation/testing/wave/wave-ownertrianer-programmes-explain.png)](documentation/testing/wave/wave-ownertrianer-programmes-explain.png) |
+| Owner ÔøΩ Queries (contact forms) | [![WAVE - Owner queries](documentation/testing/wave/wave-ownertrianer-queries-explain.png)](documentation/testing/wave/wave-ownertrianer-queries-explain.png) |
+| Owner ÔøΩ Support inbox | [![WAVE - Owner support inbox](documentation/testing/wave/wave-ownertrianer-support-explain.png)](documentation/testing/wave/wave-ownertrianer-support-explain.png) |
+| Trainer ÔøΩ Consultation detail | [![WAVE - Trainer consultation detail](documentation/testing/wave/wave-trainer-consultationdetails-explain.png)](documentation/testing/wave/wave-trainer-consultationdetails-explain.png) |
 
 **Staff area summary**
 - Dashboard layouts are consistent across owner and trainer roles.
@@ -811,7 +827,7 @@ WAVE was used to check for:
 - Minor flags were reviewed and documented, with intentional design choices kept where they improve clarity.
 
 Some dashboard pages show flags relating to **muted metadata text**, relating to the below:
-- **ìLogged in: [username]î** is intentionally styled as subtle helper text and is not meant to stand out.
+- **ÔøΩLogged in: [username]ÔøΩ** is intentionally styled as subtle helper text and is not meant to stand out.
   It is designed to sit in the background and not distract from more important content or the overall visual hierarchy.
   For this reason, it was intentionally kept in this style.
 
