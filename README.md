@@ -1,5 +1,5 @@
-# precision-performance-pt
-Precision performance PT provide both online and in person personal training, as well as group classes. Precisison Performance also provide dashbaord access to personal training clients where by joiners will have a 24/7 access to a number of resources including trainer supprot, body metrics tracking as well as strength tracking.
+# Precision Performance PT
+Precision Performance PT provides both online and in-person personal training, as well as group classes. Precision Performance also provides dashboard access for personal training clients, giving members 24/7 access to resources including trainer support, body metrics tracking, and strength progress tracking.
 
 ## Table of Contents
 
@@ -25,7 +25,7 @@ Precision performance PT provide both online and in person personal training, as
 15. [Validation & Error Handling](#15-validation--error-handling)  
 16. [Technologies Used](#16-technologies-used)  
 17. [Testing](#17-testing)  
-   - [Automated Testing](#171-automated-testing)  
+   - [Automated Testing](#python-code-validation-ci-python-linter)  
    - [Manual Testing](#172-manual-testing)  
    - [Validator & Accessibility Testing](#173-validator--accessibility-testing)  
    - [User Story Testing](#174-user-story-testing)  
@@ -36,34 +36,33 @@ Precision performance PT provide both online and in person personal training, as
    - [How to Fork](#193-how-to-fork-the-repository)  
    - [How to Clone](#194-how-to-clone-the-repository)  
 20. [Future Features](#20-future-features)  
-21. [Credits](#21-credits)  
-22. [Acknowledgements](#22-acknowledgements)
+21. [Credits](#credits)  
+22. [Acknowledgements](#acknowledgements)
 
 ## 1. Project Overview
-Precision Performance PT is a full stack web application designed to support online and in person personal training businesses. The platform allows clients, trainers, and the business owner to manage training programmes, track progress, and communicate through a single, centralised system.
+Precision Performance PT is a full-stack web application designed to support online and in-person personal training businesses. The platform allows clients, trainers, and the business owner to manage training programmes, track progress, and communicate through a single, centralised system.
 The application replaces fragmented tools such as spreadsheets, messaging apps, and manual notes by providing structured dashboards for each user role. Clients can view their workout plans, log completed sessions, track body metrics, and contact their trainer directly. Trainers can manage assigned clients, tailor workout programmes, and review client progress. The owner has full visibility across the business and can assign consultations, oversee trainers, and manage clients.
-The project was built using Django as the backend framework, with HTML, CSS, and JavaScript used for the front end. Role based permisions ensure that each user only has access to appropriate data and features. The application is fully responsive and designed to work across desktop, tablet, and mobile devices.
+The project was built using Django as the backend framework, with HTML, CSS, and JavaScript used for the front-end. Role-based permissions ensure that each user only has access to appropriate data and features. The application is fully responsive and designed to work across desktop, tablet, and mobile devices.
 
 Precision Performance PT was developed as a Portfolio Project for the Code Institute Full-Stack Software Development Diploma, with a strong focus on usability, data integrity, and real-world application.
 ## 2. Project Aims
 The aim of the Precision Performance PT project is to provide a structured and user-friendly online coaching platform for personal trainers and their clients.
-The application is designed to support the full personal training journey, from initial consultation through to programme delivery, workout logging, progress tracking, and ongoing communication. By centralising all training data in one syste.Tthe platform reduces the need for more difficult spreadsheets, messaging apps, and manual tracking.
+The application is designed to support the full personal training journey, from initial consultation through to programme delivery, workout logging, progress tracking, and ongoing communication. By centralising all training data in one system, the platform reduces the need for more difficult spreadsheets, messaging apps, and manual tracking.
 A key aim of the project is to clearly separate user roles. Clients, trainers, and the business owner each see only the features relevant to them. This improves security, reduces confusion, and ensures sensitive data is accessed appropriately.
 
 The project also aims to demonstrate full-stack development skills using Django, including authentication, role-based access control, database design, and responsive front-end development, in line with Code Institute assessment criteria.
 ## 3. User Goals
 The primary users of the Precision Performance PT platform are clients who want a clear, simple, and structured way to follow their training programmes online.
-Clients want to easily understand what workouts they need to complete, see their progress over time, and communicate with their assigned trainer when needed. The platform aims to remove confusion by presenting only relevant information to the client, such as todays workout, recent sessions, and progress metrics.
+Clients want to easily understand what workouts they need to complete, see their progress over time, and communicate with their assigned trainer when needed. The platform aims to remove confusion by presenting only relevant information to the client, such as today's workout, recent sessions, and progress metrics.
 
 Users also want a smooth and intuitive experience across all devices. Clear navigation, readable layouts, and straightforward actions help ensure clients can focus on their training rather than learning how to use the system.
 ## 4. Site Owner Goals
-The site owners primary goal is to manage the personal training business efficiently from one central platform. Precision Performance PT was designed to give the owner full visibility of clients, trainers, consultations, and any ongoing activity withot needing to rely on external tools or manual processes.
+The site owner's primary goal is to manage the personal training business efficiently from one central platform. Precision Performance PT was designed to give the owner full visibility of clients, trainers, consultations, and any ongoing activity without needing to rely on external tools or manual processes.
 The owner needs to be able to oversee the entire system at a high level, while still having the option to act as a trainer when required. This includes assigning consultations, reviewing client progress, managing trainers, and responding to support queries.
 By centralising all business operations into a single dashboard, the platform helps reduce admin time, improve organisation, and ensure a consistent and professional experience for both clients and trainers.
 
 ## 5. Target Audience
-The target audience includes men and women looking to take control of their fitness journey. The target audienece is those looking to improve in this aspect but still need some guidance and accountability. Ideally suited to those who want this accountability in the form of a expert trainer and have the support of not only in person training sessions but the backfall of a community 
-like feel with 24/7 support. 
+The target audience includes men and women looking to take control of their fitness journey. The target audience is those looking to improve in this aspect but still need some guidance and accountability. Ideally suited to those who want this accountability in the form of an expert trainer and have the support of not only in-person training sessions but the backing of a community-like feel with 24/7 support.
 
 ## 6. User Experience (UX)
 The user experience of Precision Performance PT was designed to be clear, structured, and easy to follow for all users, regardless of technical ability. The platform supports three distinct user roles (Client, Trainer, Owner), each with different goals, while maintaining a consistent layout and interaction style across the application.
@@ -80,7 +79,7 @@ A strong focus was placed on clarity, accessibility, and reducing load, ensuring
 
 Client pages are designed to minimise effort and confusion:
 
-- The client dashboard immediately highlights Todays Workout, reducing decision fatigue.
+- The client dashboard immediately highlights Today's Workout, reducing decision fatigue.
 - Logging workouts is pre-filled with trainer-defined targets to reduce manual input.
 - Body metrics are logged through simple forms and visualised using charts for easy progress tracking.
 - Support messaging uses a familiar ticket style interface to keep communication clear and organised.
@@ -95,13 +94,13 @@ Trainer and Owner dashboards share the same core layout to reduce learning overh
 - Editing and saving programmes follows predictable interaction patterns.
 
 ## 7. User Stories
-User stories were created to get a better understanding of what a typical user would feel while navigating through an online personal training dashbaord, this was done to represent a normal site user,a client, trainer and owner. We look at user stories more in testing further brlow.
+User stories were created to get a better understanding of what a typical user would feel while navigating through an online personal training dashboard. This was done to represent a normal site user, a client, trainer, and owner. We look at user stories more in testing further below.
 
 Stories were grouped into Epics and managed using a GitHub Project board.  
 Each user story includes acceptance criteria and supporting tasks to guide development and testing.
 
 The Agile board for this project can be viewed here:  
-https://github.com/users/moranjohn-95/projects/10
+[GitHub Project board](https://github.com/users/moranjohn-95/projects/10)
 
 ### User Stories Table
 
@@ -121,7 +120,7 @@ https://github.com/users/moranjohn-95/projects/10
 
 #### Agile Board & Development Journey
 
-User stories and epics were tracked using a **GitHub Project board** and were organised into the following groupings and stages, As seen below. Having a visual aid like this was a big help in planning and structuring the design/development of this project.
+User stories and epics were tracked using a **GitHub Project board** and were organised into the following groupings and stages, as seen below. Having a visual aid like this was a big help in planning and structuring the design/development of this project.
 
 - **Epics**  High level project goals and feature groupings. 
 - **To Do**  User stories planned but not yet started.
@@ -160,7 +159,7 @@ This confirms that acceptance criteria were met and functionality was working as
 
 
 ## 8. Design
-The thinking behind the design for The Precisison Performance apllication was to ensure user experience was the main focus. Data relating to fitness and health is always complicated and it cna be difficult to express this data in a way that isnt overwhelming and confusing. As such it was important that the design was clearly thought out of. Consistent and clear colour hierarchys and consistnet text strucutres were key here. 
+The thinking behind the design for the Precision Performance application was to ensure user experience was the main focus. Data relating to fitness and health is always complicated and it can be difficult to express this data in a way that isn't overwhelming and confusing. As such it was important that the design was clearly thought out. Consistent and clear colour hierarchies and consistent text structures were key here.
 
 ### 8.1 Colour Scheme
 
@@ -201,7 +200,7 @@ Two primary fonts are used throughout the application:
 **Open Sans** is used as the main body font across the platform.
 
 It was chosen because:
-- It offers excellent readability at small sizes, which is important for dashboards, tables, and data heavy views.
+- It offers excellent readability at small sizes, which is important for dashboards, tables, and data-heavy views.
 - Its open letterforms reduce eye strain during longer sessions, such as reviewing workout logs or reading support messages.
 - It maintains clarity across mobile, tablet, and desktop devices.
 
@@ -220,13 +219,13 @@ Using Montserrat for headings helps guide users through the interface and makes 
 
 Both fonts are also web safe and widely supported. Easy to read for users with visual impairments.
 
-## Desktop Wireframes
-Wireframes were created at the start of this project to aid in the desing process and really helped gain a better sense for overall planning of the various web pages. Wireframes were only designed for desktop as with the amount of data/charts etc that was to be used it was easier to start with desktop and downsize as opposed to the standard mobile first design. The following wireframes illustrate the core user journeys across the Precision Performance PT platform. They are grouped below to reflect public pages, authentication, and authenticated dashboard experiences.
+### Desktop Wireframes
+Wireframes were created at the start of this project to aid in the design process and really helped gain a better sense for overall planning of the various web pages. Wireframes were only designed for desktop as with the amount of data/charts etc that was to be used it was easier to start with desktop and downsize as opposed to the standard mobile-first design. The following wireframes illustrate the core user journeys across the Precision Performance PT platform. They are grouped below to reflect public pages, authentication, and authenticated dashboard experiences.
 
 ---
 
-### Public- Pages (Discovery & Conversion)
-The below wireframesw were initially developed thinking of the everyday user and how important it was to have a simplistic and easy to use interface, so that potential clients werent lost straight away.
+#### Public- Pages (Discovery & Conversion)
+The below wireframes were initially developed thinking of the everyday user and how important it was to have a simplistic and easy to use interface, so that potential clients weren't lost straight away.
 
 | Homepage | Book a Consultation |
 |--------|---------------------|
@@ -235,8 +234,8 @@ The below wireframesw were initially developed thinking of the everyday user and
 
 ---
 
-### Contact & Authentication
-The contact and login wireframes below were also  desinged with a simplistic viewpoint of not wanting to over stimulate the user with distracting features. 
+#### Contact & Authentication
+The contact and login wireframes below were also designed with a simplistic viewpoint of not wanting to overstimulate the user with distracting features.
 
 | Contact Us | Trainer / Client Login |
 |-----------|------------------------|
@@ -245,8 +244,8 @@ The contact and login wireframes below were also  desinged with a simplistic vie
 
 ---
 
-### Authenticated Dashboards
-The overall structure seen below is very close to the actual live structure with the sidebar for pages being a key feature throughout both dashboards. This inital design thougt paid dividends as it was key in creating a good UX and being easy to change with regards to responsiveness. 
+#### Authenticated Dashboards
+The overall structure seen below is very close to the actual live structure with the sidebar for pages being a key feature throughout both dashboards. This initial design thought paid dividends as it was key in creating a good UX and being easy to change with regards to responsiveness.
 
 | Client Dashboard | Trainer Dashboard |
 |------------------|------------------|
@@ -258,11 +257,11 @@ The overall structure seen below is very close to the actual live structure with
 | **Client Dashboard**  Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard**  Central workspace for managing consultations, classes, and client activity. |
 
 ### 8.4 Responsive Design
-Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile. As such media queries werre used throughout the wenbiste at key break points of min width of 993px (desktop), max-width of 992px (tablet and below), max width od 576 (mobiles.)
-The fact the platform contains data heavy views (tables, forms, charts, and logs), responsiveness focused on keeping key actions accessible while preventing layouts from becoming cluttered on smaller screens. A good example of this is the sidebar featurea and how its leveraged on differnet devices.
+Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile. As such media queries were used throughout the website at key breakpoints of min width of 993px (desktop), max-width of 992px (tablet and below), max width of 576 (mobile).
+The fact the platform contains data-heavy views (tables, forms, charts, and logs), responsiveness focused on keeping key actions accessible while preventing layouts from becoming cluttered on smaller screens. A good example of this is the sidebar feature and how it's leveraged on different devices.
 
 On **desktop**, the sidebar remains visible to provide reliable navigation between dashboard sections.  
-On **tablet and mobile**, the sidebar becomes an **off-canvas menu** (opened via a menu toggle). preventing it from taking up valuable screen space while still keeping navigation easy to access.
+On **tablet and mobile**, the sidebar becomes an **off-canvas menu** (opened via a menu toggle), preventing it from taking up valuable screen space while still keeping navigation easy to access.
 
 | Tablet / Mobile (Off-canvas sidebar) | Desktop (Sidebar visible) |
 |---|---|
@@ -276,7 +275,7 @@ On **tablet and mobile**, the sidebar becomes an **off-canvas menu** (opened via
 
 
 ## 9. Features
-The below sections cover the key features of the precision perfromance application, all images are screenshots from a tablet to showacse a happy medium betweem mobile and desktop.
+The below sections cover the key features of the Precision Performance application. All images are screenshots from a tablet to showcase a happy medium between mobile and desktop.
 
 ### Features & User Journeys
 
@@ -303,10 +302,10 @@ This section outlines the core features of the Precision Performance PT platform
 
 ---
 
-## Client User Journey
-The below sections demonstrate a clients journey while using the precision performance application.
+### Client User Journey
+The below sections demonstrate a client's journey while using the Precision Performance application.
 
-### Booking a Consultation (Public User)
+#### Booking a Consultation (Public User)
 A prospective client begins their journey by submitting a consultation request via the public website.
 
 - The consultation form collects contact details, training goals, coaching preference, and availability.
@@ -317,7 +316,7 @@ A prospective client begins their journey by submitting a consultation request v
 
 ---
 
-### Client Account Access & Login
+#### Client Account Access & Login
 
 Once a consultation has been accepted and a trainer assigned, the client is provided with login access to the platform.
 
@@ -328,11 +327,11 @@ Once a consultation has been accepted and a trainer assigned, the client is prov
 
 ---
 
-### Client Dashboard Overview
+#### Client Dashboard Overview
 
 After logging in, clients land on their dashboard overview.
 
-- The dashboard highlights todays workout.
+- The dashboard highlights today's workout.
 - A clear call to action allows the client to start their training session.
 - Weekly summaries display recent activity and key metrics.
 
@@ -341,7 +340,7 @@ After logging in, clients land on their dashboard overview.
 
 ---
 
-### Todays Workout & Programme Viewing
+#### Today's Workout & Programme Viewing
 
 Clients can view their active training programme and see daily workout breakdowns.
 
@@ -352,7 +351,7 @@ Clients can view their active training programme and see daily workout breakdown
 
 ---
 
-### Logging a Workout Session
+#### Logging a Workout Session
 
 Clients log completed workouts using the workout log feature.
 
@@ -364,7 +363,7 @@ Clients log completed workouts using the workout log feature.
 
 ---
 
-### Viewing & Editing Recent Sessions
+#### Viewing & Editing Recent Sessions
 
 Clients can view previously logged sessions.
 
@@ -375,7 +374,7 @@ Clients can view previously logged sessions.
 
 ---
 
-### Body Metrics Tracking
+#### Body Metrics Tracking
 
 Clients can log regular body metrics to track progress over time.
 
@@ -386,7 +385,7 @@ Clients can log regular body metrics to track progress over time.
 
 ---
 
-### Body Metrics Check-in
+#### Body Metrics Check-in
 
 Clients submit new metric entries using a dedicated check-in form.
 
@@ -397,7 +396,7 @@ Clients submit new metric entries using a dedicated check-in form.
 
 ---
 
-### Client Support & Messaging
+#### Client Support & Messaging
 
 Clients can contact their assigned trainer using the support system.
 
@@ -408,7 +407,7 @@ Clients can contact their assigned trainer using the support system.
 
 ---
 
-### Viewing & Replying to Support Tickets
+#### Viewing & Replying to Support Tickets
 
 Clients can view individual support tickets and ongoing message threads.
 
@@ -419,7 +418,7 @@ Clients can view individual support tickets and ongoing message threads.
 
 ---
 
-## Trainer & Owner Feature Overview (Context)
+### Trainer & Owner Feature Overview (Context)
 
 While the primary focus of this section is the **client journey**, the platform also includes a set of supporting features for **trainers and owners** that enable the client experience to function smoothly behind the scenes.
 
@@ -427,21 +426,21 @@ These features are intentionally role-restricted to ensure clarity, security, an
 
 ---
 
-### Trainer Features (Supporting Client Experience)
+#### Trainer Features (Supporting Client Experience)
 
 Trainers are responsible for managing client relationships, tailoring programmes, and monitoring progress.  
 They only have access to **their own assigned clients**, ensuring data separation between trainers.
 
 **Trainer dashboard overview**
 
-The trainer dashbaord overview is the same as the owner dashbaord overivew just with somehwat mroe restrictive fucntionality. As can be sen below each consultation request that comes in is stored 
-here and can be filtered  ny consutations that are still open (yet to be assinged to a client") or assigned. the clients looking for access to classes are then accepted but filter down into the classes section. these clients do not receive access to the dashbboard. 
+The trainer dashboard overview is the same as the owner dashboard overview, just with somewhat more restrictive functionality. As can be seen below, each consultation request that comes in is stored 
+here and can be filtered by consultations that are still open (yet to be assigned to a client) or assigned. The clients looking for access to classes are then accepted but filtered down into the classes section. These clients do not receive access to the dashboard. 
 
 ![Trainer overview](documentation/features/feature-traineroverview.jpg)
 
 **Trainer client list and access to individual client profiles**
 
-The below images shows a view of a trainer checking in on his client bia the client overview page. Here the trainer has selected the below client and can see all his body metric entries and workout logs. All fo which are stored and reflected on the charts. A trainer can also edit a client entry if needs be via the recent check ins tab.
+The below images show a view of a trainer checking in on his client via the client overview page. Here the trainer has selected the below client and can see all his body metric entries and workout logs. All of which are stored and reflected on the charts. A trainer can also edit a client entry if needs be via the recent check-ins tab.
 
 ![Trainer clients overview](documentation/features/feature-trainerclinetsoverview.jpg)
 ![Trainer clients overview expanded](documentation/features/feature-trainerclinetsoverview2.jpg)
@@ -449,61 +448,61 @@ The below images shows a view of a trainer checking in on his client bia the cli
 **Trainer programme creation and tailoring**
 
 Trainers can build programmes from base templates and customise them per client, including exercises, sets, reps, and target weights. 
-This is an important feature as each client is different and needs to receive a programm taiolred to their abilities.
+This is an important feature as each client is different and needs to receive a programme tailored to their abilities.
 
 ![Trainer programme overview](documentation/features/feature-trainerprogrammeoverview.jpg)
 ![Trainer programme tailoring](documentation/features/feature-trainer-programmetailoring.jpg)
 ![Trainer programme block tailoring](documentation/features/feature-trainer-programmeblocktailoring.jpg)
 
 **Trainer access to consultations and queries**
-So for a trainer to access the dashbaord and all their clients information etc. They also need to login via a secure login page. This ensures that only the trainer can access this infomration 
-and thete is no mix up woth a client login.
+So for a trainer to access the dashboard and all their clients' information etc. They also need to log in via a secure login page. This ensures that only the trainer can access this information 
+and there is no mix-up with a client login.
 
 ![Trainer login](documentation/features/feature-trainerlogin.jpg)
 ![Trainer my clients](documentation/features/feature-trainermyclients.jpg)
 
-Trainers can only assign consultations to themselves, cannot see other trainers clients information and cannot delegate tasks to other trainers, reinforcing role-based responsibility.
+Trainers can only assign consultations to themselves, cannot see other trainers' clients information and cannot delegate tasks to other trainers, reinforcing role-based responsibility.
 
 ---
 
-### Owner Features (Administrative Oversight)
+#### Owner Features (Administrative Oversight)
 
 The owner role extends the trainer interface with **full administrative visibility** across the platform.  
 Owners can manage trainers, clients, consultations, and support tickets.
 
 **Owner dashboard overview**
-The owner dashhbaord from a far looks the exact same as the trainer dashbaord and they almost are. However th owner has some very important extra functionality as seen below.
+The owner dashboard from afar looks the exact same as the trainer dashboard, and they almost are the same. However, the owner has some very important extra functionality as seen below.
 ![Owner overview](documentation/features/feature-owneroverview.jpg)
 
 **Owner access to all clients**
-Owner of precision perfroamnce can view all clients regardless of assigned trainer. Including clients metrics data.
+Owner of Precision Performance can view all clients regardless of assigned trainer, including clients' metrics data.
 ![Owner all clients](documentation/features/owner-allclients.jpg)
 
 **Owner consultation assignment and query management**
 
-Owners can assign clients via the consultations to any trainer or themselves, providing flexibility and operational control. Owners can also assign queries to trainers or themselves. (Trainers can only assing to themsleves)
+Owners can assign clients via the consultations to any trainer or themselves, providing flexibility and operational control. Owners can also assign queries to trainers or themselves. (Trainers can only assign to themselves)
 
 ![Owner client assignment](documentation/features/owner-clientassignment.jpg)
 ![Owner queries](documentation/features/owner-queries.jpg)
 ![Owner query ticket](documentation/features/owner-queryticket.jpg)
 
 **Owner support ticket management**
-The functionality here is the exact same as trainers. Owners cannot see trainers messages to clients and visa versa as to keep a standard of trainer/client confidentiallity.  Owners can however recieve and reply to messages from clients of their own.
+The functionality here is the exact same as trainers. Owners cannot see trainers' messages to clients and vice versa as to keep a standard of trainer/client confidentiality. Owners can however receive and reply to messages from clients of their own.
 
 ![Owner support ticket](documentation/features/owner-supportticket.jpg)
 ![Owner support inbox](documentation/features/owmer-support.jpg)
 
-Owners can view and manage all client/ trainer support interactions across the system.
+Owners can view and manage all client/trainer support interactions across the system.
 
 ---
 
-## Summary
+### Summary
 
-The client journey within Precision Performance PT is designed to be simple and data driven, while being fully supported by trainer and owner workflows behind the scenes.
+The client journey within Precision Performance PT is designed to be simple and data-driven, while being fully supported by trainer and owner workflows behind the scenes.
 
 - Clients move from initial consultation to active training in a structured and intuitive way.
 - Trainers support clients through programme creation, progress tracking, and direct communication.
-- Owners provide oversight, consultation assignment, and administrative control. While also maintianing trainer responsibilities to their own clients.
+- Owners provide oversight, consultation assignment, and administrative control, while also maintaining trainer responsibilities to their own clients.
 - All features operate under clear role-based permissions to protect data and ensure clarity.
 
 The screenshots above demonstrate that all core client-facing features and supporting trainer/owner features are fully implemented and operational.
@@ -671,9 +670,9 @@ Additional profile and training-specific data is linked to this User model throu
 
 ---
 
-## Accounts App (`accounts`)
+### Accounts App (`accounts`)
 
-### ClientProfile
+#### ClientProfile
 
 | Aspect | Description |
 |------|------------|
@@ -686,7 +685,7 @@ This allows every client to have a standard Django user account, while storing t
 
 ---
 
-### ConsultationRequest
+#### ConsultationRequest
 
 | Aspect | Description |
 |------|------------|
@@ -699,7 +698,7 @@ This model is the entry point for new clients into the system.
 
 ---
 
-### ContactQuery
+#### ContactQuery
 
 | Aspect | Description |
 |------|------------|
@@ -711,7 +710,7 @@ This keeps business enquiries separate from training consultations.
 
 ---
 
-### SupportTicket
+#### SupportTicket
 
 | Aspect | Description |
 |------|------------|
@@ -724,7 +723,7 @@ Support tickets act as containers for message threads.
 
 ---
 
-### SupportMessage
+#### SupportMessage
 
 | Aspect | Description |
 |------|------------|
@@ -736,9 +735,9 @@ This allows structured, readable support conversations.
 
 ---
 
-## Training App (`training`)
+### Training App (`training`)
 
-### ProgrammeBlock
+#### ProgrammeBlock
 
 | Aspect | Description |
 |------|------------|
@@ -750,7 +749,7 @@ This structure allows base templates to be reused and customised per client.
 
 ---
 
-### ProgrammeDay
+#### ProgrammeDay
 
 | Aspect | Description |
 |------|------------|
@@ -759,7 +758,7 @@ This structure allows base templates to be reused and customised per client.
 
 ---
 
-### ProgrammeExercise
+#### ProgrammeExercise
 
 | Aspect | Description |
 |------|------------|
@@ -769,7 +768,7 @@ This structure allows base templates to be reused and customised per client.
 
 ---
 
-### ClientProgramme
+#### ClientProgramme
 
 | Aspect | Description |
 |------|------------|
@@ -782,7 +781,7 @@ This model connects clients to specific training programmes.
 
 ---
 
-### WorkoutSession
+#### WorkoutSession
 
 | Aspect | Description |
 |------|------------|
@@ -795,7 +794,7 @@ Each workout session represents one completed training day.
 
 ---
 
-### WorkoutSet
+#### WorkoutSet
 
 | Aspect | Description |
 |------|------------|
@@ -806,7 +805,7 @@ This allows detailed tracking of performance within a workout.
 
 ---
 
-### BodyMetricEntry
+#### BodyMetricEntry
 
 | Aspect | Description |
 |------|------------|
@@ -818,7 +817,7 @@ These entries are used to generate charts and progress summaries.
 
 ---
 
-## Data Relationships Overview
+### Data Relationships Overview
 
 The data model is structured to reflect real world coaching workflows:
 
@@ -1130,7 +1129,7 @@ This ensures critical actions are not blocked by external services.
 
 ---
 
-## Validation Touchpoints (Confirmed)
+### Validation Touchpoints (Confirmed)
 
 | Feature | Validation Location |
 |------|--------------------|
@@ -1139,11 +1138,6 @@ This ensures critical actions are not blocked by external services.
 | Workout logging | `WorkoutSessionForm` + duplicate session checks |
 | Body metrics | `BodyMetricEntryForm` + create/update/delete logic |
 | Support tickets | View level checks in client and trainer support views |
-
-## 16. Technologies Used
-
-## 17. Testing
-The below section features all of the testing that was done during amnd after the development of the precision performance application. 
 
 ## 16. Technologies Used
 
@@ -1203,7 +1197,10 @@ The Precision Performance PT platform was built using a modern full-stack techno
 
 ---
 
-#### Python Code Validation (CI Python Linter)
+## 17. Testing
+The below section features all of the testing that was done during and after the development of the Precision Performance application. 
+
+### Python Code Validation (CI Python Linter)
 
 All custom Python code was tested using the **Code Institute Python Linter (PEP8CI)** to ensure the backend codebase is readable, maintainable, and free from syntax or formatting errors.
 
@@ -1218,7 +1215,7 @@ Auto-generated files such as migrations, virtual environments, and third-party f
 
 All tested files returned **All clear, no errors found**.
 
-##### Python Files Tested
+#### Python Files Tested
 
 | App / Area | File | Validator Confirmation | Result |
 |-----------|------|------------------------|--------|
@@ -1233,13 +1230,13 @@ All tested files returned **All clear, no errors found**.
 | scripts | `run_testing_audit.py` | ![testing audit](documentation/testing/python/python-runtestingaudit-test.png) | No errors |
 | training | `training/forms.py` | ![training forms](documentation/testing/python/python-trainingformspy-test.png) | No errors |
 
-##### Python Testing Summary
+#### Python Testing Summary
 
 - All selected Python files passed the CI Python Linter  
 - No PEP8 errors or warnings were reported  
 - Code structure is clear, readable, and maintainable  
 
-#### JavaScript validation (JSHint)
+### JavaScript validation (JSHint)
 
 All JavaScript code was tested using **JSHint** to check for errors, warnings, and overall code quality.
 
@@ -1247,7 +1244,7 @@ To keep this project easier to maintain, all JavaScript was stored in separate f
 Inline JavaScript was also removed from HTML templates and replaced with `data-*` attributes where needed.  
 This was done in an attempt to keep templates cleaner and easier to work through.
 
-##### Notes
+#### Notes
 - Please notesSome pages use **Chart.js** to display charts. Chart.js provides a global `Chart` object in the browser.
   To avoid false warnings, `/* global Chart */` is seen at the top of chart-related files.
 - JSHint shows a minor style warning for `new Chart(...)`. This is expected behaviour with Chart.js and does not affect how the charts work.
@@ -1319,7 +1316,7 @@ Key pages across all user roles (Client,Owner,Trainer) as well as public pages w
 
 All tested pages returned no errors or warnings to show as seen below.
 
-##### Public Pages
+#### Public Pages
 
 | Page | Validator Confirmation | Result |
 |------|------------------------|--------|
@@ -1328,20 +1325,20 @@ All tested pages returned no errors or warnings to show as seen below.
 | Contact | [![Contact HTML validation](documentation/testing/html/Contact-html-test.png)](documentation/testing/html/Contact-html-test.png) | No errors or warnings |
 
 
-##### Client (Authenticated)
+#### Client (Authenticated)
 
 | Page | Validator Confirmation | Result |
 |------|------------------------|--------|
 | Client Login | [![Client login HTML validation](documentation/testing/html/client-html-test.png)](documentation/testing/html/client-html-test.png) | No errors or warnings |
 | Dashboard | [![Client dashboard HTML validation](documentation/testing/html/client-dash-html-test.png)](documentation/testing/html/client-dash-html-test.png) | No errors or warnings |
-| Todays Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
+| Today's Plan | [![Client today plan HTML validation](documentation/testing/html/client-todaysplan-html-test.png)](documentation/testing/html/client-todaysplan-html-test.png) | No errors or warnings |
 | Programme Library | [![Client programme HTML validation](documentation/testing/html/client-programme-html-test.png)](documentation/testing/html/client-programme-html-test.png) | No errors or warnings |
 | Workout Log | [![Client workout HTML validation](documentation/testing/html/client-workout-html-test.png)](documentation/testing/html/client-workout-html-test.png) | No errors or warnings |
 | Body Metrics | [![Client body metrics HTML validation](documentation/testing/html/client-bodymetrics-html-test.png)](documentation/testing/html/client-bodymetrics-html-test.png) | No errors or warnings |
 | Support | [![Client support HTML validation](documentation/testing/html/client-support-html.png)](documentation/testing/html/client-support-html.png) | No errors or warnings |
 
 
-##### Trainer (Authenticated)
+#### Trainer (Authenticated)
 
 | Page | Validator Confirmation | Result |
 |------|------------------------|--------|
@@ -1355,7 +1352,7 @@ All tested pages returned no errors or warnings to show as seen below.
 | Trainer Query Detail | [![Trainer query detail HTML validation](documentation/testing/html/trainer-owner-queery-detail-page-html-test.png)](documentation/testing/html/trainer-owner-queery-detail-page-html-test.png) | No errors or warnings |
 
 
-##### Owner (Authenticated)
+#### Owner (Authenticated)
 
 | Page | Validator Confirmation | Result |
 |------|------------------------|--------|
@@ -1386,7 +1383,7 @@ Mobile scores are generally lower than desktop scores due to Lighthouse simulate
 
 ---
 
-##### Lighthouse Scoring Criteria
+#### Lighthouse Scoring Criteria
 
 - **Performance**: Influenced by JavaScript execution, dynamic data rendering, and Lighthouses simulated device constraints.
 - **Accessibility**: : High scores achieved through semantic HTML, proper labels, good contrast and ARIA friendly patterns.
@@ -1395,7 +1392,7 @@ Mobile scores are generally lower than desktop scores due to Lighthouse simulate
 
 ---
 
-##### Public Pages (Unauthenticated)
+#### Public Pages (Unauthenticated)
 
 Public pages are more content focused and lightweight compared to dashboard pages, which results in consistently strong Lighthouse scores.
 
@@ -1413,7 +1410,7 @@ Lower mobile performance scores are expected due to the large hero image on the 
 
 ---
 
-##### Client Area (Authenticated)
+#### Client Area (Authenticated)
 
 Client pages include dashboards, logs, and metrics, all of which involve dynamic data rendering and content specific to the client.
 
@@ -1423,8 +1420,8 @@ Client pages include dashboards, logs, and metrics, all of which involve dynamic
 | Client Login | Mobile | [![Client Login Mobile](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png)](documentation/testing/lighthouse/lighthouse-clientlogin-mobile.png) |
 | Dashboard | Desktop | [![Client Dashboard Desktop](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png)](documentation/testing/lighthouse/lighthouse-client-overview-desktop.png) |
 | Dashboard | Mobile | [![Client Dashboard Mobile](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png)](documentation/testing/lighthouse/lighthouse-client-overview-mobile.png) |
-| Todays Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
-| Todays Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
+| Today's Plan | Desktop | [![Today Desktop](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-desktop.png) |
+| Today's Plan | Mobile | [![Today Mobile](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png)](documentation/testing/lighthouse/lighthouse-client-todayplan-mobile.png) |
 | Programme Library | Desktop | [![Programme Desktop](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png)](documentation/testing/lighthouse/lighthouse-client-programme-desktop.png) |
 | Programme Library | Mobile | [![Programme Mobile](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png)](documentation/testing/lighthouse/lighthouse-client-programme-mobile.png) |
 | Workout Log | Desktop | [![Workout Desktop](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png)](documentation/testing/lighthouse/lighthouse-client-workout-desktop.png) |
@@ -1437,7 +1434,7 @@ Client pages have lower mobile performance scores because they include tables, c
 
 ---
 
-##### Staff Area (Trainer & Owner)
+#### Staff Area (Trainer & Owner)
 
 Trainer and Owner dashboards **share the same core layout and components**.  
 The Owner role includes all Trainer functionality, with additional administrative features that are displayed only when the user has the appropriate permissions. (This is looked at in more detail in the user roles/permissions section)
@@ -1458,12 +1455,12 @@ As a result, Lighthouse scores across Trainer and Owner pages are comparable, si
 **Notes**  
 Lower mobile performance scores expected and reflect:
 - the presence of larger datasets.
-- the use of editable forms and data entrys.
+- the use of editable forms and data entries.
 - Additional JavaScript execution that supports role-based features.
 
 ---
 
-##### Lighthouse Summary
+#### Lighthouse Summary
 
 - Performance differences are normal in a feature-heavy and role-based django application (pages with larger datasets, tables/forms, and extra JavaScript tend to score lower).
 - Accessibility, Best Practices, and SEO results are consistent and strong across key pages.
@@ -1487,7 +1484,7 @@ WAVE was used to check for:
 
 ---
 
-##### Public Pages (Unauthenticated)
+#### Public Pages (Unauthenticated)
 
 | Page | Result |
 |------|--------|
@@ -1505,12 +1502,12 @@ WAVE was used to check for:
 
 ---
 
-##### Client Area (Authenticated)
+#### Client Area (Authenticated)
 
 | Page | Result |
 |------|--------|
 | Client dashboard (overview) | [![WAVE - Client dashboard](documentation/testing/wave/wave-client-dasbaord-explain.png)](documentation/testing/wave/wave-client-dasbaord-explain.png) |
-| Todays plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
+| Today's Plan | [![WAVE - Client today plan](documentation/testing/wave/wave-client-todaysplan-explain.png)](documentation/testing/wave/wave-client-todaysplan-explain.png) |
 | Programme library | [![WAVE - Programme library](documentation/testing/wave/wave-client-programmelibrary-explain.png)](documentation/testing/wave/wave-client-programmelibrary-explain.png) |
 | Workout log | [![WAVE - Workout log](documentation/testing/wave/wave-client-workoutlog-explain.png)](documentation/testing/wave/wave-client-workoutlog-explain.png) |
 | Client support (ticket list) | [![WAVE - Client support](documentation/testing/wave/wave-client-support-explain.png)](documentation/testing/wave/wave-client-support-explain.png) |
@@ -1524,16 +1521,16 @@ WAVE was used to check for:
 
 ---
 
-##### Staff Area (Owner & Trainer Dashboards)
+#### Staff Area (Owner & Trainer Dashboards)
 
 | Page | Result |
 |------|--------|
-| Owner � Dashboard overview | [![WAVE - Owner dashboard overview](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png)](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png) |
-| Owner � My clients | [![WAVE - Owner clients](documentation/testing/wave/wave-ownertrianer-clients-explain.png)](documentation/testing/wave/wave-ownertrianer-clients-explain.png) |
-| Owner � Programmes | [![WAVE - Owner programmes](documentation/testing/wave/wave-ownertrianer-programmes-explain.png)](documentation/testing/wave/wave-ownertrianer-programmes-explain.png) |
-| Owner � Queries (contact forms) | [![WAVE - Owner queries](documentation/testing/wave/wave-ownertrianer-queries-explain.png)](documentation/testing/wave/wave-ownertrianer-queries-explain.png) |
-| Owner � Support inbox | [![WAVE - Owner support inbox](documentation/testing/wave/wave-ownertrianer-support-explain.png)](documentation/testing/wave/wave-ownertrianer-support-explain.png) |
-| Trainer � Consultation detail | [![WAVE - Trainer consultation detail](documentation/testing/wave/wave-trainer-consultationdetails-explain.png)](documentation/testing/wave/wave-trainer-consultationdetails-explain.png) |
+| Owner - Dashboard overview | [![WAVE - Owner dashboard overview](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png)](documentation/testing/wave/wave-ownertrianer-dasbaord-explain.png) |
+| Owner - My clients | [![WAVE - Owner clients](documentation/testing/wave/wave-ownertrianer-clients-explain.png)](documentation/testing/wave/wave-ownertrianer-clients-explain.png) |
+| Owner - Programmes | [![WAVE - Owner programmes](documentation/testing/wave/wave-ownertrianer-programmes-explain.png)](documentation/testing/wave/wave-ownertrianer-programmes-explain.png) |
+| Owner - Queries (contact forms) | [![WAVE - Owner queries](documentation/testing/wave/wave-ownertrianer-queries-explain.png)](documentation/testing/wave/wave-ownertrianer-queries-explain.png) |
+| Owner - Support inbox | [![WAVE - Owner support inbox](documentation/testing/wave/wave-ownertrianer-support-explain.png)](documentation/testing/wave/wave-ownertrianer-support-explain.png) |
+| Trainer - Consultation detail | [![WAVE - Trainer consultation detail](documentation/testing/wave/wave-trainer-consultationdetails-explain.png)](documentation/testing/wave/wave-trainer-consultationdetails-explain.png) |
 
 **Staff area summary**
 - Dashboard layouts are consistent across owner and trainer roles.
@@ -1559,8 +1556,6 @@ WAVE flagged this as low contrast depending on the page, but it is:
 - used only as supporting context.
 - kept intentionally to reduce visual noise and improve layout clarity.
 
----|
-
 ### 17.4 User Story Testing
 User stories were tested manually against the live application to confirm that the acceptance criteria were met. The table below summarises key user stories and the evidence that supports each one.
 
@@ -1568,7 +1563,7 @@ User stories were tested manually against the live application to confirm that t
 |-----------|-------------------|--------|----------|
 | All Users – Auth (Login / Logout) | Logged in and out using the client and trainer login pages. Confirmed redirects go to the correct dashboards and logout returns to home page. | Pass | ![Client login](documentation/features/feature-clientlogin.png) / ![Trainer login](documentation/features/feature-trainerlogin.jpg) |
 | All Users – Clear, consistent UI | Checked main public pages and all dashboard pages for consistent layout, typography, spacing, and button styles. Tested on mobile, tablet, desktop. | Pass | ![Client dashboard](documentation/features/feature-clientdashboard.jpg) |
-| Client – Dashboard & view workout plan | Logged in as a client, confirmed dashboard loads correctly and programme can be viewed from programme library / today’s plan. | Pass | ![Client programme view](documentation/features/feature-clientprogrammeview.jpg) |
+| Client – Dashboard & view workout plan | Logged in as a client, confirmed dashboard loads correctly and programme can be viewed from programme library / today's plan. | Pass | ![Client programme view](documentation/features/feature-clientprogrammeview.jpg) |
 | Client – Log & manage workout sessions | Logged a workout session with pre-filled targets, saved session, confirmed it appears in recent sessions and can be edited. | Pass | ![Client workout log](documentation/features/feature_clientworkoutlog.jpg) |
 | Client – Record & view body metrics | Added new body metrics check-in and confirmed entries appear in the metrics list and charts update. | Pass | ![Client body metrics](documentation/features/feature-clientbodymetrics.jpg) |
 | Trainer – Client list & profiles | Logged in as trainer, viewed assigned clients list, opened a client profile and confirmed access to logs/metrics. | Pass | ![Trainer clients](documentation/features/feature-trainerclinetsoverview.jpg) |
@@ -1601,9 +1596,11 @@ The following steps were taken to deploy the application:
    - Python runtime version is defined to ensure consistency between local and production environments.
    - ALLOWED_HOSTS includes the Heroku app domain.
    - Created a `Procfile` with the following command:
+
      ```
      web: gunicorn precision_performance.wsgi
      ```
+
    - Ensured `DEBUG` is set using an environment variable.
 
 2. **Environment variables**
@@ -1623,9 +1620,11 @@ The following steps were taken to deploy the application:
 
 4. **Static files**
    - Static files were collected using:
+
      ```
      python manage.py collectstatic
      ```
+
    - WhiteNoise was used to serve static files in production.
 
 5. **Deployment**
@@ -1636,12 +1635,12 @@ The following steps were taken to deploy the application:
 Heroku was chosen because it integrates well with Django and allows rapid, reliable deployment for portfolio projects.
 
 ### 19.2 Local Deployment
-   - 1. Clone Repo 
-   - 2. Create virtual enviroment.
-   - 3. Install dependencies.
-   - 4. Set enviorment variables.
-   - 5. Run migrations.
-   - 6. Run server
+1. Clone repo.
+2. Create a virtual environment.
+3. Install dependencies.
+4. Set environment variables.
+5. Run migrations.
+6. Run server.
 
 ### 19.3 How to Fork the Repository
 
@@ -1670,37 +1669,52 @@ To clone the repository to your local machine, follow these steps:
 6. Open your code editor and terminal.
 7. Change the current working directory to the location where you want the cloned repository to be stored.
 8. Run the following command in the terminal:
+
    ```bash
    git clone https://github.com/moranjohn-95/precision-performance-pt
    ```
+
 9. Navigate into the newly created project directory:
+
    ```bash
-   cd <folder>
+   cd precision-performance-pt
    ```
+
 10. Create and activate a virtual environment:
     - **Windows**
+
       ```bash
       python -m venv venv
       venv\Scripts\activate
       ```
+
     - **Mac / Linux**
+
       ```bash
       python3 -m venv venv
       source venv/bin/activate
       ```
+
 11. Install the required dependencies:
+
     ```bash
     pip install -r requirements.txt
     ```
+
 12. Apply database migrations:
+
     ```bash
     python manage.py migrate
     ```
+
 13. Create a superuser (optional, for admin access):
+
     ```bash
     python manage.py createsuperuser
     ```
+
 14. Run the development server:
+
     ```bash
     python manage.py runserver
     ```
