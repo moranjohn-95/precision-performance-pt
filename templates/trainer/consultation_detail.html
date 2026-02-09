@@ -110,11 +110,6 @@
             {% else %}
                 {# 1:1 or online branch #}
                 {% if consultation.assigned_trainer %}
-                    <p class="text-muted">
-                        Assigned trainer:
-                        {{ consultation.assigned_trainer.get_full_name|default:consultation.assigned_trainer.username }}
-                    </p>
-
                     {% if consultation.assigned_trainer == request.user %}
                         <button type="submit" class="btn-secondary" disabled>
                             Already added to clients
