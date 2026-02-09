@@ -257,7 +257,7 @@ The overall structure seen below is very close to the actual live structure with
 | **Client Dashboard** � Displays next workout, weekly stats, and quick links to key actions. | **Trainer Dashboard** � Central workspace for managing consultations, classes, and client activity. |
 
 ### 8.4 Responsive Design
-Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile.  
+Precision Performance PT has been designed to be fully responsive across desktop, tablet, and mobile. As such media queries werre used throughout the wenbiste at key break points of min width of 993px (desktop), max-width of 992px (tablet and below), max width od 576 (mobiles.)
 The fact the platform contains data heavy views (tables, forms, charts, and logs), responsiveness focused on keeping key actions accessible while preventing layouts from becoming cluttered on smaller screens. A good example of this is the sidebar featurea and how its leveraged on differnet devices.
 
 On **desktop**, the sidebar remains visible to provide reliable navigation between dashboard sections.  
@@ -511,6 +511,69 @@ The screenshots above demonstrate that all core client-facing features and suppo
 ## 11. Database & Data Models
 
 ## 12. Authentication & Authorisation
+
+Authentication and authorisation in Precision Performance PT are handled via Django’s authentication system. This provides a secure and tested foundation while allowing custom logic for different user roles (in this case - Client, Trainer, Owner).
+
+The application uses session-based authentication, meaning users remain logged in across requests until they explicitly log out or their session expires.
+
+---
+
+### Authentication Setup
+
+The following Django components are enabled:
+
+- `django.contrib.auth`
+- `django.contrib.sessions`
+- `AuthenticationMiddleware`
+- `SessionMiddleware`
+
+These are configured in `settings.py` and provide login, logout, session handling, and password management.
+
+---
+
+### Authentication Flow Overview
+
+| Feature | Implementation |
+|------|----------------|
+| **Trainer Login** | `/accounts/trainer/login/` using Django `LoginView` and `trainer_login.html` |
+| **Client Login** | `/accounts/client/login/` using Django `LoginView` and `client_login.html` |
+| **Logout** | `/accounts/logout/` using Django `LogoutView`, redirects to home page |
+| **Password Reset** | Django built-in password reset views under `/accounts/password-reset/…` |
+| **Session Handling** | Managed automatically by Django sessions |
+
+Separate login pages are used for trainers and clients to clearly separate access paths and reduce confusion during authentication processes.
+
+---
+
+### Post-Login Redirect Logic
+
+After successful authentication, users are redirected based on their role:
+
+| User Role | Redirect Destination |
+|---------|----------------------|
+| **Trainer / Owner** | `accounts:trainer_dashboard` |
+| **Client** | `accounts:client_dashboard` |
+
+This logic is handled in custom `get_success_url()` methods on the respective login views, ensuring users land directly on the correct dashboard.
+
+---
+
+### Authorisation & Protected Routes
+
+Access to private areas of the application is restricted using Django decorators:
+
+| Protection Type | Usage |
+|---------------|------|
+| **Login required** | Most dashboard and account views use `@login_required` |
+| **Staff-only access** | Restricted views use a custom `staff_required` decorator |
+| **Admin access** | Some routes use Django’s `@staff_member_required` |
+
+The `staff_required` decorator wraps Django’s `user_passes_test`, checking `user.is_staff` and redirecting unauthorised users to the trainer login page.
+
+This ensures:
+- Clients cannot access trainer or owner dashboards.
+- Trainers cannot access admin-only functionality.
+- Owners (superusers) inherit full trainer access.
 
 ## 13. Role-Based Access Control
 
