@@ -655,7 +655,6 @@ Support privacy rules ensure:
 
 
 ## 11. Database & Data Models
-
 The Precision Performance PT application uses a relational database designed around **clear ownership of data**, **role separation**, and **real-world training workflows**.
 
 All data models are split across two Django apps:
@@ -674,10 +673,10 @@ Additional profile and training-specific data is linked to this User model throu
 
 | Aspect | Description |
 |------|------------|
-| Purpose | Stores additional client-specific information linked to a user account |
+| Purpose | Stores additional client specific information linked to a user account |
 | Linked user | One-to-one relationship with Django `User` |
 | Optional links | Consultation request, preferred trainer |
-| Why | Keeps authentication separate from client-only metadata |
+| Why | Keeps authentication separate from client only metadata |
 
 This allows every client to have a standard Django user account, while storing training-specific details safely alongside it.
 
@@ -700,8 +699,8 @@ This model is the entry point for new clients into the system.
 
 | Aspect | Description |
 |------|------------|
-| Purpose | Stores general contact-us enquiries |
-| Use case | Non-consultation questions and follow-ups |
+| Purpose | Stores general contact us enquiries |
+| Use case | Non consultation questions and follow-ups |
 | Assignment | Can be assigned to a trainer or owner |
 
 This keeps business enquiries separate from training consultations.
@@ -896,6 +895,100 @@ This ensures:
 - Owners (superusers) inherit full trainer access.
 
 ## 13. Role-Based Access Control
+
+Role-based access control in Precision Performance PT ensures that each user only sees and interacts with the parts of the system relevant to their role.  
+This is handled using Django’s built-in user flags rather than custom groups, keeping the logic simple, secure, and easy to maintain.
+
+---
+
+### Role Determination
+
+User roles are derived directly from fields on Django’s `User` model.
+
+| Role | Conditions | Description |
+|----|-----------|-------------|
+| **Client** | `is_staff == False` | Standard user with access only to client-facing features |
+| **Trainer** | `is_staff == True` and `is_superuser == False` | Staff user responsible for managing assigned clients |
+| **Owner** | `is_superuser == True` (also `is_staff`) | Full administrative access across the platform |
+
+This approach avoids unnecessary complexity while still enforcing strict separation of responsibilities.
+
+---
+
+### Client Permissions
+
+| Area | Access Rules |
+|----|--------------|
+| Client dashboard | Login required |
+| Programme library | Login required |
+| Workout log | Login required |
+| Body metrics | Login required |
+| Support tickets | Login required |
+
+Additional rules:
+- All client views are protected using `@login_required`.
+- If a **staff user** attempts to access a client-only route, they are automatically redirected to the trainer dashboard.
+- Clients cannot access any trainer or owner pages.
+
+---
+
+### Trainer Permissions
+
+| Area | Access Rules |
+|----|--------------|
+| Trainer dashboard | Staff-only |
+| Client list & profiles | Only assigned clients |
+| Programme creation & editing | Staff-only |
+| Consultations | Can assign consultations **only to themselves** |
+| Support tickets | Only tickets assigned to the trainer |
+
+Implementation details:
+- Trainer routes require login using the trainer login page.
+- Access checks are enforced using `staff_required` or `staff_member_required`.
+- Non-staff users attempting to access trainer routes are redirected to the client dashboard.
+
+---
+
+### Owner Permissions
+
+| Area | Access Rules |
+|----|--------------|
+| Owner dashboard | Superuser-only |
+| All clients | Full visibility |
+| All trainers | Full visibility |
+| Programme management | Full access |
+| Consultations & queries | Can assign to any trainer or themselves |
+| Support tickets | Access to tickets assigned to the owner |
+
+Additional rules:
+- Owner-only views explicitly check `request.user.is_superuser`.
+- Non-superusers attempting to access owner routes are redirected or shown a 404 response.
+- Owners can access owner-branded versions of trainer pages with expanded data visibility.
+
+---
+
+### Data Separation & Query Enforcement
+
+Access control is reinforced at the database query level to prevent data leakage.
+
+| Feature | Enforcement |
+|------|-------------|
+| Trainer client lists | Filtered by `assigned_trainer == request.user` |
+| Trainer client detail | Blocked unless client is assigned to the trainer |
+| Support tickets (client) | Filtered by `SupportTicket.client == request.user` |
+| Support tickets (trainer) | Filtered by `SupportTicket.trainer == request.user` |
+| Owner views | Not restricted by trainer assignment |
+
+This ensures that even if a URL is guessed or manually entered, unauthorised data cannot be accessed.
+
+---
+
+### Examples of Access Restrictions
+
+- Non-staff users are redirected away from trainer-only routes.
+- Staff users are redirected away from client-only routes.
+- Trainer support ticket detail views use `get_object_or_404(trainer=request.user)`, preventing access to unassigned tickets.
+- Owner-only routes explicitly block non-superusers.l
 
 ## 14. Security Features
 
